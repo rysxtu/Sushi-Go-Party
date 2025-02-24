@@ -72,18 +72,23 @@ func _update_cards():
 # plays a card when pressed if allowed
 func _card_pressed_from_hand(card):
 	if allowed_to_play_card:
-		print("played ", card, " from hand")
+		print(self, " played ", card.name, " from hand")
+		
 		player_hand.remove_child(card)
 		card.queue_free()
-		_update_cards()
+		if player_hand.get_child_count() > 1:
+			_update_cards()
 		allowed_to_play_card = false
 		
 		# for now extra info is null, only when its is special order
 		# first one for 
 		card_played.emit(self, card, null)
 		display_card_icon.emit(self, card, null)
+	
 
 func _player_allowed_to_play():
+	print(self)
+	player_hand = self.get_node("player_hand")
 	allowed_to_play_card = true
 
 """HELPER FUNCTIONS"""

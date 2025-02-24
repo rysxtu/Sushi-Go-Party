@@ -25,12 +25,12 @@ var players_number = Global.players_number
 var players_points = {}
 # dictionary to store the cards played of each person/bot
 var players_played_cards = {}
-# dictionary of the player and current hand
-var player_and_player_hand = {}
 # Round number and turn number
 var round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
+# cards played in a turn (during round)
+var played_dr_cards = []
 # cards left in the round
 var cards_left_in_round = 8
 
@@ -68,6 +68,14 @@ func make_players(player_number, players_points):
 	for i in player_number:
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
+		
+		if player.name == "player_1":
+			player.global_position = Vector2(100, 20)
+		elif player.name == "player_2":
+			player.global_position = Vector2(100, 170)
+		else:
+			player.global_position = Vector2(100, 330)
+		
 		player.card_played.connect(store_card_played)
 		self.add_child(player)
 		players_points[player] = 0
@@ -123,7 +131,7 @@ func store_card_played(player, card, extra_info):
 			players_played_cards[player][card_name][variation] += 1
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
-		pass
+		played_dr_cards.append([card_name, card, player])
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -133,8 +141,11 @@ func store_card_played(player, card, extra_info):
 	# check if every player has taken their turn
 	if taken_turn.size() == players_number:
 		cards_left_in_round -= 1
-		calc_points("during_round")
+		calc_points("during_round", played_dr_cards)
+		# displays icons fnction here
 		turn_over()
+		played_dr_cards = []
+		
 	
 	"""HARD"""
 	# bonus action: chopsticks, spoon
@@ -146,7 +157,6 @@ func store_card_played(player, card, extra_info):
 func turn_over():
 	# need to swap all the player_hands
 	# can play animation here 
-		
 	var curr_player
 	var next_player
 	for i in players_number:
@@ -163,22 +173,20 @@ func turn_over():
 				self.get_node("player_" + str(i)).get_child(1).name = "player_hand"
 				
 	# if the hand we just receive is of length 1, end round
-	if cards_left_in_round == 1:
-		# another function
-		last_turn_of_round()
-		calc_points("round_end")
-		return
+	if cards_left_in_round == 0:
+		calc_points("round_end", null)
+		# trigger reset round
+		new_round()
 	
 	taken_turn = {}
 	Global.emit_signal("allowed_to_play")
 
 # calculates the points each player has at the end of the round
 # need to change due to special_order
-func calc_points(calc_type):
+func calc_points(calc_type, played_dr_cards):
 	var played_cards
 	
 	if calc_type == "round_end":
-		
 		var maki = []
 		var p_most_ = 0
 		
@@ -221,26 +229,94 @@ func calc_points(calc_type):
 					count += 1
 			if count < 2:
 				players_points[maki[maki.size() - 1][1]] += Global.maki_points[count]
-	elif calc_type == "during_round":
-		# check if miso or uramaki are played
-		pass
+	elif calc_type == "during_round" and played_dr_cards:
+		var miso_per_turn = 0
+		var miso_player
+		var not_counted_uramaki = []
+		
+		for tuple in played_dr_cards:
+			if tuple[0] == "miso":
+				miso_per_turn += 1
+				miso_player = tuple[2]
+			else:
+				# uramakis are always discarded
+				add_back_to_deck(tuple[1])
+				# only if we can award points do it
+				if Global.uramaki_curr_points >= 0:
+					var variation = int(tuple[1].name.split("_")[1])
+					if "uramaki" not in players_played_cards[tuple[2]]:
+						# count number of uramaki, and if points have been allocated
+						players_played_cards[tuple[2]]["uramaki"] = [variation, false]
+					elif players_played_cards[tuple[2]]["uramaki"][0] < 10:
+						players_played_cards[tuple[2]]["uramaki"][0] += variation
+					print(players_played_cards)
+					if players_played_cards[tuple[2]]["uramaki"][0] >= 10 and not players_played_cards[tuple[2]]["uramaki"][1]:
+						not_counted_uramaki.append([players_played_cards[tuple[2]]["uramaki"][0], tuple[2]])
+					print(not_counted_uramaki)
+		# send back into deck if > 1
+		# could add animation for played nbut failed
+		if miso_per_turn > 1:
+			for tuple in played_dr_cards:
+				if tuple[0] == "miso":
+					add_back_to_deck(tuple[1])
+		elif miso_per_turn == 1:
+			players_points[miso_player] += 3
+			if "miso" not in players_played_cards[miso_player]:
+				players_played_cards[miso_player]["miso"] = 1
+			else:
+				players_played_cards[miso_player]["miso"] += 1
+		
+		# check for any ties in uramaki, if any player has uramaki > 10
+		if not_counted_uramaki:
+			not_counted_uramaki.sort()
+			not_counted_uramaki.reverse()
+			var n = not_counted_uramaki.size()
+			
+			if n > 1:
+				# checking for ties and awarding points
+				var i = 0
+				var allowed = Global.uramaki_curr_points
+				while i < n - 1 and not_counted_uramaki[i][0] == not_counted_uramaki[i + 1][0] and allowed >= 0:
+					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+					# make sure that the player can no longer add uramaki
+					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+					allowed -= 1
+					i += 1
+				if i > 0 and not_counted_uramaki[i - 1][0] == not_counted_uramaki[i][0] and allowed >= 0:
+					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+					# make sure that the player can no longer add uramaki
+					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+					allowed -= 1
+					i += 1
+				Global.uramaki_curr_points = allowed
+				
+				# check for no ties
+				while i < n and Global.uramaki_curr_points >= 0:
+					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+					Global.uramaki_curr_points -= 1
+			else:
+				players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+				# make sure that the player can no longer add uramaki
+				players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
+				Global.uramaki_curr_points -= 1
+			
+			
+			
+			# check for second largests and things
+			
+			
 	elif calc_type == "game_end":
 		pass
 	print(players_points)
 
-# automatically count the hand as owned by the curr player
-func last_turn_of_round():
-	var last_card
-	var info = null
+# preps the game scene for a new round
+func new_round():
+	round += 1
 	for player in players_points:
-		last_card = get_hand(player).get_child(0)
-		# check what the last card is for extra info (need to change)
-		if last_card.name.split("_")[0] == "special":
-			info = "special"
-		store_card_played(player, last_card, info)
-		get_hand(player).remove_child(last_card)
-		last_card.queue_free()
-		print(players_played_cards[player])
+		populate_player_hand(player)
+	Global.uramaki_curr_points = 2
+	players_played_cards = {}
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need
@@ -338,7 +414,12 @@ func flip_card_to_back(card):
 
 # determines how many desserts are inserted per round
 func dpr(player_num):
-	
 	if players_number <= 5:
 		return [5, 3, 2]
 	return [7, 5, 3]
+
+func add_back_to_deck(card):
+	flip_card_to_back(card)
+	card.global_position = deck.global_position
+	card.rotation = 0
+	deck.add_child(card)

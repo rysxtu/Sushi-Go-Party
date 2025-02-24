@@ -1,7 +1,7 @@
 extends Node
 
 var viewport_size
-var players_number = 1
+var players_number = 3
 var states = {}
 var cards = {}
 var cards_loaded = {}
@@ -19,8 +19,9 @@ var cards_no = {
 var maki_points = [6, 3]
 var temaki_points = [4, -4]
 
+var uramaki_curr_points = 2
+const uramaki_points = [2, 5, 8]
 const dumplings_points = [1, 3, 6, 10, 15]
-
 
 signal player_has_hand(player)
 signal allowed_to_play()
