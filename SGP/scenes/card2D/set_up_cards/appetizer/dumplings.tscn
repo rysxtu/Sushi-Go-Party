@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://j475b7qxipfo"]
+
+[ext_resource type="PackedScene" uid="uid://c8whxuuk8xcpb" path="res://scenes/card2D/set_up_card_base.tscn" id="1_gljiq"]
+[ext_resource type="Texture2D" uid="uid://bmfoycuxdwd53" path="res://assets/better_cards_final/sc_final/dumplings.png" id="2_6btli"]
+
+[node name="dumplings" type="Control"]
+custom_minimum_size = Vector2(100, 120)
+layout_mode = 3
+anchor_right = 0.087
+anchor_bottom = 0.185
+offset_right = -0.224006
+offset_bottom = 0.119998
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 60)
+mouse_filter = 2
+
+[node name="set_up_card_base" parent="." instance=ExtResource("1_gljiq")]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.983
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0399952
+grow_horizontal = 1
+grow_vertical = 1
+picture = ExtResource("2_6btli")

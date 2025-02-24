@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://cybhhsih61rqh"]
+
+[ext_resource type="Texture2D" uid="uid://cbixu4igple1d" path="res://assets/better_cards_final/pc_final/chopsticks.png" id="1_e4egb"]
+
+[node name="card_template" type="Control"]
+custom_minimum_size = Vector2(100, 155)
+layout_mode = 3
+anchor_top = -0.012
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 7.776
+offset_right = -1052.0
+offset_bottom = -508.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="art" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(100, 155)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -60.0
+offset_bottom = -115.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_e4egb")
+expand_mode = 1
+stretch_mode = 5

@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5sf2wp8h3iim"]
+
+[ext_resource type="Script" path="res://scripts/pc_drag_and_drop.gd" id="1_vtex0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gf848"]
+bg_color = Color(0.160784, 0.160784, 0.160784, 0.788235)
+
+[node name="pc_drag_and_drop" type="TextureRect"]
+custom_minimum_size = Vector2(100, 118)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 376.0
+offset_top = 173.0
+offset_right = -686.0
+offset_bottom = -368.8
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 59)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("1_vtex0")
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+show_behind_parent = true
+custom_minimum_size = Vector2(100, 118)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -60.0
+offset_bottom = -78.0
+pivot_offset = Vector2(50, 59)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gf848")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

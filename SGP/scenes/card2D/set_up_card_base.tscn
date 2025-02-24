@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8whxuuk8xcpb"]
+
+[ext_resource type="Script" path="res://scripts/set_up_card_base.gd" id="1_tbd5e"]
+
+[node name="set_up_card_base" type="MarginContainer"]
+custom_minimum_size = Vector2(100, 118)
+anchors_preset = -1
+anchor_left = 0.148
+anchor_top = 0.057
+anchor_right = 0.234
+anchor_bottom = 0.239
+offset_left = -0.496002
+offset_top = 0.0640052
+offset_right = 0.432047
+offset_bottom = 0.127995
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 59)
+script = ExtResource("1_tbd5e")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(50, 59)
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Pop_up" type="Sprite2D" parent="."]
+visible = false
+z_index = 1
+position = Vector2(50, 59)
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

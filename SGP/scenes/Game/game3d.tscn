@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://cv44gloi2ohit"]
+
+[ext_resource type="Script" path="res://scripts/hand.gd" id="2_41i5h"]
+
+[sub_resource type="Curve" id="Curve_q53wv"]
+min_value = -1.0
+_data = [Vector2(2.08165e-12, -1), 0.0, 2.0, 0, 1, Vector2(1, 1), 2.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_q2mxn"]
+min_value = -0.5
+max_value = 2.13163e-14
+_data = [Vector2(2.08165e-12, -0.4), 0.0, 0.0, 0, 0, Vector2(0.5, 2.08165e-12), 0.0, 0.0, 0, 0, Vector2(1, -0.4), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_4c3fq"]
+min_value = -1.0
+_data = [Vector2(2.08165e-12, 0.9), 0.0, -6.0, 0, 0, Vector2(0.5, 2.08165e-12), 0.0, 0.0, 0, 0, Vector2(1, -0.9), -6.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3odud"]
+
+[sub_resource type="Sky" id="Sky_ygsxs"]
+sky_material = SubResource("ProceduralSkyMaterial_3odud")
+
+[sub_resource type="Environment" id="Environment_atksp"]
+background_mode = 2
+sky = SubResource("Sky_ygsxs")
+
+[node name="game3d" type="Node3D"]
+
+[node name="hand" type="Node3D" parent="."]
+script = ExtResource("2_41i5h")
+spread_curve = SubResource("Curve_q53wv")
+height_curve = SubResource("Curve_q2mxn")
+rotation_curve = SubResource("Curve_4c3fq")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.909214, 0.416328, 0, -0.416328, 0.909214, 0, 3.61824, 9.32342)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_atksp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="Add" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 20)
+offset_left = 320.0
+offset_top = 174.0
+offset_right = 328.0
+offset_bottom = 182.0
+text = "Add
+"
+
+[node name="remove" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 20)
+offset_left = 692.0
+offset_top = 174.0
+offset_right = 792.0
+offset_bottom = 205.0
+text = "Remove
+"
+
+[connection signal="pressed" from="Add" to="hand" method="_on_button_pressed"]
+[connection signal="pressed" from="remove" to="hand" method="_on_remove_pressed"]

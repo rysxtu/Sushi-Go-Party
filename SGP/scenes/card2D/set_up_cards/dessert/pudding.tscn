@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgo46ikwrpluu"]
+
+[ext_resource type="PackedScene" uid="uid://c8whxuuk8xcpb" path="res://scenes/card2D/set_up_card_base.tscn" id="1_xtde5"]
+[ext_resource type="Texture2D" uid="uid://da4ij76y6yop7" path="res://assets/better_cards_final/sc_final/pudding.png" id="2_fpmk6"]
+
+[node name="pudding" type="Control"]
+custom_minimum_size = Vector2(100, 118)
+layout_mode = 3
+anchor_right = 0.087
+anchor_bottom = 0.182
+offset_right = -0.224006
+offset_bottom = 0.0639927
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="set_up_card_base" parent="." instance=ExtResource("1_xtde5")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+picture = ExtResource("2_fpmk6")

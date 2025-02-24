@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://dhkcev4eoj5w5"]
+
+[ext_resource type="Texture2D" uid="uid://kkytebh56s8s" path="res://assets/Other/return.png" id="1_imeqi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6pfy"]
+bg_color = Color(0.227451, 0.227451, 0.227451, 0.454902)
+draw_center = false
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_35dgq"]
+bg_color = Color(0.252028, 0.252028, 0.252028, 0.784314)
+draw_center = false
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fveod"]
+bg_color = Color(0.227451, 0.227451, 0.227451, 0.721569)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_khbql"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3yhlw"]
+
+[node name="back_button" type="Button"]
+custom_minimum_size = Vector2(60, 50)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 139.0
+offset_top = 38.0
+offset_right = -953.0
+offset_bottom = -560.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_r6pfy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_35dgq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fveod")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_khbql")
+theme_override_styles/focus = SubResource("StyleBoxTexture_3yhlw")
+icon = ExtResource("1_imeqi")
+icon_alignment = 1
+expand_icon = true

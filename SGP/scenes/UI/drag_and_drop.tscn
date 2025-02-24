@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxla3yt0g5he3"]
+
+[ext_resource type="Script" path="res://scripts/drag_and_drop.gd" id="1_5yr0b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xuu3q"]
+bg_color = Color(0.160784, 0.160784, 0.160784, 0.788235)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 4.0
+expand_margin_right = 2.0
+expand_margin_bottom = 4.0
+
+[node name="cd_drag_and_drop" type="TextureRect"]
+custom_minimum_size = Vector2(90, 106.2)
+anchors_preset = -1
+anchor_left = 0.227
+anchor_top = 0.057
+anchor_right = 0.313
+anchor_bottom = 0.239
+offset_left = -0.504028
+offset_top = 0.0639962
+offset_right = -9.57602
+offset_bottom = -11.672
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 59)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("1_5yr0b")
+
+[node name="Panel" type="Panel" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.98
+anchor_bottom = 1.0
+offset_right = 2.0
+pivot_offset = Vector2(50, 59)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xuu3q")

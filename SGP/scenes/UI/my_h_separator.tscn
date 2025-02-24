@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://43l0pe6622pp"]
+
+[node name="my_HSeparator" type="HSeparator"]
+modulate = Color(0, 0, 0, 1)
+anchors_preset = -1
+anchor_right = 0.035
+anchor_bottom = 0.046
+offset_right = -0.32
+offset_bottom = 0.191998
+size_flags_vertical = 3
+theme_override_constants/separation = 20

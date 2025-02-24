@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://db3pincooxk4m"]
+
+[ext_resource type="Script" path="res://scenes/UI/info_display.gd" id="1_w5gg3"]
+
+[node name="Info_display" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_w5gg3")
+
+[node name="exit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 256.0
+offset_top = 153.0
+offset_right = 276.0
+offset_bottom = 170.0
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.197
+anchor_top = 0.199
+anchor_right = 0.796
+anchor_bottom = 0.801
+offset_left = 0.0559864
+offset_top = 0.0479897
+offset_right = 0.00792694
+offset_bottom = -0.048038
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(345, 195)
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.996
+anchor_bottom = 0.99
+offset_right = -0.240036
+offset_bottom = -0.100027
+expand_mode = 1
+stretch_mode = 5

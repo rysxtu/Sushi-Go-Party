@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1fdxiady64fm"]
+
+[ext_resource type="Script" path="res://scripts/deck.gd" id="1_02lfv"]
+
+[node name="Deck" type="Node"]
+script = ExtResource("1_02lfv")

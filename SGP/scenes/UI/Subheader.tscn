@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://btb2exwp1xpea"]
+
+[node name="subheader" type="Label"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1

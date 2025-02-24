@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bsdnw85vc3q5t"]
+
+[node name="set" type="HBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.694
+anchor_bottom = 0.182
+offset_right = 0.511993
+offset_bottom = 0.0639927
+pivot_offset = Vector2(425, 59)
+mouse_filter = 2
+theme_override_constants/separation = 5
+alignment = 1

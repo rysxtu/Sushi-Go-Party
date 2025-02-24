@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://datpj6x6xgam6"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_afp0u"]
+
+[sub_resource type="TileSet" id="TileSet_hnuss"]
+tile_shape = 2
+
+[node name="Board" type="Node2D" node_paths=PackedStringArray("deck")]
+script = ExtResource("1_afp0u")
+deck = NodePath("Deck")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_hnuss")
+format = 2
+
+[node name="Played_cards" type="Node2D" parent="."]
+position = Vector2(302, 224)
+
+[node name="Deck" type="Node2D" parent="."]
+position = Vector2(148, 159)
