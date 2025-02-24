@@ -10,11 +10,11 @@ const SPECIAL_CARDS = {"chopsticks": null, "menu": null, "soy_sauce": null, "spo
 const DESSERT_CARDS = {"pudding": null, "green_tea_ice_cream": null, "fruit_ww": null, "fruit_wp": null, "fruit_wt": null, "fruit_tt": null}
 
 # simple cards are those which points are easy to calculate (number played matters)
-const SIMPLE_CARDS = {"maki": null, "temaki": null, "tempura": null, "sashimi": null, "dumplings": null, "eel": null, "tofu": null, "green_tea_ice_cream": null, "pudding": null, "edamame": null, "tea": null, "soy_sauce": null}
+const SIMPLE_CARDS = {"maki": null, "temaki": null, "tempura": null, "sashimi": null, "dumplings": null, "eel": null, "tofu": null, "green": null, "pudding": null, "edamame": null, "tea": null, "soy": null}
 # cards that take effect during the round
-const DURING_ROUND_CARDS = {"uramaki": null, "miso soup": null}
+const DURING_ROUND_CARDS = {"uramaki": null, "miso": null}
 # cards that requires another card
-const DEPENDENT_CARDS = {"special_order": null}
+const DEPENDENT_CARDS = {"special": null}
 # cards that have many typesL onigiri and fruits
 const VARIATION_CARDS = {"fruit": null, "onigiri": null}
 
@@ -39,6 +39,8 @@ var player_and_player_hand = {}
 var round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
+# cards left in the round
+var cards_left_in_round = 8
 
 signal player_has_hand(player)
 
@@ -67,13 +69,6 @@ func make_players(player_number, players_points):
 	for i in player_number:
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
-		
-		# to be deleted
-		var rng = RandomNumberGenerator.new()
-		var rndX = rng.randi_range(0, 500)
-		var rndY = rng.randi_range(0, 500)
-		player.global_position = Vector2(rndX, rndY)
-		
 		player.card_played.connect(store_card_played)
 		self.add_child(player)
 		players_points[player] = 0
@@ -88,10 +83,12 @@ func populate_player_hand(player):
 		move_node(card, deck, player.get_node("player_hand"))
 		flip_card_to_front(card)
 		Global.emit_signal("player_has_hand", player)
+	cards_left_in_round = 8
 	
 # stores the cards that each player has played
 func store_card_played(player, card, extra_info):
 	var card_name = card.name.split('_')[0]
+	var variation 
 	
 	if player not in players_played_cards:
 		players_played_cards[player] = {}
@@ -103,12 +100,20 @@ func store_card_played(player, card, extra_info):
 		# background color: tea, soy sauce considered simple
 		# only wasabi and nigiri are same colour
 		if card_name not in players_played_cards[player]:
-			players_played_cards[player][card_name] = 1
+			if card_name == "maki":
+				variation = int(card.name.split("_")[1])
+				players_played_cards[player][card_name] = variation
+			else:
+				players_played_cards[player][card_name] = 1
 		else:
-			players_played_cards[player][card_name] += 1
+			if card_name == "maki":
+				variation = int(card.name.split("_")[1])
+				players_played_cards[player][card_name] += variation
+			else:
+				players_played_cards[player][card_name] += 1
 	elif extra_info == null and card_name in VARIATION_CARDS:
 		# onigiri and fruits
-		var variation = card.name.split("_")[1]
+		variation = card.name.split("_")[1]
 		# creates a new set which records how many of each variation 
 		# have been played
 		if card_name not in players_played_cards[player]:
@@ -128,6 +133,8 @@ func store_card_played(player, card, extra_info):
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
 	if taken_turn.size() == players_number:
+		cards_left_in_round -= 1
+		calc_points("during_round")
 		turn_over()
 	
 	"""HARD"""
@@ -136,9 +143,11 @@ func store_card_played(player, card, extra_info):
 	# flip: takeout box
 
 # manages when the hands needs to be swapped (when all cards have been played for a round)
-func turn_over():	
+# animation
+func turn_over():
 	# need to swap all the player_hands
-	# play animation here 
+	# can play animation here 
+		
 	var curr_player
 	var next_player
 	for i in players_number:
@@ -153,9 +162,9 @@ func turn_over():
 			if i == players_number - 1:
 				# rename node to "player_hand"
 				self.get_node("player_" + str(i)).get_child(1).name = "player_hand"
-	
+				
 	# if the hand we just receive is of length 1, end round
-	if get_hand(curr_player).get_child_count() == 1:
+	if cards_left_in_round == 1:
 		# another function
 		last_turn_of_round()
 		calc_points("round_end")
@@ -165,22 +174,61 @@ func turn_over():
 	Global.emit_signal("allowed_to_play")
 
 # calculates the points each player has at the end of the round
+# need to change due to special_order
 func calc_points(calc_type):
+	var played_cards
+	
 	if calc_type == "round_end":
-		pass
+		
+		var maki = []
+		var p_most_ = 0
+		
+		for player in players_played_cards:
+			played_cards = players_played_cards[player]
+			
+			for card in played_cards:
+				if card == "sashimi":
+					players_points[player] += (played_cards[card] / 3) * 10
+				elif card == "maki":
+					maki.append([played_cards[card], player])
+			
+		if maki:
+			# give points to players with largest and second largest no of maki
+			maki.sort()
+			maki.reverse()
+			
+			var count = 0
+			for i in maki.size() - 1:
+				if count == 2:
+					break
+				players_points[maki[i][1]] += Global.maki_points[count]
+				if maki[i] != maki[i + 1]:
+					count += 1
+			if count < 2:
+				players_points[maki[maki.size() - 1][1]] += Global.maki_points[count]
+			
+			
+			
 	elif calc_type == "during_round":
+		# check if miso or uramaki are played
 		pass
 	elif calc_type == "game_end":
 		pass
+	print(players_points)
 
 # automatically count the hand as owned by the curr player
 func last_turn_of_round():
 	var last_card
+	var info = null
 	for player in players_points:
 		last_card = get_hand(player).get_child(0)
-		# check what the last card is for extra info
-		#
-		store_card_played(player, last_card, null)
+		# check what the last card is for extra info (need to change)
+		if last_card.name.split("_")[0] == "special":
+			info = "special"
+		store_card_played(player, last_card, info)
+		get_hand(player).remove_child(last_card)
+		last_card.queue_free()
+		print(players_played_cards[player])
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need

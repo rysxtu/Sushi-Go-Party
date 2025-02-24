@@ -1,7 +1,7 @@
 extends Node
 
 var viewport_size
-var players_number = 3
+var players_number = 1
 var states = {}
 var cards = {}
 var cards_loaded = {}
@@ -13,6 +13,10 @@ var cards_no = {
 	"chopsticks": 3, "soy_sauce": 3, "tea": 3, "menu": 3, "spoon": 3, "special_order": 3, "takeout_box": 3, "wasabi": 3, 
 	"pudding": 15, "green_tea_ice_cream": 15, "fruit_ww": 2, "fruit_wp": 3, "fruit_wt": 3, "fruit_tt": 2, "fruit_pp": 2, "fruit_pt": 3
 	}
+
+# points
+var maki_points = [6, 3]
+
 
 signal player_has_hand(player)
 signal allowed_to_play()
