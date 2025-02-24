@@ -1,7 +1,7 @@
 extends Node
 
 var viewport_size
-var players_number = 1
+var players_number = 3
 var states = {}
 var cards = {}
 var cards_loaded = {}
@@ -15,3 +15,4 @@ var cards_no = {
 	}
 
 signal player_has_hand(player)
+signal allowed_to_play()

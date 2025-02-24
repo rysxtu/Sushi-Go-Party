@@ -33,7 +33,9 @@ var desserts_per_round
 var players_points = {}
 # dictionary to store the cards played of each person/bot
 var players_played_cards = {}
-# Round number
+# dictionary of the player and current hand
+var player_and_player_hand = {}
+# Round number and turn number
 var round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
@@ -65,6 +67,13 @@ func make_players(player_number, players_points):
 	for i in player_number:
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
+		
+		# to be deleted
+		var rng = RandomNumberGenerator.new()
+		var rndX = rng.randi_range(0, 500)
+		var rndY = rng.randi_range(0, 500)
+		player.global_position = Vector2(rndX, rndY)
+		
 		player.card_played.connect(store_card_played)
 		self.add_child(player)
 		players_points[player] = 0
@@ -76,7 +85,7 @@ func populate_player_hand(player):
 		card = deck.get_children().pick_random()
 		scale_card(card, 1)
 		card.global_position = player.global_position
-		move_card(card, deck, player.get_node("player_hand"))
+		move_node(card, deck, player.get_node("player_hand"))
 		flip_card_to_front(card)
 		Global.emit_signal("player_has_hand", player)
 	
@@ -111,12 +120,15 @@ func store_card_played(player, card, extra_info):
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
 		pass
-	
-	# check if every player has taken their turn
-	if taken_turn.length == players_number:
-		turn_over()
-	# dependent: special order 
+	elif extra_info and card_name in DEPENDENT_CARDS:
+		# dependent: special order 
+		pass
 	# wasabi a bit different
+	
+	# wait for the card to be flipped over & animation
+	# check if every player has taken their turn
+	if taken_turn.size() == players_number:
+		turn_over()
 	
 	"""HARD"""
 	# bonus action: chopsticks, spoon
@@ -124,8 +136,33 @@ func store_card_played(player, card, extra_info):
 	# flip: takeout box
 
 # manages when the hands needs to be swapped (when all cards have been played for a round)
-func turn_over():
-	pass
+func turn_over():	
+	# need to swap all the player_hands
+	# play animation here 
+	var curr_player
+	var next_player
+	for i in players_number:
+		if i == 0:
+			curr_player = self.get_node("player_" + str(i))
+			next_player = self.get_node("player_" + str(players_number - 1))
+			move_node(get_hand(curr_player), curr_player, next_player)			
+		else:
+			curr_player = self.get_node("player_" + str(i))
+			next_player = self.get_node("player_" + str(i - 1))
+			move_node(get_hand(curr_player), curr_player, next_player)
+			if i == players_number - 1:
+				# rename node to "player_hand"
+				self.get_node("player_" + str(i)).get_child(1).name = "player_hand"
+	
+	# if the hand we just receive is of length 1, end round
+	if get_hand(curr_player).get_child_count() == 1:
+		# another function
+		last_turn_of_round()
+		calc_points("round_end")
+		return
+	
+	taken_turn = {}
+	Global.emit_signal("allowed_to_play")
 
 # calculates the points each player has at the end of the round
 func calc_points(calc_type):
@@ -134,8 +171,16 @@ func calc_points(calc_type):
 	elif calc_type == "during_round":
 		pass
 	elif calc_type == "game_end":
-		# game end
 		pass
+
+# automatically count the hand as owned by the curr player
+func last_turn_of_round():
+	var last_card
+	for player in players_points:
+		last_card = get_hand(player).get_child(0)
+		# check what the last card is for extra info
+		#
+		store_card_played(player, last_card, null)
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need
@@ -206,10 +251,14 @@ func instantiate_card(card, number, to_deck):
 
 
 """ Helper Functions Below"""
-# moves card between nodes
-func move_card(card, old_node, new_node): 
-	old_node.remove_child(card) 
-	new_node.add_child(card)
+# moves node between nodes
+func move_node(node, old_node, new_node): 
+	old_node.remove_child(node) 
+	new_node.add_child(node)
+
+# returns the player's hand
+func get_hand(player):
+	return player.get_node("player_hand")
 
 func scale_card(card, ratio):
 	card.scale.x = ratio

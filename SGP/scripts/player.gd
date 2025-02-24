@@ -24,6 +24,7 @@ signal display_card_icon(player, card, extra_info)
 
 func _ready():
 	Global.player_has_hand.connect(_on_player_has_hand)
+	Global.allowed_to_play.connect(_player_allowed_to_play)
 
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -81,6 +82,11 @@ func _card_pressed_from_hand(card):
 		# first one for 
 		card_played.emit(self, card, null)
 		display_card_icon.emit(self, card, null)
+
+func _player_allowed_to_play():
+	allowed_to_play_card = true
+
+"""HELPER FUNCTIONS"""
 
 # moves cards between nodes
 func move_card(card, old_node, new_node): 
