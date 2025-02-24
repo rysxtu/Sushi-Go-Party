@@ -14,8 +14,12 @@ var cards_no = {
 	"pudding": 15, "green_tea_ice_cream": 15, "fruit_ww": 2, "fruit_wp": 3, "fruit_wt": 3, "fruit_tt": 2, "fruit_pp": 2, "fruit_pt": 3
 	}
 
-# points
+"""POINTS"""
+# most, least
 var maki_points = [6, 3]
+var temaki_points = [4, -4]
+
+const dumplings_points = [1, 3, 6, 10, 15]
 
 
 signal player_has_hand(player)

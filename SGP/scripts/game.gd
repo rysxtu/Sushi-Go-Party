@@ -9,7 +9,7 @@ const APPETIZER_CARDS = {"dumplings": null, "edamame": null, "eel": null, "onigi
 const SPECIAL_CARDS = {"chopsticks": null, "menu": null, "soy_sauce": null, "spoon": null, "special_order": null, "takeout_box": null, "wasabi": null, "tea": null}
 const DESSERT_CARDS = {"pudding": null, "green_tea_ice_cream": null, "fruit_ww": null, "fruit_wp": null, "fruit_wt": null, "fruit_tt": null}
 
-# simple cards are those which points are easy to calculate (number played matters)
+# simple cards are those who are easy to store (only no matters)
 const SIMPLE_CARDS = {"maki": null, "temaki": null, "tempura": null, "sashimi": null, "dumplings": null, "eel": null, "tofu": null, "green": null, "pudding": null, "edamame": null, "tea": null, "soy": null}
 # cards that take effect during the round
 const DURING_ROUND_CARDS = {"uramaki": null, "miso": null}
@@ -19,16 +19,8 @@ const DEPENDENT_CARDS = {"special": null}
 const VARIATION_CARDS = {"fruit": null, "onigiri": null}
 
 var cards_no = Global.cards_no
-# cards in play
-var cards = Global.cards
-# the cards that will be instantiated
-var cards_loaded = {}
-# array that holds all dessert cards
-var desserts = []
 # number of player: initially set at 1
 var players_number = Global.players_number
-# number of desserts to be inserted per round
-var desserts_per_round
 # dictionary to store the points of each person/bot
 var players_points = {}
 # dictionary to store the cards played of each person/bot
@@ -48,12 +40,19 @@ signal player_has_hand(player)
 
 func _ready():
 	Global.viewport_size = get_viewport().size
-	# get the desserts that need to be added per roun
-	desserts_per_round = dpr(players_number)
+	
 	# loads the cards from the deck selected
-	load_cards()
+	# cards that will be in play
+	var cards = Global.cards
+	var cards_loaded = {}
+	load_cards(cards, cards_loaded)
 	Global.cards_loaded = cards_loaded
-	make_deck()
+	
+	# array that holds all dessert cards
+	var desserts = []
+	# get the desserts that need to be added per roun
+	var desserts_per_round = dpr(players_number)
+	make_deck(cards_loaded, desserts, desserts_per_round)
 	# make number of player
 	make_players(players_number, players_points)
 	for player in players_points:
@@ -189,11 +188,27 @@ func calc_points(calc_type):
 			for card in played_cards:
 				if card == "sashimi":
 					players_points[player] += (played_cards[card] / 3) * 10
+				elif card == "dumplings":
+					var p = played_cards[card] * (played_cards[card] + 1) / 2
+					if played_cards[card] > 5:
+						p = 15
+					players_points[player] += p
+				elif card == "eel":
+					players_points[player] += -3 if played_cards[card] == 1 else 5
+				elif card == "tempura":
+					players_points[player] += (played_cards[card] / 2) * 5
+				elif card == "tofu":
+					var p = 0
+					if played_cards[card] == 1:
+						p = 2
+					elif played_cards[card] == 2:
+						p = 6
+					players_points[player] += p
 				elif card == "maki":
 					maki.append([played_cards[card], player])
 			
 		if maki:
-			# give points to players with largest and second largest no of maki
+		# give points to players with largest and second largest no of maki
 			maki.sort()
 			maki.reverse()
 			
@@ -206,9 +221,6 @@ func calc_points(calc_type):
 					count += 1
 			if count < 2:
 				players_points[maki[maki.size() - 1][1]] += Global.maki_points[count]
-			
-			
-			
 	elif calc_type == "during_round":
 		# check if miso or uramaki are played
 		pass
@@ -232,7 +244,7 @@ func last_turn_of_round():
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need
-func load_cards():
+func load_cards(cards, cards_loaded):
 	var path
 	for card in cards:
 		if cards[card] >= 1:
@@ -268,15 +280,15 @@ func load_cards():
 
 # instantiate the cards in the cards_loaded dict
 # also names them and adds them as a child of the deck node
-func make_deck():
+func make_deck(cards_loaded, desserts, desserts_per_round):
 	for card in cards_loaded:
 		# if card is a dessert only put a few into the deck initially
 		if card in DESSERT_CARDS:
 			for i in cards_no[card]:
-				instantiate_card(card, i, false)
+				instantiate_card(cards_loaded, card, i, false, desserts)
 		else:
 			for i in cards_no[card]:
-				instantiate_card(card, i, true)
+				instantiate_card(cards_loaded, card, i, true, null)
 	
 	var d_card
 	for i in desserts_per_round[round - 1]:
@@ -285,7 +297,7 @@ func make_deck():
 		deck.add_child(d_card)
 
 # instantiate needed cards, stores to deck or append to desserts
-func instantiate_card(card, number, to_deck):
+func instantiate_card(cards_loaded, card, number, to_deck, desserts):
 	var card_copy = cards_loaded[card].instantiate()
 	card_copy.name = str(card) + "_" + str(number)
 	card_copy.global_position = deck.global_position
