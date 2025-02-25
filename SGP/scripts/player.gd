@@ -13,7 +13,7 @@ const HAND_HEIGHT = 50
 const HAND_ROT = 0.2
 
 @onready var player = $"."
-@onready var player_hand = self.get_node("player_hand")
+@onready var player_hand = get_hand(self)
 
 var allowed_to_play_card = true
 
@@ -24,23 +24,37 @@ signal display_card_icon(player, card, extra_info)
 
 func _ready():
 	Global.player_has_hand.connect(_on_player_has_hand)
+	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_player_allowed_to_play)
-
+	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
+# or when player gets a new hand
 func _on_player_has_hand(player):
 	if self == player:
+		player_hand = get_hand(player)
+		print("---Player: ", player_hand, " connected to ", self)
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
 			card.card_pressed.connect(_card_pressed_from_hand)
 		# span the cards
-		_update_cards()
+		if player_hand.get_child_count() > 1:
+			_update_cards()
+
+# disconnect the curr hand from player
+func disconnect_hand_from_player(player):
+	if self == player:
+		player_hand = get_hand(player)
+		print("---Player: ", player_hand, " disconnected from ", self)
+		# connect the cards to know when they are pressed
+		for card in player_hand.get_children():
+			card.card_pressed.disconnect(_card_pressed_from_hand)
 
 # have to fix the positioning of update cards
 
 # positions and spans the cards
 func _update_cards():
-	var cards := player_hand.get_child_count()
+	var cards = player_hand.get_child_count()
 	var Card = player_hand.get_child(0)
 	var all_cards_size = Card.get_size().x * cards + x_sep * (cards - 1)
 	var final_x_sep = x_sep
@@ -52,7 +66,7 @@ func _update_cards():
 	var offset = (hand_size - all_cards_size) / 2
 	
 	for i in cards:
-		var card := player_hand.get_child(i)
+		var card = player_hand.get_child(i)
 		var y_multiplier := height_curve.sample(1.0 / (cards-1) * i)
 		var rot_multiplier := rotation_curve.sample(1.0 / (cards-1) * i)
 		
@@ -72,10 +86,9 @@ func _update_cards():
 # plays a card when pressed if allowed
 func _card_pressed_from_hand(card):
 	if allowed_to_play_card:
-		print(self, " played ", card.name, " from hand")
+		print("---Player: ", self, " played ", card.name, " from ", player_hand)
 		
 		player_hand.remove_child(card)
-		card.queue_free()
 		if player_hand.get_child_count() > 1:
 			_update_cards()
 		allowed_to_play_card = false
@@ -84,11 +97,8 @@ func _card_pressed_from_hand(card):
 		# first one for 
 		card_played.emit(self, card, null)
 		display_card_icon.emit(self, card, null)
-	
 
 func _player_allowed_to_play():
-	print(self)
-	player_hand = self.get_node("player_hand")
 	allowed_to_play_card = true
 
 """HELPER FUNCTIONS"""
@@ -102,4 +112,7 @@ func move_card(card, old_node, new_node):
 func scale_card(card, ratio):
 	card.scale.x = ratio
 	card.scale.y = ratio
-	
+
+# returns the player's hand
+func get_hand(player):
+	return player.get_child(1)

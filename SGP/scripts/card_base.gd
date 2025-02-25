@@ -51,8 +51,9 @@ func _input(event):
 		# if mouse if hovering over this card and clicked
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			# play card with left mouse button
+			print("------Card: ", self, " pressed")
 			card_pressed.emit(self)
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			# displat card info with right mouse button
-			print("card info")
+			print("------Card: card info:",  self)
 

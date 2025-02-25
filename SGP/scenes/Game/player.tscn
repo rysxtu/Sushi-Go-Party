@@ -9,7 +9,7 @@ script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
 
+[node name="played_cards_icons" type="Node2D" parent="."]
+
 [node name="player_hand" type="Node2D" parent="."]
 position = Vector2(576, 525)
-
-[node name="played_cards_icons" type="Node2D" parent="."]

@@ -69,14 +69,15 @@ func make_players(player_number, players_points):
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
 		
-		if player.name == "player_1":
+		if player.name == "player_0":
 			player.global_position = Vector2(100, 20)
-		elif player.name == "player_2":
+		elif player.name == "player_1":
 			player.global_position = Vector2(100, 170)
 		else:
 			player.global_position = Vector2(100, 330)
 		
 		player.card_played.connect(store_card_played)
+		get_hand(player).name = "player_hand_" + str(i)
 		self.add_child(player)
 		players_points[player] = 0
 
@@ -87,9 +88,9 @@ func populate_player_hand(player):
 		card = deck.get_children().pick_random()
 		scale_card(card, 1)
 		card.global_position = player.global_position
-		move_node(card, deck, player.get_node("player_hand"))
+		move_node(card, deck, get_hand(player))
 		flip_card_to_front(card)
-		Global.emit_signal("player_has_hand", player)
+	Global.emit_signal("player_has_hand", player)
 	cards_left_in_round = 8
 	
 # stores the cards that each player has played
@@ -141,9 +142,9 @@ func store_card_played(player, card, extra_info):
 	# check if every player has taken their turn
 	if taken_turn.size() == players_number:
 		cards_left_in_round -= 1
-		calc_points("during_round", played_dr_cards)
 		# displays icons fnction here
 		turn_over()
+		calc_points("during_round", played_dr_cards)
 		played_dr_cards = []
 		
 	
@@ -159,25 +160,33 @@ func turn_over():
 	# can play animation here 
 	var curr_player
 	var next_player
+	
+	var extra_hand
+	# shuffle hands from player_0 to last player, last player to second last player and so on
 	for i in players_number:
+		# disconnect the hand form the curr player
+		curr_player = self.get_node("player_" + str(i))
+		# make sure last player does not have a disconnected hand
+		Global.emit_signal("disconnect_hand_from_player", curr_player)
+		# send the hand to the next player
 		if i == 0:
-			curr_player = self.get_node("player_" + str(i))
-			next_player = self.get_node("player_" + str(players_number - 1))
-			move_node(get_hand(curr_player), curr_player, next_player)			
+			extra_hand = get_hand(curr_player)
+			curr_player.remove_child(curr_player.get_child(1))
 		else:
-			curr_player = self.get_node("player_" + str(i))
 			next_player = self.get_node("player_" + str(i - 1))
 			move_node(get_hand(curr_player), curr_player, next_player)
-			if i == players_number - 1:
-				# rename node to "player_hand"
-				self.get_node("player_" + str(i)).get_child(1).name = "player_hand"
-				
+			# connect the hand
+			Global.emit_signal("player_has_hand", next_player)
+	# last player get new hand
+	next_player = self.get_node("player_" + str(players_number - 1))
+	next_player.add_child(extra_hand)
+	Global.emit_signal("player_has_hand", next_player)
+		
 	# if the hand we just receive is of length 1, end round
 	if cards_left_in_round == 0:
 		calc_points("round_end", null)
 		# trigger reset round
 		new_round()
-	
 	taken_turn = {}
 	Global.emit_signal("allowed_to_play")
 
@@ -249,10 +258,10 @@ func calc_points(calc_type, played_dr_cards):
 						players_played_cards[tuple[2]]["uramaki"] = [variation, false]
 					elif players_played_cards[tuple[2]]["uramaki"][0] < 10:
 						players_played_cards[tuple[2]]["uramaki"][0] += variation
-					print(players_played_cards)
+					print("Board: ", players_played_cards)
 					if players_played_cards[tuple[2]]["uramaki"][0] >= 10 and not players_played_cards[tuple[2]]["uramaki"][1]:
 						not_counted_uramaki.append([players_played_cards[tuple[2]]["uramaki"][0], tuple[2]])
-					print(not_counted_uramaki)
+					print("Board: ", not_counted_uramaki)
 		# send back into deck if > 1
 		# could add animation for played nbut failed
 		if miso_per_turn > 1:
@@ -305,13 +314,13 @@ func calc_points(calc_type, played_dr_cards):
 			
 			# check for second largests and things
 			
-			
 	elif calc_type == "game_end":
 		pass
-	print(players_points)
+	print("Board: ", players_points)
 
 # preps the game scene for a new round
 func new_round():
+	print("Board: ", players_points)
 	round += 1
 	for player in players_points:
 		populate_player_hand(player)
@@ -394,7 +403,7 @@ func move_node(node, old_node, new_node):
 
 # returns the player's hand
 func get_hand(player):
-	return player.get_node("player_hand")
+	return player.get_child(1)
 
 func scale_card(card, ratio):
 	card.scale.x = ratio
