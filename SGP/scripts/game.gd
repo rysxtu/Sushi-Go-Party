@@ -17,6 +17,8 @@ const DURING_ROUND_CARDS = {"uramaki": null, "miso": null}
 const DEPENDENT_CARDS = {"special": null}
 # cards that have many typesL onigiri and fruits
 const VARIATION_CARDS = {"fruit": null, "onigiri": null}
+# nigir and wasabi
+const WASABI_CARDS = {"nigiri": null, "wasabi": null}
 
 var cards_no = Global.cards_no
 # number of player: initially set at 1
@@ -28,7 +30,7 @@ var players_played_cards = {}
 # dictionary to store the desserts played of each person/bot
 var players_played_desserts = {}
 # Round number and turn number
-var round = 1
+var game_round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
 # cards played in a turn (during round)
@@ -53,7 +55,7 @@ func _ready():
 	# array that holds all dessert cards
 	var desserts = []
 	# get the desserts that need to be added per roun
-	var desserts_per_round = dpr(players_number)
+	var desserts_per_round = dpr()
 	make_deck(cards_loaded, desserts, desserts_per_round)
 	# make number of player
 	make_players(players_number, players_points)
@@ -61,6 +63,7 @@ func _ready():
 		populate_player_hand(player)
 
 # make all the players in the game
+@warning_ignore("shadowed_variable")
 func make_players(player_number, players_points):
 	# loading player scene
 	const path = "res://scenes/game/player.tscn"
@@ -110,46 +113,51 @@ func store_card_played(player, card, extra_info):
 	# simple cards: number of this card played matters
 	if extra_info == null and card_name in SIMPLE_CARDS:
 		# background color: tea, soy sauce considered simple
-		# only wasabi and nigiri are same colour
+
+		# make sure current desserts are stored in full dessert pile as well as current
 		if card_name in DESSERT_CARDS:
-			if card_name not in players_played_desserts[player]:
-				players_played_desserts[player][card_name] = 1
+			update_player_dict(players_played_desserts, player, card_name)
+		
+		# maki is set up differently from update_player_dict()
+		if card_name == "maki":
+			# variations is how many maki we have
+			variation = int(card.name.split("_")[1])
+			if "maki" not in players_played_cards[player]:
+				# store how many maki we have, and how many maki cards we have
+				players_played_cards[player]["maki"] = [variation, 1]
 			else:
-				players_played_desserts[player][card_name] += 1
-		elif card_name not in players_played_cards[player]:
-			if card_name == "maki":
-				variation = int(card.name.split("_")[1])
-				players_played_cards[player][card_name] = variation
-			else:
-				players_played_cards[player][card_name] = 1
+				players_played_cards[player]["maki"][0] += variation
+				players_played_cards[player]["maki"][1] += 1
 		else:
-			if card_name == "maki":
-				variation = int(card.name.split("_")[1])
-				players_played_cards[player][card_name] += variation
-			else:
-				players_played_cards[player][card_name] += 1
+			update_player_dict(players_played_cards, player, card_name)
 	elif extra_info == null and card_name in VARIATION_CARDS:
 		# onigiri and fruits
 		variation = card.name.split("_")[1]
-		# creates a new set which records how many of each variation 
-		# have been played
+		
+		# make sure current desserts are stored in full dessert pile as well as current
 		if card_name in DESSERT_CARDS:
-			if card_name not in players_played_desserts[player]:
-				players_played_desserts[player][card_name] = {variation: 1}
-			elif variation not in players_played_desserts[player][card_name]:
-				players_played_desserts[player][card_name][variation] = 1
-			else:
-				players_played_desserts[player][card_name][variation] += 1
-		else:
-			if card_name not in players_played_cards[player]:
-				players_played_cards[player][card_name] = {variation: 1}
-			elif variation not in players_played_cards[player][card_name]:
-				players_played_cards[player][card_name][variation] = 1
-			else:
-				players_played_cards[player][card_name][variation] += 1
+			update_player_dict(players_played_desserts, player, card_name, false, 1, variation)
+		# store the variations of onigiri and fruits as sets
+		update_player_dict(players_played_cards, player, card_name, false, 1, variation)
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
 		played_dr_cards.append([card_name, card, player])
+	elif extra_info == null and card_name in WASABI_CARDS:
+		# nigiri and wasabi
+		if card_name == "nigiri":
+			variation = int(card.name.split("_")[1])
+			# check if wasabi is in the player_played cards and if there is an empty one
+			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
+				players_played_cards[player]["wasabi"][0] -= 1
+				players_played_cards[player]["wasabi"][1].append(variation)
+			else:
+				# store as just nigiri
+				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
+		else:
+			if "wasabi" not in players_played_cards[player]:
+				players_played_cards[player]["wasabi"] = [1, []]
+			else:
+				players_played_cards[player]["wasabi"][0] += 1
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -169,6 +177,7 @@ func store_card_played(player, card, extra_info):
 	# bonus action: chopsticks, spoon
 	# look at deck & choose: menu
 	# flip: takeout box
+
 
 # manages when the hands needs to be swapped (when all cards have been played for a round)
 # animation
@@ -194,7 +203,8 @@ func turn_over():
 			move_node(get_hand(curr_player), curr_player, next_player)
 			# connect the hand
 			Global.emit_signal("player_has_hand", next_player)
-	# last player get new hand
+	
+	# last player gets new hand
 	next_player = self.get_node("player_" + str(players_number - 1))
 	next_player.add_child(extra_hand)
 	Global.emit_signal("player_has_hand", next_player)
@@ -204,49 +214,32 @@ func turn_over():
 		calc_points("round_end", null)
 		# trigger reset round
 		new_round()
+		
 	taken_turn = {}
 	Global.emit_signal("allowed_to_play")
 
 # calculates the points each player has at the end of the round
 # need to change due to special_order
+@warning_ignore("shadowed_variable")
 func calc_points(calc_type, played_dr_cards):
 	var played_cards
 	
 	if calc_type == "round_end":
 		var maki = []
-		var p_most_ = 0
 		
 		for player in players_played_cards:
 			played_cards = players_played_cards[player]
 			
 			for card in played_cards:
-				if card == "sashimi":
-					players_points[player] += (played_cards[card] / 3) * 10
-				elif card == "dumplings":
-					var p = played_cards[card] * (played_cards[card] + 1) / 2
-					if played_cards[card] > 5:
-						p = 15
-					players_points[player] += p
-				elif card == "eel":
-					players_points[player] += -3 if played_cards[card] == 1 else 5
-				elif card == "tempura":
-					players_points[player] += (played_cards[card] / 2) * 5
-				elif card == "tofu":
-					var p = 0
-					if played_cards[card] == 1:
-						p = 2
-					elif played_cards[card] == 2:
-						p = 6
-					players_points[player] += p
-				elif card == "maki":
-					maki.append([played_cards[card], player])
-				elif card == "miso":
-					players_points[player] += played_cards[card] * 3
-				elif card == "tea":
-					for c in played_cards:
-						# look through every card and sum up
-						pass
-			
+				count_nigiri_p(player, card)
+				if card == "maki":
+					maki.append([played_cards[card][0], player])
+				count_tempura_p(player, card)
+				count_sashimi_p(player, card)
+				count_miso_p(player, card)
+				count_wasabi_p(player, card)
+				count_tea_p(player, card)
+				
 		if maki:
 		# give points to players with largest and second largest no of maki
 			maki.sort()
@@ -343,38 +336,28 @@ func calc_points(calc_type, played_dr_cards):
 				
 				# number of dessert played or types played
 				var played_dessert = players_played_desserts[player][dessert]
+				count_green_p(player, dessert)
+				count_fruit_p(player, dessert)
 				if dessert == "pudding":
+					# number of pudding from each player appended
 					puddings_played.append([played_dessert, player])
-				elif dessert == "green":
-					players_points[player] += 12 * (played_dessert / 4)
-				else:
-					# add points for each type of fruit
-					var types = {'w': 0, 't': 0, 'p': 0}
-					for variation in played_dessert:
-						for char in variation:
-							types[char] += played_dessert[variation]
-					for type in types:
-						if types[type] > 5:
-							players_points[player] += Global.fruits_points[5]
-						else:
-							players_points[player] += Global.fruits_points[types[type]]
 		
 		# if pudding was played
 		if puddings_played:
 			# sort to help find max and min
 			puddings_played.sort()
-			var min = puddings_played[0]
-			var max = puddings_played[-1]
+			var minimum = puddings_played[0]
+			var maximum = puddings_played[-1]
 			
 			# if only one value, give them all max points
-			if min == max:
+			if minimum == maximum:
 				for tuple in puddings_played:
 					players_points[tuple[1]] += 6
 			else:
 				for tuple in puddings_played:
-					if tuple[0] == min:
+					if tuple[0] == minimum:
 						players_points[tuple[1]] -= 6
-					elif tuple[0] == max:
+					elif tuple[0] == maximum:
 						players_points[tuple[1]] += 6
 
 	print("Board: \n", "   ", players_played_cards, "\n", "   ", players_played_desserts)
@@ -383,9 +366,9 @@ func calc_points(calc_type, played_dr_cards):
 # preps the game scene for a new round
 func new_round():
 	print("Board: ", players_points)
-	round += 1
+	game_round += 1
 	
-	if round >= 4:
+	if game_round >= 4:
 		end_game()
 		return
 		
@@ -447,7 +430,7 @@ func make_deck(cards_loaded, desserts, desserts_per_round):
 				instantiate_card(cards_loaded, card, i, true, null)
 	
 	var d_card
-	for i in desserts_per_round[round - 1]:
+	for i in desserts_per_round[game_round - 1]:
 		d_card = desserts.pick_random()
 		desserts.erase(d_card)
 		deck.add_child(d_card)
@@ -465,8 +448,115 @@ func instantiate_card(cards_loaded, card, number, to_deck, desserts):
 	else:
 		desserts.append(card_copy)
 
+"""Point Functions Below"""
+
+func count_sashimi_p(player, card):
+	if card == "sashimi":
+		players_points[player] += (players_played_cards[player]["sashimi"] / 3) * 10
+	
+func count_dumplings_p(player, card):
+	if card == "dumplings":
+		var p = (players_played_cards[player]["dumplings"] * (players_played_cards[player]["dumplings"] + 1)) / 2
+		if players_played_cards[player]["dumplings"] > 5:
+			p = 15
+		players_points[player] += p
+
+func count_eel_p(player, card):
+	if card == "eel":
+		players_points[player] += -3 if players_played_cards[player]["eel"] == 1 else 5
+
+func count_tempura_p(player, card):
+	if card == "tempura":
+		players_points[player] += (players_played_cards[player]["tempura"] / 2) * 5
+
+func count_tofu_p(player, card):
+	if card == "tofu":
+		var p = 0
+		if players_played_cards[player]["tofu"] == 1:
+			p = 2
+		elif players_played_cards[player]["tofu"] == 2:
+			p = 6
+		players_points[player] += p
+		
+func count_miso_p(player, card):
+	if card == "miso":
+		players_points[player] += players_played_cards[player]["miso"] * 3
+
+func count_tea_p(player, card):
+	if card == "tea":
+		var p = 0
+		# check normal cards
+		for c in players_played_cards[player]:
+			if c == "maki":
+				p = max(p, players_played_cards[player][c][1])
+			elif c != "nigiri" and c != "wasabi":
+				# simple cards, except maki
+				if typeof(players_played_cards[player][c]) == TYPE_INT:
+					p = max(p, players_played_cards[player][c])
+				# variation cards
+				elif typeof(players_played_cards[player][c]) == TYPE_DICTIONARY:
+					var total = sum(players_played_cards[player][c].values())
+					p = max(p, total)
+			else:
+				# calculate the points of wasabit and nigiri together
+				var tot_wasabi_nigiri = 0
+				if "nigiri" in players_played_cards[player]:
+					if typeof(players_played_cards[player]["nigiri"]) == TYPE_DICTIONARY:
+						tot_wasabi_nigiri += sum(players_played_cards[player]["nigiri"].values())
+				elif "wasabi" in players_played_cards[player]:
+					if typeof(players_played_cards[player]["wasabi"]) == TYPE_ARRAY:
+						tot_wasabi_nigiri += players_played_cards[player]["wasabi"][1].size()
+				p = max(p, tot_wasabi_nigiri)
+		players_points[player] += p * players_played_cards[player]["tea"]
+
+func count_nigiri_p(player, card):
+	if card == "nigiri":
+		var p = 0
+		for type in players_played_cards[player]["nigiri"]:
+			p += players_played_cards[player]["nigiri"][type] * type
+		players_points[player] += p
+		
+func count_wasabi_p(player, card):
+	if card == "wasabi":
+		var p = 0
+		for nigiri in players_played_cards[player]["wasabi"][1]:
+			p += 3 * nigiri
+		players_points[player] += p
+
+func count_green_p(player, card):	
+	if card == "green":
+		players_points[player] += 12 * (players_played_desserts[player]["green"] / 4)
+
+func count_fruit_p(player, card):
+	if card == "fruit":
+	# add points for each type of fruit
+		var types = {'w': 0, 't': 0, 'p': 0}
+		for variation in players_played_desserts[player]["fruit"]:
+			for chr in variation:
+				types[chr] += players_played_desserts[player]["fruit"][variation]
+		for type in types:
+			if types[type] > 5:
+				players_points[player] += Global.fruits_points[5]
+			else:
+				players_points[player] += Global.fruits_points[types[type]]
+
 
 """ Helper Functions Below"""
+# function to help store cards
+# increment_val is true if we want to just increament a string: int pair, set_info is for incrementing string: set pairs
+func update_player_dict(dict, player,key, increment=true, val=1, variation=null):
+	if increment:
+		if key not in dict[player]:
+			dict[player][key] = val
+		else:
+			dict[player][key] += val
+	elif variation:
+		if key not in dict[player]:
+			dict[player][key] = {variation: 1}
+		elif variation not in dict[player][key]:
+			dict[player][key][variation] = 1
+		else:
+			dict[player][key][variation] += 1
 # moves node between nodes
 func move_node(node, old_node, new_node): 
 	old_node.remove_child(node) 
@@ -493,7 +583,7 @@ func flip_card_to_back(card):
 	card.mouse_filter = 2
 
 # determines how many desserts are inserted per round
-func dpr(player_num):
+func dpr():
 	if players_number <= 5:
 		return [5, 3, 2]
 	return [7, 5, 3]
@@ -503,3 +593,9 @@ func add_back_to_deck(card):
 	card.global_position = deck.global_position
 	card.rotation = 0
 	deck.add_child(card)
+
+func sum(array):
+	var s = 0
+	for element in array:
+		s += element
+	return s
