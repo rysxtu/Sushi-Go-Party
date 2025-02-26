@@ -22,6 +22,7 @@ var temaki_points = [4, -4]
 var uramaki_curr_points = 2
 const uramaki_points = [2, 5, 8]
 const dumplings_points = [1, 3, 6, 10, 15]
+const fruits_points = [-2, 0, 1, 3, 6, 10]
 
 signal player_has_hand(player)
 signal disconnect_hand_from_player(player)

@@ -6,8 +6,8 @@ extends Node2D
 const NIGIRI_CARDS = {"nigiri": null}
 const ROLL_CARDS = {"maki": null, "temaki": null, "uramaki": null}
 const APPETIZER_CARDS = {"dumplings": null, "edamame": null, "eel": null, "onigiri": null, "miso_soup": null, "sashimi": null, "tempura": null, "tofu": null}
-const SPECIAL_CARDS = {"chopsticks": null, "menu": null, "soy_sauce": null, "spoon": null, "special_order": null, "takeout_box": null, "wasabi": null, "tea": null}
-const DESSERT_CARDS = {"pudding": null, "green_tea_ice_cream": null, "fruit_ww": null, "fruit_wp": null, "fruit_wt": null, "fruit_tt": null}
+const SPECIAL_CARDS = {"chopsticks": null, "menu": null, "soy_sauce": null, "spoon": null, "special": null, "takeout": null, "wasabi": null, "tea": null}
+const DESSERT_CARDS = {"pudding": null, "green": null, "fruit": null}
 
 # simple cards are those who are easy to store (only no matters)
 const SIMPLE_CARDS = {"maki": null, "temaki": null, "tempura": null, "sashimi": null, "dumplings": null, "eel": null, "tofu": null, "green": null, "pudding": null, "edamame": null, "tea": null, "soy": null}
@@ -25,6 +25,8 @@ var players_number = Global.players_number
 var players_points = {}
 # dictionary to store the cards played of each person/bot
 var players_played_cards = {}
+# dictionary to store the desserts played of each person/bot
+var players_played_desserts = {}
 # Round number and turn number
 var round = 1
 # record if a player has taken  a turn
@@ -100,6 +102,8 @@ func store_card_played(player, card, extra_info):
 	
 	if player not in players_played_cards:
 		players_played_cards[player] = {}
+	if player not in players_played_desserts:
+		players_played_desserts[player] = {}
 	if player not in taken_turn:
 		taken_turn[player] = null
 	
@@ -107,7 +111,12 @@ func store_card_played(player, card, extra_info):
 	if extra_info == null and card_name in SIMPLE_CARDS:
 		# background color: tea, soy sauce considered simple
 		# only wasabi and nigiri are same colour
-		if card_name not in players_played_cards[player]:
+		if card_name in DESSERT_CARDS:
+			if card_name not in players_played_desserts[player]:
+				players_played_desserts[player][card_name] = 1
+			else:
+				players_played_desserts[player][card_name] += 1
+		elif card_name not in players_played_cards[player]:
 			if card_name == "maki":
 				variation = int(card.name.split("_")[1])
 				players_played_cards[player][card_name] = variation
@@ -124,12 +133,20 @@ func store_card_played(player, card, extra_info):
 		variation = card.name.split("_")[1]
 		# creates a new set which records how many of each variation 
 		# have been played
-		if card_name not in players_played_cards[player]:
-			players_played_cards[player][card_name] = {variation: 1}
-		elif variation not in players_played_cards[player][card_name]:
-			players_played_cards[player][card_name][variation] = 1
+		if card_name in DESSERT_CARDS:
+			if card_name not in players_played_desserts[player]:
+				players_played_desserts[player][card_name] = {variation: 1}
+			elif variation not in players_played_desserts[player][card_name]:
+				players_played_desserts[player][card_name][variation] = 1
+			else:
+				players_played_desserts[player][card_name][variation] += 1
 		else:
-			players_played_cards[player][card_name][variation] += 1
+			if card_name not in players_played_cards[player]:
+				players_played_cards[player][card_name] = {variation: 1}
+			elif variation not in players_played_cards[player][card_name]:
+				players_played_cards[player][card_name][variation] = 1
+			else:
+				players_played_cards[player][card_name][variation] += 1
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
 		played_dr_cards.append([card_name, card, player])
@@ -142,9 +159,9 @@ func store_card_played(player, card, extra_info):
 	# check if every player has taken their turn
 	if taken_turn.size() == players_number:
 		cards_left_in_round -= 1
+		calc_points("during_round", played_dr_cards)
 		# displays icons fnction here
 		turn_over()
-		calc_points("during_round", played_dr_cards)
 		played_dr_cards = []
 		
 	
@@ -223,6 +240,12 @@ func calc_points(calc_type, played_dr_cards):
 					players_points[player] += p
 				elif card == "maki":
 					maki.append([played_cards[card], player])
+				elif card == "miso":
+					players_points[player] += played_cards[card] * 3
+				elif card == "tea":
+					for c in played_cards:
+						# look through every card and sum up
+						pass
 			
 		if maki:
 		# give points to players with largest and second largest no of maki
@@ -269,7 +292,6 @@ func calc_points(calc_type, played_dr_cards):
 				if tuple[0] == "miso":
 					add_back_to_deck(tuple[1])
 		elif miso_per_turn == 1:
-			players_points[miso_player] += 3
 			if "miso" not in players_played_cards[miso_player]:
 				players_played_cards[miso_player]["miso"] = 1
 			else:
@@ -308,24 +330,73 @@ func calc_points(calc_type, played_dr_cards):
 				players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
 				# make sure that the player can no longer add uramaki
 				players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
-				Global.uramaki_curr_points -= 1
-			
-			
-			
-			# check for second largests and things
-			
+				Global.uramaki_curr_points -= 1			
 	elif calc_type == "game_end":
-		pass
+		# desserts
+		var puddings_played = []
+		
+		for player in players_played_desserts:
+			for dessert in DESSERT_CARDS:
+				# skip if dessert not in set
+				if dessert not in players_played_desserts[player]:
+					continue
+				
+				# number of dessert played or types played
+				var played_dessert = players_played_desserts[player][dessert]
+				if dessert == "pudding":
+					puddings_played.append([played_dessert, player])
+				elif dessert == "green":
+					players_points[player] += 12 * (played_dessert / 4)
+				else:
+					# add points for each type of fruit
+					var types = {'w': 0, 't': 0, 'p': 0}
+					for variation in played_dessert:
+						for char in variation:
+							types[char] += played_dessert[variation]
+					for type in types:
+						if types[type] > 5:
+							players_points[player] += Global.fruits_points[5]
+						else:
+							players_points[player] += Global.fruits_points[types[type]]
+		
+		# if pudding was played
+		if puddings_played:
+			# sort to help find max and min
+			puddings_played.sort()
+			var min = puddings_played[0]
+			var max = puddings_played[-1]
+			
+			# if only one value, give them all max points
+			if min == max:
+				for tuple in puddings_played:
+					players_points[tuple[1]] += 6
+			else:
+				for tuple in puddings_played:
+					if tuple[0] == min:
+						players_points[tuple[1]] -= 6
+					elif tuple[0] == max:
+						players_points[tuple[1]] += 6
+
+	print("Board: \n", "   ", players_played_cards, "\n", "   ", players_played_desserts)
 	print("Board: ", players_points)
 
 # preps the game scene for a new round
 func new_round():
 	print("Board: ", players_points)
 	round += 1
+	
+	if round >= 4:
+		end_game()
+		return
+		
 	for player in players_points:
 		populate_player_hand(player)
 	Global.uramaki_curr_points = 2
+	
 	players_played_cards = {}
+
+func end_game():
+	calc_points("game_end", null)
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need

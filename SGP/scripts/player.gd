@@ -12,7 +12,6 @@ const HAND_WIDTH = 200
 const HAND_HEIGHT = 50
 const HAND_ROT = 0.2
 
-@onready var player = $"."
 @onready var player_hand = get_hand(self)
 
 var allowed_to_play_card = true
