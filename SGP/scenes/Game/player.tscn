@@ -1,17 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://f7rrk66b7i13"]
+[gd_scene load_steps=7 format=3 uid="uid://f7rrk66b7i13"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_p71t4"]
 [ext_resource type="Curve" uid="uid://cmn2thcen7413" path="res://curves/height.tres" id="2_gvq3l"]
 [ext_resource type="Curve" uid="uid://s51poqbklrgm" path="res://curves/rotation.tres" id="3_fxeev"]
-[ext_resource type="Texture2D" uid="uid://enabeng6fi0p" path="res://assets/Other/Pixel Art Sushi Pack/Sushi tray 1.png" id="4_mplb4"]
+[ext_resource type="PackedScene" uid="uid://0unixqt76ikh" path="res://scenes/icons/plate.tscn" id="4_hwgcs"]
+[ext_resource type="Script" path="res://scripts/icon_manager.gd" id="5_qmi1v"]
+[ext_resource type="Script" path="res://scenes/UI/see_deck.gd" id="8_jwv54"]
 
 [node name="Player" type="Node2D"]
-position = Vector2(555, 543)
+position = Vector2(384, 303)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
 
-[node name="played_cards_icons" type="Control" parent="."]
+[node name="display" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -24,10 +26,33 @@ offset_right = -554.0
 offset_bottom = -541.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="plate" type="Sprite2D" parent="played_cards_icons"]
-position = Vector2(577, 606)
-scale = Vector2(3, 3)
-texture = ExtResource("4_mplb4")
+[node name="Plate" parent="display" node_paths=PackedStringArray("_self", "points") instance=ExtResource("4_hwgcs")]
+layout_mode = 1
+script = ExtResource("5_qmi1v")
+_self = NodePath("../..")
+points = NodePath("../points")
+
+[node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("plate", "player_hand")]
+layout_mode = 0
+offset_left = 936.0
+offset_top = 545.0
+offset_right = 983.0
+offset_bottom = 576.0
+text = "Deck"
+script = ExtResource("8_jwv54")
+plate = NodePath("../Plate")
+player_hand = NodePath("../../player_hand")
+
+[node name="points" type="Label" parent="display"]
+layout_mode = 0
+offset_left = 919.0
+offset_top = 502.0
+offset_right = 976.0
+offset_bottom = 525.0
+text = "Points: "
 
 [node name="player_hand" type="Node2D" parent="."]
+
+[connection signal="pressed" from="display/see_deck" to="display/see_deck" method="_on_pressed"]

@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://bh3144rh7r2gg"]
+
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_hlqtg"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_h1b8e"]
+[ext_resource type="Texture2D" uid="uid://dw1pfoepgne14" path="res://assets/icons/edited/tea.png" id="3_y6qev"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
+shader = ExtResource("2_h1b8e")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 10.0
+
+[node name="tea_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 46.0
+offset_bottom = 54.0
+pivot_offset = Vector2(20, 25)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_hlqtg")
+sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_86hkx")
+position = Vector2(20, 26)
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("3_y6qev")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

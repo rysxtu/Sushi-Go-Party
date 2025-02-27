@@ -37,8 +37,12 @@ var taken_turn = {}
 var played_dr_cards = []
 # cards left in the round
 var cards_left_in_round = 8
+# all desserts 
+var desserts = []
+var desserts_per_round = dpr()
 
-signal player_has_hand(player)
+signal player_has_hand_sig(player)
+signal player_points_sig(player, points)
 
 # need to add timer and rounds here
 
@@ -52,11 +56,7 @@ func _ready():
 	load_cards(cards, cards_loaded)
 	Global.cards_loaded = cards_loaded
 	
-	# array that holds all dessert cards
-	var desserts = []
-	# get the desserts that need to be added per roun
-	var desserts_per_round = dpr()
-	make_deck(cards_loaded, desserts, desserts_per_round)
+	make_deck(cards_loaded, desserts_per_round)
 	# make number of player
 	make_players(players_number, players_points)
 	for player in players_points:
@@ -75,7 +75,7 @@ func make_players(player_number, players_points):
 		player.name = "player_" + str(i)
 		
 		if player.name == "player_0":
-			player.global_position = Vector2(100, 20)
+			player.global_position = Vector2(500, 500)
 		elif player.name == "player_1":
 			player.global_position = Vector2(100, 170)
 		else:
@@ -95,7 +95,7 @@ func populate_player_hand(player):
 		card.global_position = player.global_position
 		move_node(card, deck, get_hand(player))
 		flip_card_to_front(card)
-	Global.emit_signal("player_has_hand", player)
+	Global.emit_signal("player_has_hand_sig", player)
 	cards_left_in_round = 8
 	
 # stores the cards that each player has played
@@ -202,12 +202,12 @@ func turn_over():
 			next_player = self.get_node("player_" + str(i - 1))
 			move_node(get_hand(curr_player), curr_player, next_player)
 			# connect the hand
-			Global.emit_signal("player_has_hand", next_player)
+			Global.emit_signal("player_has_hand_sig", next_player)
 	
 	# last player gets new hand
 	next_player = self.get_node("player_" + str(players_number - 1))
 	next_player.add_child(extra_hand)
-	Global.emit_signal("player_has_hand", next_player)
+	Global.emit_signal("player_has_hand_sig", next_player)
 		
 	# if the hand we just receive is of length 1, end round
 	if cards_left_in_round == 0:
@@ -254,6 +254,9 @@ func calc_points(calc_type, played_dr_cards):
 					count += 1
 			if count < 2:
 				players_points[maki[maki.size() - 1][1]] += Global.maki_points[count]
+				
+		for player in players_points:
+			Global.emit_signal("player_points_sig", player, players_points[player])
 	elif calc_type == "during_round" and played_dr_cards:
 		var miso_per_turn = 0
 		var miso_player
@@ -359,7 +362,8 @@ func calc_points(calc_type, played_dr_cards):
 						players_points[tuple[1]] -= 6
 					elif tuple[0] == maximum:
 						players_points[tuple[1]] += 6
-
+		for player in players_points:
+			Global.emit_signal("player_points_sig", player, players_points[player])
 	print("Board: \n", "   ", players_played_cards, "\n", "   ", players_played_desserts)
 	print("Board: ", players_points)
 
@@ -367,6 +371,9 @@ func calc_points(calc_type, played_dr_cards):
 func new_round():
 	print("Board: ", players_points)
 	game_round += 1
+	
+	for i in (desserts_per_round[game_round - 1]):
+		add_back_to_deck(desserts.pop_at(desserts.find(desserts.pick_random())))
 	
 	if game_round >= 4:
 		end_game()
@@ -419,16 +426,17 @@ func load_cards(cards, cards_loaded):
 
 # instantiate the cards in the cards_loaded dict
 # also names them and adds them as a child of the deck node
-func make_deck(cards_loaded, desserts, desserts_per_round):
+func make_deck(cards_loaded, desserts_per_round):
 	for card in cards_loaded:
+		var card_name = card.split('_')[0]
 		# if card is a dessert only put a few into the deck initially
-		if card in DESSERT_CARDS:
+		if card_name in DESSERT_CARDS:
 			for i in cards_no[card]:
-				instantiate_card(cards_loaded, card, i, false, desserts)
+				instantiate_card(cards_loaded, card, i, false)
 		else:
 			for i in cards_no[card]:
-				instantiate_card(cards_loaded, card, i, true, null)
-	
+				instantiate_card(cards_loaded, card, i, true)
+				
 	var d_card
 	for i in desserts_per_round[game_round - 1]:
 		d_card = desserts.pick_random()
@@ -436,7 +444,7 @@ func make_deck(cards_loaded, desserts, desserts_per_round):
 		deck.add_child(d_card)
 
 # instantiate needed cards, stores to deck or append to desserts
-func instantiate_card(cards_loaded, card, number, to_deck, desserts):
+func instantiate_card(cards_loaded, card, number, to_deck):
 	var card_copy = cards_loaded[card].instantiate()
 	card_copy.name = str(card) + "_" + str(number)
 	card_copy.global_position = deck.global_position

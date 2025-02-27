@@ -1,33 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://cnuopvr5makhs"]
+[gd_scene load_steps=5 format=3 uid="uid://hcj758j0aaxo"]
 
-[ext_resource type="Script" path="res://scripts/icon.gd" id="1_dc7ku"]
-[ext_resource type="Texture2D" uid="uid://dg3dwp2lepfxy" path="res://assets/icons/edited/chopsticks.png" id="2_5kl2q"]
-[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_d25kr"]
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_ffgyd"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_ngf1f"]
+[ext_resource type="Texture2D" uid="uid://cvq1we3ul2bfn" path="res://assets/icons/edited/miso.png" id="3_qybff"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
-shader = ExtResource("2_d25kr")
+shader = ExtResource("2_ngf1f")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
 shader_parameter/line_thickness = 10.0
 
-[node name="chopsticks_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+[node name="miso_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
 offset_left = 6.0
 offset_top = 4.0
-offset_right = 36.0
-offset_bottom = 48.0
+offset_right = 58.0
+offset_bottom = 54.0
 scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(15, 22)
+pivot_offset = Vector2(25, 25)
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_dc7ku")
+script = ExtResource("1_ffgyd")
 sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(18.5714, 10.3333)
+position = Vector2(25.7143, 25.3333)
 scale = Vector2(0.15, 0.15)
-texture = ExtResource("2_5kl2q")
+texture = ExtResource("3_qybff")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

@@ -22,7 +22,7 @@ signal card_played(player, card, extra_info)
 signal display_card_icon(player, card, extra_info)
 
 func _ready():
-	Global.player_has_hand.connect(_on_player_has_hand)
+	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_player_allowed_to_play)
 	
