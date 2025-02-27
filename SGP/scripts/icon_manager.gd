@@ -3,7 +3,7 @@ extends Control
 
 # the root player node
 @export var _self: Node2D
-@export var points: Label
+@export var points_label: Label
 
 const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
 var card_name_to_icon = {}
@@ -29,13 +29,11 @@ func add_icon(player, card, info):
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
 		# change this pos
-		new_icon.global_position = _self.global_position
 		self.add_child(new_icon)
 
 func display_points(player, points):
 	if _self == player:
-		pass
-		#points.text = "Points: " + str(points)
+		points_label.text = "Points: " + str(points)
 
 func load_icons():
 	var path

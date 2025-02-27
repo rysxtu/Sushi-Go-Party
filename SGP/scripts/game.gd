@@ -372,12 +372,12 @@ func new_round():
 	print("Board: ", players_points)
 	game_round += 1
 	
-	for i in (desserts_per_round[game_round - 1]):
-		add_back_to_deck(desserts.pop_at(desserts.find(desserts.pick_random())))
-	
 	if game_round >= 4:
 		end_game()
 		return
+	
+	for i in (desserts_per_round[game_round - 1]):
+		add_back_to_deck(desserts.pop_at(desserts.find(desserts.pick_random())))
 		
 	for player in players_points:
 		populate_player_hand(player)

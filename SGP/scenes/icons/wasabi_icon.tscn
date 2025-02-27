@@ -11,6 +11,7 @@ shader_parameter/line_color = Color(1, 0, 0, 1)
 shader_parameter/line_thickness = 10.0
 
 [node name="wasabi_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
 offset_left = 6.0
 offset_top = 4.0
 offset_right = 52.0
