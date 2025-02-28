@@ -225,7 +225,7 @@ func calc_points(calc_type, played_dr_cards):
 	var played_cards
 	
 	if calc_type == "round_end":
-		var maki = []
+		var makis_played = []
 		
 		for player in players_played_cards:
 			played_cards = players_played_cards[player]
@@ -233,30 +233,16 @@ func calc_points(calc_type, played_dr_cards):
 			for card in played_cards:
 				count_nigiri_p(player, card)
 				if card == "maki":
-					maki.append([played_cards[card][0], player])
+					makis_played.append([played_cards[card][0], player])
 				count_tempura_p(player, card)
 				count_sashimi_p(player, card)
 				count_miso_p(player, card)
 				count_wasabi_p(player, card)
 				count_tea_p(player, card)
 				
-		if maki:
-		# give points to players with largest and second largest no of maki
-			maki.sort()
-			maki.reverse()
+		count_maki_p(makis_played)
+		send_points_to_players()
 			
-			var count = 0
-			for i in maki.size() - 1:
-				if count == 2:
-					break
-				players_points[maki[i][1]] += Global.maki_points[count]
-				if maki[i] != maki[i + 1]:
-					count += 1
-			if count < 2:
-				players_points[maki[maki.size() - 1][1]] += Global.maki_points[count]
-				
-		for player in players_points:
-			Global.emit_signal("player_points_sig", player, players_points[player])
 	elif calc_type == "during_round" and played_dr_cards:
 		var miso_per_turn = 0
 		var miso_player
@@ -267,66 +253,13 @@ func calc_points(calc_type, played_dr_cards):
 				miso_per_turn += 1
 				miso_player = tuple[2]
 			else:
-				# uramakis are always discarded
-				add_back_to_deck(tuple[1])
-				# only if we can award points do it
-				if Global.uramaki_curr_points >= 0:
-					var variation = int(tuple[1].name.split("_")[1])
-					if "uramaki" not in players_played_cards[tuple[2]]:
-						# count number of uramaki, and if points have been allocated
-						players_played_cards[tuple[2]]["uramaki"] = [variation, false]
-					elif players_played_cards[tuple[2]]["uramaki"][0] < 10:
-						players_played_cards[tuple[2]]["uramaki"][0] += variation
-					print("Board: ", players_played_cards)
-					if players_played_cards[tuple[2]]["uramaki"][0] >= 10 and not players_played_cards[tuple[2]]["uramaki"][1]:
-						not_counted_uramaki.append([players_played_cards[tuple[2]]["uramaki"][0], tuple[2]])
-					print("Board: ", not_counted_uramaki)
-		# send back into deck if > 1
-		# could add animation for played nbut failed
-		if miso_per_turn > 1:
-			for tuple in played_dr_cards:
-				if tuple[0] == "miso":
-					add_back_to_deck(tuple[1])
-		elif miso_per_turn == 1:
-			if "miso" not in players_played_cards[miso_player]:
-				players_played_cards[miso_player]["miso"] = 1
-			else:
-				players_played_cards[miso_player]["miso"] += 1
-		
-		# check for any ties in uramaki, if any player has uramaki > 10
-		if not_counted_uramaki:
-			not_counted_uramaki.sort()
-			not_counted_uramaki.reverse()
-			var n = not_counted_uramaki.size()
-			
-			if n > 1:
-				# checking for ties and awarding points
-				var i = 0
-				var allowed = Global.uramaki_curr_points
-				while i < n - 1 and not_counted_uramaki[i][0] == not_counted_uramaki[i + 1][0] and allowed >= 0:
-					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-					# make sure that the player can no longer add uramaki
-					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-					allowed -= 1
-					i += 1
-				if i > 0 and not_counted_uramaki[i - 1][0] == not_counted_uramaki[i][0] and allowed >= 0:
-					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-					# make sure that the player can no longer add uramaki
-					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-					allowed -= 1
-					i += 1
-				Global.uramaki_curr_points = allowed
-				
-				# check for no ties
-				while i < n and Global.uramaki_curr_points >= 0:
-					players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-					players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-					Global.uramaki_curr_points -= 1
-			else:
-				players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-				# make sure that the player can no longer add uramaki
-				players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
-				Global.uramaki_curr_points -= 1			
+				# record uramaki playe dby players in not_counted_uramaki, to determine points
+				record_uramaki(tuple, not_counted_uramaki)
+
+		# record miso, points will be awarded here at end of round
+		record_miso(miso_per_turn, miso_player, played_dr_cards)
+		# award points to uramaki now
+		count_uramaki_p(not_counted_uramaki)
 	elif calc_type == "game_end":
 		# desserts
 		var puddings_played = []
@@ -345,25 +278,8 @@ func calc_points(calc_type, played_dr_cards):
 					# number of pudding from each player appended
 					puddings_played.append([played_dessert, player])
 		
-		# if pudding was played
-		if puddings_played:
-			# sort to help find max and min
-			puddings_played.sort()
-			var minimum = puddings_played[0]
-			var maximum = puddings_played[-1]
-			
-			# if only one value, give them all max points
-			if minimum == maximum:
-				for tuple in puddings_played:
-					players_points[tuple[1]] += 6
-			else:
-				for tuple in puddings_played:
-					if tuple[0] == minimum:
-						players_points[tuple[1]] -= 6
-					elif tuple[0] == maximum:
-						players_points[tuple[1]] += 6
-		for player in players_points:
-			Global.emit_signal("player_points_sig", player, players_points[player])
+		count_pudding_p(puddings_played)
+		send_points_to_players()
 	print("Board: \n", "   ", players_played_cards, "\n", "   ", players_played_desserts)
 	print("Board: ", players_points)
 
@@ -381,9 +297,9 @@ func new_round():
 		
 	for player in players_points:
 		populate_player_hand(player)
-	Global.uramaki_curr_points = 2
-	
 	players_played_cards = {}
+	Global.emit_signal("round_over")
+	Global.uramaki_curr_points = 2
 
 func end_game():
 	calc_points("game_end", null)
@@ -548,6 +464,108 @@ func count_fruit_p(player, card):
 			else:
 				players_points[player] += Global.fruits_points[types[type]]
 
+func count_maki_p(makis_played):
+	if makis_played:
+	# give points to players with largest and second largest no of maki
+		makis_played.sort()
+		makis_played.reverse()
+		
+		var count = 0
+		for i in makis_played.size() - 1:
+			if count == 2:
+				break
+			players_points[makis_played[i][1]] += Global.maki_points[count]
+			if makis_played[i] != makis_played[i + 1]:
+				count += 1
+		if count < 2:
+			players_points[makis_played[makis_played.size() - 1][1]] += Global.maki_points[count]
+
+func count_pudding_p(puddings_played):
+	# if pudding was played
+	if puddings_played:
+		# sort to help find max and min
+		puddings_played.sort()
+		var minimum = puddings_played[0]
+		var maximum = puddings_played[-1]
+		
+		# if only one value, give them all max points
+		if minimum == maximum:
+			for tuple in puddings_played:
+				players_points[tuple[1]] += 6
+		else:
+			for tuple in puddings_played:
+				if tuple[0] == minimum:
+					players_points[tuple[1]] -= 6
+				elif tuple[0] == maximum:
+					players_points[tuple[1]] += 6
+
+# function to get call uramaki played during a turn by all players
+func record_uramaki(tuple, not_counted_uramaki):
+	# uramakis are always discarded
+	add_back_to_deck(tuple[1])
+	# only if we can award points do it
+	if Global.uramaki_curr_points >= 0:
+		var variation = int(tuple[1].name.split("_")[1])
+		if "uramaki" not in players_played_cards[tuple[2]]:
+			# count number of uramaki, and if points have been allocated
+			players_played_cards[tuple[2]]["uramaki"] = [variation, false]
+		elif players_played_cards[tuple[2]]["uramaki"][0] < 10:
+			players_played_cards[tuple[2]]["uramaki"][0] += variation
+		print("Board: ", players_played_cards)
+		if players_played_cards[tuple[2]]["uramaki"][0] >= 10 and not players_played_cards[tuple[2]]["uramaki"][1]:
+			not_counted_uramaki.append([players_played_cards[tuple[2]]["uramaki"][0], tuple[2]])
+		print("Board: ", not_counted_uramaki)
+
+func count_uramaki_p(not_counted_uramaki):
+	#not_counted_uramaki is an array with players who have reached >10 uramaki and have not been awarded points yet
+	
+	# check for any ties in uramaki, if any player has uramaki > 10
+	if not_counted_uramaki:
+		not_counted_uramaki.sort()
+		not_counted_uramaki.reverse()
+		var n = not_counted_uramaki.size()
+		
+		if n > 1:
+			# checking for ties and awarding points
+			var i = 0
+			var allowed = Global.uramaki_curr_points
+			while i < n - 1 and not_counted_uramaki[i][0] == not_counted_uramaki[i + 1][0] and allowed >= 0:
+				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+				# make sure that the player can no longer add uramaki
+				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+				allowed -= 1
+				i += 1
+			if i > 0 and not_counted_uramaki[i - 1][0] == not_counted_uramaki[i][0] and allowed >= 0:
+				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+				# make sure that the player can no longer add uramaki
+				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+				allowed -= 1
+				i += 1
+			Global.uramaki_curr_points = allowed
+			
+			# check for no ties
+			while i < n and Global.uramaki_curr_points >= 0:
+				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+				Global.uramaki_curr_points -= 1
+		else:
+			players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+			# make sure that the player can no longer add uramaki
+			players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
+			Global.uramaki_curr_points -= 1
+	
+func record_miso(miso_per_turn, miso_player, played_dr_cards):
+	# send back into deck if > 1
+	# could add animation for played nbut failed
+	if miso_per_turn > 1:
+		for tuple in played_dr_cards:
+			if tuple[0] == "miso":
+				add_back_to_deck(tuple[1])
+	elif miso_per_turn == 1:
+		if "miso" not in players_played_cards[miso_player]:
+			players_played_cards[miso_player]["miso"] = 1
+		else:
+			players_played_cards[miso_player]["miso"] += 1
 
 """ Helper Functions Below"""
 # function to help store cards
@@ -565,10 +583,16 @@ func update_player_dict(dict, player,key, increment=true, val=1, variation=null)
 			dict[player][key][variation] = 1
 		else:
 			dict[player][key][variation] += 1
+
 # moves node between nodes
 func move_node(node, old_node, new_node): 
 	old_node.remove_child(node) 
 	new_node.add_child(node)
+
+# send points to each player's UI
+func send_points_to_players():
+	for player in players_points:
+		Global.emit_signal("player_points_sig", player, players_points[player])
 
 # returns the player's hand
 func get_hand(player):

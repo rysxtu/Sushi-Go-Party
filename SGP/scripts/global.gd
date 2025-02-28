@@ -26,5 +26,6 @@ const fruits_points = [-2, 0, 1, 3, 6, 10]
 
 signal player_has_hand_sig(player)
 signal player_points_sig(player, points)
+signal round_over()
 signal disconnect_hand_from_player(player)
 signal allowed_to_play()

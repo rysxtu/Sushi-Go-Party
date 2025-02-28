@@ -15,7 +15,16 @@ func _ready():
 	Global.player_points_sig.connect(display_points)
 	_self.display_card_icon.connect(add_icon)
 	load_icons()
+	Global.round_over.connect(reset)
 
+func reset():
+	for child in self.get_children():
+		if child is Marker2D:
+			if child.get_child_count() > 0:
+				var icon = child.get_child(0)
+				child.remove_child(icon)
+	icon_at_markers = [null, null, null, null, null, null, null, null]
+	curr_marker = 0
 
 func add_icon(player, card, info):	
 	if _self == player:

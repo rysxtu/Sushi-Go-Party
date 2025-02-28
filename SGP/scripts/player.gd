@@ -94,8 +94,8 @@ func _card_pressed_from_hand(card):
 		
 		# for now extra info is null, only when its is special order
 		# first one for 
-		card_played.emit(self, card, null)
 		display_card_icon.emit(self, card, null)
+		card_played.emit(self, card, null)
 
 func _player_allowed_to_play():
 	allowed_to_play_card = true
