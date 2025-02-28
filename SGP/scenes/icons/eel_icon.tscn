@@ -12,12 +12,12 @@ shader_parameter/line_thickness = 10.0
 
 [node name="eel_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 62.0
-offset_bottom = 40.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(28, 18)
+offset_left = -28.0
+offset_top = -22.0
+offset_right = 28.0
+offset_bottom = 14.0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(28, 22)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_6no7c")

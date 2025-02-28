@@ -12,12 +12,12 @@ shader_parameter/line_thickness = 10.0
 
 [node name="edamame_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 68.0
-offset_bottom = 34.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(31, 15)
+offset_left = -31.0
+offset_top = -16.0
+offset_right = 31.0
+offset_bottom = 14.0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(31, 16)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_umcrr")

@@ -8,16 +8,16 @@
 shader = ExtResource("2_6lpv6")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="maki_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 42.0
-offset_bottom = 34.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(18, 15)
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 14.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(20, 20)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_wt7pg")
@@ -25,8 +25,8 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(17.8571, 14.5)
-scale = Vector2(0.15, 0.15)
+position = Vector2(20, 17.3333)
+scale = Vector2(0.18, 0.18)
 texture = ExtResource("3_7mbu6")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

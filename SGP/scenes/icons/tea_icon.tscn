@@ -12,11 +12,12 @@ shader_parameter/line_thickness = 10.0
 
 [node name="tea_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 46.0
-offset_bottom = 54.0
-pivot_offset = Vector2(20, 25)
+offset_left = -19.0
+offset_top = -34.0
+offset_right = 19.0
+offset_bottom = 14.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(19, 34)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_hlqtg")
@@ -24,7 +25,7 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(20, 26)
+position = Vector2(19, 25)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("3_y6qev")
 

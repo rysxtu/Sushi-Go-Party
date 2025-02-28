@@ -12,12 +12,12 @@ shader_parameter/line_thickness = 10.0
 
 [node name="fruit_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 64.0
-offset_bottom = 46.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(29, 21)
+offset_left = -29.0
+offset_top = -28.0
+offset_right = 29.0
+offset_bottom = 14.0
+scale = Vector2(1.2, 1.2)
+pivot_offset = Vector2(29, 28)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_6xuoo")

@@ -12,12 +12,12 @@ shader_parameter/line_thickness = 10.0
 
 [node name="chopsticks_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 36.0
-offset_bottom = 48.0
+offset_left = -15.0
+offset_top = -30.0
+offset_right = 15.0
+offset_bottom = 14.0
 scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(15, 22)
+pivot_offset = Vector2(15, 30)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_dc7ku")

@@ -8,16 +8,16 @@
 shader = ExtResource("2_6olwh")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="tempura_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 60.0
-offset_bottom = 50.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(27, 23)
+offset_left = -27.0
+offset_top = -28.0
+offset_right = 27.0
+offset_bottom = 14.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(27, 28)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_vnasp")
@@ -25,7 +25,7 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(27.1429, 22.8333)
+position = Vector2(27, 21.3333)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("3_ilwvd")
 

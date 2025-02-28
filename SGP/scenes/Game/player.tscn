@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="icon_manager" type="Control" parent="display" node_paths=PackedStringArray("_self", "points_label")]
+[node name="icon_manager" type="Control" parent="display" node_paths=PackedStringArray("_self", "points_label", "plate")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -187.0
@@ -35,13 +35,42 @@ mouse_filter = 2
 script = ExtResource("5_qmi1v")
 _self = NodePath("../..")
 points_label = NodePath("../points")
+plate = NodePath("Plate")
 
 [node name="Plate" parent="display/icon_manager" instance=ExtResource("4_hwgcs")]
 layout_mode = 1
-offset_left = 184.0
-offset_top = 53.0
-offset_right = -191.0
-offset_bottom = -47.0
+offset_left = 187.0
+offset_top = 50.0
+offset_right = -188.0
+offset_bottom = -50.0
+
+[node name="Icon8" type="Marker2D" parent="display/icon_manager"]
+position = Vector2(298, 15)
+
+[node name="Icon7" type="Marker2D" parent="display/icon_manager"]
+z_index = 1
+position = Vector2(321, 64)
+
+[node name="Icon6" type="Marker2D" parent="display/icon_manager"]
+position = Vector2(223, 15)
+
+[node name="Icon5" type="Marker2D" parent="display/icon_manager"]
+z_index = 1
+position = Vector2(231, 64)
+
+[node name="Icon4" type="Marker2D" parent="display/icon_manager"]
+position = Vector2(148, 15)
+
+[node name="Icon3" type="Marker2D" parent="display/icon_manager"]
+z_index = 1
+position = Vector2(141, 64)
+
+[node name="Icon2" type="Marker2D" parent="display/icon_manager"]
+position = Vector2(73, 15)
+
+[node name="Icon1" type="Marker2D" parent="display/icon_manager"]
+z_index = 1
+position = Vector2(51, 64)
 
 [node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "player_hand")]
 layout_mode = 0

@@ -4,10 +4,12 @@ extends Control
 # the root player node
 @export var _self: Node2D
 @export var points_label: Label
+@export var plate: Control
 
 const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
 var card_name_to_icon = {}
-
+var icon_at_markers = [null, null, null, null, null, null, null, null]
+var curr_marker = 0
 
 func _ready():
 	Global.player_points_sig.connect(display_points)
@@ -28,8 +30,12 @@ func add_icon(player, card, info):
 			new_icon = card_name_to_icon[card_name + '_' + variation].instantiate()
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
-		# change this pos
-		self.add_child(new_icon)
+		
+		# add the icon as child to a marker
+		var marker =  self.get_node("Icon" + str(curr_marker + 1))
+		icon_at_markers[curr_marker] = new_icon
+		curr_marker += 1
+		marker.add_child(new_icon)
 
 func display_points(player, points):
 	if _self == player:

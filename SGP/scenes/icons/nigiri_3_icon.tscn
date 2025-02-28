@@ -8,16 +8,16 @@
 shader = ExtResource("2_hey3o")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="nigiri_3_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = 6.0
-offset_top = 4.0
-offset_right = 60.0
-offset_bottom = 40.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(15, 22)
+offset_left = -27.0
+offset_top = -20.0
+offset_right = 27.0
+offset_bottom = 14.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(27, 20)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_1wd0f")
@@ -25,7 +25,7 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(27.1429, 18.6667)
+position = Vector2(27, 17.3333)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("3_q6mhr")
 
