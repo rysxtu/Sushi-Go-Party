@@ -32,6 +32,7 @@ func _ready():
 func _on_player_has_hand(player):
 	if self == player:
 		player_hand = get_hand(player)
+		print("DEBUG: ", player, ' ', player_hand.get_children())
 		print("---Player: ", player_hand, " connected to ", self)
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
@@ -94,7 +95,10 @@ func _card_pressed_from_hand(card):
 		
 		# for now extra info is null, only when its is special order
 		# first one for 
-		display_card_icon.emit(self, card, null)
+		var info = null
+		if card.name.split('_')[0] == "miso":
+			info = "miso"
+		display_card_icon.emit(self, card, info)
 		card_played.emit(self, card, null)
 
 func _player_allowed_to_play():

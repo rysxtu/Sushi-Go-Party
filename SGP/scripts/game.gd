@@ -36,10 +36,12 @@ var taken_turn = {}
 # cards played in a turn (during round)
 var played_dr_cards = []
 # cards left in the round
-var cards_left_in_round = 8
+var cards_left_in_round = Global.hand_size
 # all desserts 
 var desserts = []
 var desserts_per_round = dpr()
+# remembers which dessert cards were not played in a round, readded to deck
+var desserts_in_round = []
 
 signal player_has_hand_sig(player)
 signal player_points_sig(player, points)
@@ -56,7 +58,7 @@ func _ready():
 	load_cards(cards, cards_loaded)
 	Global.cards_loaded = cards_loaded
 	
-	make_deck(cards_loaded, desserts_per_round)
+	make_deck(cards_loaded, desserts_per_round, true)
 	# make number of player
 	make_players(players_number, players_points)
 	for player in players_points:
@@ -77,9 +79,9 @@ func make_players(player_number, players_points):
 		if player.name == "player_0":
 			player.global_position = Vector2(500, 500)
 		elif player.name == "player_1":
-			player.global_position = Vector2(100, 170)
+			player.global_position = Vector2(500, 170)
 		else:
-			player.global_position = Vector2(100, 330)
+			player.global_position = Vector2(500, 330)
 		
 		player.card_played.connect(store_card_played)
 		get_hand(player).name = "player_hand_" + str(i)
@@ -89,14 +91,14 @@ func make_players(player_number, players_points):
 # moves 8 cards to the players hand from the deck
 func populate_player_hand(player):
 	var card
-	for i in 8:
+	for i in Global.hand_size:
 		card = deck.get_children().pick_random()
 		scale_card(card, 1)
 		card.global_position = player.global_position
 		move_node(card, deck, get_hand(player))
 		flip_card_to_front(card)
 	Global.emit_signal("player_has_hand_sig", player)
-	cards_left_in_round = 8
+	cards_left_in_round = Global.hand_size
 	
 # stores the cards that each player has played
 func store_card_played(player, card, extra_info):
@@ -117,6 +119,7 @@ func store_card_played(player, card, extra_info):
 		# make sure current desserts are stored in full dessert pile as well as current
 		if card_name in DESSERT_CARDS:
 			update_player_dict(players_played_desserts, player, card_name)
+			desserts_in_round.erase(card)
 		
 		# maki is set up differently from update_player_dict()
 		if card_name == "maki":
@@ -137,6 +140,8 @@ func store_card_played(player, card, extra_info):
 		# make sure current desserts are stored in full dessert pile as well as current
 		if card_name in DESSERT_CARDS:
 			update_player_dict(players_played_desserts, player, card_name, false, 1, variation)
+			# get rid of it so it doesnt get readded to deck at end of turn
+			desserts_in_round.erase(card)
 		# store the variations of onigiri and fruits as sets
 		update_player_dict(players_played_cards, player, card_name, false, 1, variation)
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
@@ -211,6 +216,10 @@ func turn_over():
 		
 	# if the hand we just receive is of length 1, end round
 	if cards_left_in_round == 0:
+		# make sure to disconnect anything
+		for player in players_points:
+			Global.emit_signal("disconnect_hand_from_player", player)
+			
 		calc_points("round_end", null)
 		# trigger reset round
 		new_round()
@@ -292,11 +301,19 @@ func new_round():
 		end_game()
 		return
 	
-	for i in (desserts_per_round[game_round - 1]):
-		add_back_to_deck(desserts.pop_at(desserts.find(desserts.pick_random())))
-		
+	# remake the deck, making sure not to delete any leftover desserts
+	for child in deck.get_children():
+		deck.remove_child(child)
+		# this check could be fatser
+		if child not in desserts_in_round:
+			child.queue_free()
+	for d_card in desserts_in_round:
+		deck.add_child(d_card)
+	make_deck(Global.cards_loaded, desserts_per_round, false)
+	
 	for player in players_points:
 		populate_player_hand(player)
+		
 	players_played_cards = {}
 	Global.emit_signal("round_over")
 	Global.uramaki_curr_points = 2
@@ -342,22 +359,24 @@ func load_cards(cards, cards_loaded):
 
 # instantiate the cards in the cards_loaded dict
 # also names them and adds them as a child of the deck node
-func make_deck(cards_loaded, desserts_per_round):
+func make_deck(cards_loaded, desserts_per_roundm, initial):
 	for card in cards_loaded:
 		var card_name = card.split('_')[0]
 		# if card is a dessert only put a few into the deck initially
-		if card_name in DESSERT_CARDS:
+		if card_name in DESSERT_CARDS and initial:
 			for i in cards_no[card]:
 				instantiate_card(cards_loaded, card, i, false)
-		else:
+		elif card_name not in DESSERT_CARDS:
 			for i in cards_no[card]:
 				instantiate_card(cards_loaded, card, i, true)
 				
 	var d_card
-	for i in desserts_per_round[game_round - 1]:
+	for j in desserts_per_round[game_round - 1]:
 		d_card = desserts.pick_random()
 		desserts.erase(d_card)
+		desserts_in_round.append(d_card)
 		deck.add_child(d_card)
+	print("Board:", desserts_in_round)
 
 # instantiate needed cards, stores to deck or append to desserts
 func instantiate_card(cards_loaded, card, number, to_deck):
@@ -560,7 +579,7 @@ func record_miso(miso_per_turn, miso_player, played_dr_cards):
 	if miso_per_turn > 1:
 		for tuple in played_dr_cards:
 			if tuple[0] == "miso":
-				add_back_to_deck(tuple[1])
+				Global.emit_signal("miso_invalid", tuple[2])
 	elif miso_per_turn == 1:
 		if "miso" not in players_played_cards[miso_player]:
 			players_played_cards[miso_player]["miso"] = 1
@@ -620,6 +639,7 @@ func dpr():
 		return [5, 3, 2]
 	return [7, 5, 3]
 
+# not needed
 func add_back_to_deck(card):
 	flip_card_to_back(card)
 	card.global_position = deck.global_position

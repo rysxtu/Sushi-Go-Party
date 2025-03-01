@@ -13,6 +13,7 @@ var curr_marker = 0
 
 func _ready():
 	Global.player_points_sig.connect(display_points)
+	Global.miso_invalid.connect(remove_miso)
 	_self.display_card_icon.connect(add_icon)
 	load_icons()
 	Global.round_over.connect(reset)
@@ -25,6 +26,15 @@ func reset():
 				child.remove_child(icon)
 	icon_at_markers = [null, null, null, null, null, null, null, null]
 	curr_marker = 0
+
+func remove_miso(player):
+	if _self == player:
+		var marker = self.get_node("Icon" + str(curr_marker))
+		print(marker)
+		marker.remove_child(marker.get_child(0))
+		curr_marker -= 1
+		icon_at_markers[curr_marker] = null
+	
 
 func add_icon(player, card, info):	
 	if _self == player:
@@ -39,6 +49,10 @@ func add_icon(player, card, info):
 			new_icon = card_name_to_icon[card_name + '_' + variation].instantiate()
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
+		
+		# desserts, wasabi and maki/uramaki and miso to hide
+		if info == "":
+			pass
 		
 		# add the icon as child to a marker
 		var marker =  self.get_node("Icon" + str(curr_marker + 1))
@@ -68,4 +82,3 @@ func load_icons():
 				# get the correct number of cards needed for each type
 				path = "res://scenes/icons/" + card_name + "_icon.tscn"
 				card_name_to_icon[card_name] = (load(path))
-	print(card_name_to_icon)

@@ -72,6 +72,11 @@ position = Vector2(73, 15)
 z_index = 1
 position = Vector2(51, 64)
 
+[node name="GridContainer" type="GridContainer" parent="display/icon_manager"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "player_hand")]
 layout_mode = 0
 offset_left = 355.0

@@ -5,6 +5,7 @@ var players_number = 1
 var states = {}
 var cards = {}
 var cards_loaded = {}
+var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][players_number - 1]
 
 # how many cards there are of each type
 var cards_no = {
@@ -29,3 +30,4 @@ signal player_points_sig(player, points)
 signal round_over()
 signal disconnect_hand_from_player(player)
 signal allowed_to_play()
+signal miso_invalid(player)
