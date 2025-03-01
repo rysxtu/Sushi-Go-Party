@@ -56,13 +56,12 @@ func _ready():
 	var cards = Global.cards
 	var cards_loaded = {}
 	load_cards(cards, cards_loaded)
-	Global.cards_loaded = cards_loaded
-	
 	make_deck(cards_loaded, desserts_per_round, true)
 	# make number of player
 	make_players(players_number, players_points)
 	for player in players_points:
 		populate_player_hand(player)
+	Global.emit_signal("game_started_sig")
 
 # make all the players in the game
 @warning_ignore("shadowed_variable")
@@ -356,10 +355,11 @@ func load_cards(cards, cards_loaded):
 			else:
 				path = "res://scenes/card2D/playing_card/" + str(card) + ".tscn"
 				cards_loaded[str(card)] = (load(path))
+	Global.cards_loaded = cards_loaded
 
 # instantiate the cards in the cards_loaded dict
 # also names them and adds them as a child of the deck node
-func make_deck(cards_loaded, desserts_per_roundm, initial):
+func make_deck(cards_loaded, desserts_per_round, initial):
 	for card in cards_loaded:
 		var card_name = card.split('_')[0]
 		# if card is a dessert only put a few into the deck initially
