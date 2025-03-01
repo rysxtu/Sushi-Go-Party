@@ -213,7 +213,7 @@ position = Vector2(316, 10)
 
 [node name="Icon3" type="Marker2D" parent="display/icon_manager"]
 z_index = 1
-position = Vector2(332, 63)
+position = Vector2(329, 64)
 
 [node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "counter", "player_hand")]
 layout_mode = 0

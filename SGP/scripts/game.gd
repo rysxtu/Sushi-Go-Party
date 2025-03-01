@@ -132,6 +132,7 @@ func store_card_played(player, card, extra_info):
 				players_played_cards[player]["maki"][1] += 1
 		else:
 			update_player_dict(players_played_cards, player, card_name)
+		Global.display_card_icon.emit(player, card, "")
 	elif extra_info == null and card_name in VARIATION_CARDS:
 		# onigiri and fruits
 		variation = card.name.split("_")[1]
@@ -143,9 +144,12 @@ func store_card_played(player, card, extra_info):
 			desserts_in_round.erase(card)
 		# store the variations of onigiri and fruits as sets
 		update_player_dict(players_played_cards, player, card_name, false, 1, variation)
+		Global.display_card_icon.emit(player, card, "")
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
 		played_dr_cards.append([card_name, card, player])
+		if card_name == "uramaki":
+			Global.display_card_icon.emit(player, card, "")
 	elif extra_info == null and card_name in WASABI_CARDS:
 		# nigiri and wasabi
 		if card_name == "nigiri":
@@ -154,17 +158,21 @@ func store_card_played(player, card, extra_info):
 			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
 				players_played_cards[player]["wasabi"][0] -= 1
 				players_played_cards[player]["wasabi"][1].append(variation)
+				Global.display_card_icon.emit(player, card, "wasabi")
 			else:
 				# store as just nigiri
 				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
+				Global.display_card_icon.emit(player, card, "")
 		else:
 			if "wasabi" not in players_played_cards[player]:
 				players_played_cards[player]["wasabi"] = [1, []]
 			else:
 				players_played_cards[player]["wasabi"][0] += 1
+			Global.display_card_icon.emit(player, card, "")
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
+		Global.display_card_icon.emit(player, card, "")
 	# wasabi a bit different
 	
 	# wait for the card to be flipped over & animation
@@ -254,18 +262,21 @@ func calc_points(calc_type, played_dr_cards):
 	elif calc_type == "during_round" and played_dr_cards:
 		var miso_per_turn = 0
 		var miso_player
+		var miso_card
 		var not_counted_uramaki = []
 		
 		for tuple in played_dr_cards:
 			if tuple[0] == "miso":
 				miso_per_turn += 1
+				miso_card = tuple[1]
 				miso_player = tuple[2]
 			else:
 				# record uramaki playe dby players in not_counted_uramaki, to determine points
 				record_uramaki(tuple, not_counted_uramaki)
 
-		# record miso, points will be awarded here at end of round
-		record_miso(miso_per_turn, miso_player, played_dr_cards)
+		# record miso, points will be awarded here at end of round, also displays it if only 1 played
+		record_miso(miso_per_turn, miso_player, miso_card)
+		
 		# award points to uramaki now
 		count_uramaki_p(not_counted_uramaki)
 	elif calc_type == "game_end":
@@ -573,18 +584,15 @@ func count_uramaki_p(not_counted_uramaki):
 			players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
 			Global.uramaki_curr_points -= 1
 	
-func record_miso(miso_per_turn, miso_player, played_dr_cards):
+func record_miso(miso_per_turn, miso_player, miso_card):
 	# send back into deck if > 1
 	# could add animation for played nbut failed
-	if miso_per_turn > 1:
-		for tuple in played_dr_cards:
-			if tuple[0] == "miso":
-				Global.emit_signal("miso_invalid", tuple[2])
-	elif miso_per_turn == 1:
+	if miso_per_turn == 1:
 		if "miso" not in players_played_cards[miso_player]:
 			players_played_cards[miso_player]["miso"] = 1
 		else:
 			players_played_cards[miso_player]["miso"] += 1
+		Global.display_card_icon.emit(miso_player, miso_card, "")
 
 """ Helper Functions Below"""
 # function to help store cards

@@ -18,8 +18,7 @@ var allowed_to_play_card = true
 
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
-# to display the played card in icons (should be received by icons)
-signal display_card_icon(player, card, extra_info)
+
 
 func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
@@ -98,7 +97,6 @@ func _card_pressed_from_hand(card):
 		var info = null
 		if card.name.split('_')[0] == "miso":
 			info = "miso"
-		display_card_icon.emit(self, card, info)
 		card_played.emit(self, card, null)
 
 func _player_allowed_to_play():
