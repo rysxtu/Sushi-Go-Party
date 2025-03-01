@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://ba0stxemwp227"]
+
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_ltwj6"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_36rri"]
+[ext_resource type="Texture2D" uid="uid://lfgibs75ovjv" path="res://assets/icons/edited/tofu.png" id="3_tq8ug"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uyglx"]
+shader = ExtResource("2_36rri")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 4.0
+
+[node name="tofu_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -25.0
+offset_top = -21.0
+offset_right = 25.0
+offset_bottom = 13.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(25, 21)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_ltwj6")
+sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_uyglx")
+position = Vector2(25, 17.3333)
+scale = Vector2(0.141, 0.141)
+texture = ExtResource("3_tq8ug")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

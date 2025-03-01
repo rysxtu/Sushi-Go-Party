@@ -8,16 +8,16 @@
 shader = ExtResource("1_301tv")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="edamame_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = -31.0
-offset_top = -16.0
-offset_right = 31.0
+offset_left = -26.0
+offset_top = -10.0
+offset_right = 26.0
 offset_bottom = 14.0
-scale = Vector2(1.2, 1.2)
-pivot_offset = Vector2(31, 16)
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(26, 10)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_umcrr")
@@ -25,8 +25,8 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(30.7143, 15.3333)
-scale = Vector2(0.15, 0.15)
+position = Vector2(26, 12.6667)
+scale = Vector2(0.13, 0.13)
 texture = ExtResource("2_0ylbl")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

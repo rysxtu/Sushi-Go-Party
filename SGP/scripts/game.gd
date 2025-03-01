@@ -77,7 +77,7 @@ func make_players(player_number, players_points):
 		player.name = "player_" + str(i)
 		
 		if player.name == "player_0":
-			player.global_position = Vector2(500, 500)
+			player.global_position = Vector2(500, 550)
 		elif player.name == "player_1":
 			player.global_position = Vector2(500, 170)
 		else:

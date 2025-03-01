@@ -8,16 +8,16 @@
 shader = ExtResource("2_f1up2")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="eel_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = -28.0
-offset_top = -22.0
-offset_right = 28.0
+offset_left = -25.0
+offset_top = -18.0
+offset_right = 25.0
 offset_bottom = 14.0
-scale = Vector2(1.2, 1.2)
-pivot_offset = Vector2(28, 22)
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(25, 18)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_6no7c")
@@ -25,8 +25,8 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(27.8571, 18.6667)
-scale = Vector2(0.15, 0.15)
+position = Vector2(24.6667, 16.6667)
+scale = Vector2(0.146, 0.146)
 texture = ExtResource("3_eer48")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

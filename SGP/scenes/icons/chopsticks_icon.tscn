@@ -8,16 +8,16 @@
 shader = ExtResource("2_d25kr")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="chopsticks_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = -15.0
-offset_top = -30.0
-offset_right = 15.0
+offset_left = -17.0
+offset_top = -32.0
+offset_right = 17.0
 offset_bottom = 14.0
-scale = Vector2(1.4, 1.2)
-pivot_offset = Vector2(15, 30)
+scale = Vector2(1.5, 1.286)
+pivot_offset = Vector2(17, 32)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_dc7ku")
@@ -25,8 +25,8 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(18.5714, 10.3333)
-scale = Vector2(0.15, 0.15)
+position = Vector2(21, 9.00467)
+scale = Vector2(0.17, 0.17)
 texture = ExtResource("2_5kl2q")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

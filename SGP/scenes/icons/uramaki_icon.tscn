@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://yr4rkmg5imk8"]
+
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_3lbuf"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_g21ke"]
+[ext_resource type="Texture2D" uid="uid://qvd7yglhglu6" path="res://assets/icons/edited/uramaki.png" id="3_1dgsf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uyglx"]
+shader = ExtResource("2_g21ke")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 4.0
+
+[node name="uramaki_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -25.0
+offset_top = -28.0
+offset_right = 25.0
+offset_bottom = 22.0
+pivot_offset = Vector2(25, 28)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_3lbuf")
+sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_uyglx")
+position = Vector2(25, 25.3333)
+scale = Vector2(0.259, 0.259)
+texture = ExtResource("3_1dgsf")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

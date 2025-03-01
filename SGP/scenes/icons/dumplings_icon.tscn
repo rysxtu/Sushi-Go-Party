@@ -1,32 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://di0o0ypbpklko"]
+[gd_scene load_steps=3 format=3 uid="uid://di0o0ypbpklko"]
 
-[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="1_04pyd"]
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_ughv4"]
 [ext_resource type="Texture2D" uid="uid://dqfodap8yjly" path="res://assets/icons/edited/dumplings.png" id="2_fkolf"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
-shader = ExtResource("1_04pyd")
-shader_parameter/onoff = null
-shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
-
 [node name="dumplings_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = -27.0
-offset_top = -20.0
-offset_right = 27.0
+offset_left = -25.0
+offset_top = -16.0
+offset_right = 25.0
 offset_bottom = 14.0
-scale = Vector2(1.2, 1.2)
-pivot_offset = Vector2(27, 20)
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(25, 16)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_ughv4")
 sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(27.1429, 17)
-scale = Vector2(0.15, 0.15)
+position = Vector2(25, 16)
+scale = Vector2(0.145, 0.145)
 texture = ExtResource("2_fkolf")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

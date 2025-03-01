@@ -8,16 +8,16 @@
 shader = ExtResource("2_u1efb")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="fruit_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
-offset_left = -29.0
-offset_top = -28.0
-offset_right = 29.0
-offset_bottom = 14.0
-scale = Vector2(1.2, 1.2)
-pivot_offset = Vector2(29, 28)
+offset_left = -25.0
+offset_top = -21.0
+offset_right = 25.0
+offset_bottom = 15.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(25, 21)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_6xuoo")
@@ -25,8 +25,8 @@ sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(28.5714, 21.1667)
-scale = Vector2(0.15, 0.15)
+position = Vector2(24.3333, 18)
+scale = Vector2(0.138, 0.138)
 texture = ExtResource("3_km2ax")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

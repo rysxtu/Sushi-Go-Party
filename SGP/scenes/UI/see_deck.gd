@@ -1,6 +1,7 @@
 extends Button
 
 @export var icon_manager: Control
+@export var counter: Control
 @export var player_hand: Node2D
 
 var deck_seeable = false
@@ -12,9 +13,11 @@ func _ready():
 # could also do on_hover instead and when key pressed
 func _on_pressed():
 	if deck_seeable == false:
+		counter.visible = true
 		icon_manager.visible = true
 		player_hand.visible = false
 	else:
+		counter.visible = false
 		icon_manager.visible = false
 		player_hand.visible = true
 	deck_seeable = !deck_seeable

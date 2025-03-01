@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://cu7gejql0u1o7"]
+
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_b6nqd"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_bhmre"]
+[ext_resource type="Texture2D" uid="uid://cl10jbslqx46r" path="res://assets/icons/edited/soy.png" id="3_xn1pv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
+shader = ExtResource("2_bhmre")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 4.0
+
+[node name="soy_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
+clip_contents = true
+offset_left = -25.0
+offset_top = -60.0
+offset_right = 25.0
+offset_bottom = 22.0
+scale = Vector2(0.9, 0.9)
+pivot_offset = Vector2(25, 60)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_b6nqd")
+sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_86hkx")
+position = Vector2(25.7692, 41.0769)
+scale = Vector2(0.246, 0.246)
+texture = ExtResource("3_xn1pv")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

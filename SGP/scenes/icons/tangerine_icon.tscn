@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://b6wckr1tw82vi"]
+
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_6mrek"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_e1kot"]
+[ext_resource type="Texture2D" uid="uid://clutaqeakxrvs" path="res://assets/icons/edited/tangerine.png" id="3_5pot1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uyglx"]
+shader = ExtResource("2_e1kot")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 4.0
+
+[node name="tangerine_icon" type="Panel" node_paths=PackedStringArray("sprite")]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -25.0
+offset_top = -14.0
+offset_right = 25.0
+offset_bottom = 14.0
+scale = Vector2(1.5, 1.5)
+pivot_offset = Vector2(25, 14)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_6mrek")
+sprite = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_uyglx")
+position = Vector2(25, 14.6667)
+scale = Vector2(0.393, 0.393)
+texture = ExtResource("3_5pot1")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
