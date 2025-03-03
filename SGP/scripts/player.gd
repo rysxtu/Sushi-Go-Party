@@ -25,6 +25,7 @@ func _ready():
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_player_allowed_to_play)
 	
+	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
 # or when player gets a new hand
@@ -61,8 +62,6 @@ func _update_cards():
 	if all_cards_size > hand_size:
 		final_x_sep = (hand_size - Card.get_size().x * cards) / (cards - 1)
 		all_cards_size = hand_size
-
-	var offset = (hand_size - all_cards_size) / 2
 	
 	for i in cards:
 		var card = player_hand.get_child(i)
@@ -73,7 +72,7 @@ func _update_cards():
 			y_multiplier = 0.0
 			rot_multiplier = 0.0
 		
-		var final_x: float = offset + Card.get_size().x  * i + final_x_sep * i
+		var final_x: float = Card.get_size().x  * i + final_x_sep * i
 		var final_y: float = y_min + y_max * y_multiplier
 
 		card.position.x = final_x - all_cards_size / 2

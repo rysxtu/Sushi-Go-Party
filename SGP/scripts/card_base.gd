@@ -32,7 +32,8 @@ func _on_mouse_entered() -> void:
 	# animation to enlarge card
 	var tween = get_tree().create_tween()
 	tween.tween_property(self, "scale", Vector2(scale_up, scale_up), 0.01)
-	tween.tween_property(self, "position:y", initial_position.y - 60.0, 0.1)
+	# want to find the max that a card is below and tween up
+	tween.tween_property(self, "position:y", -self.get_size().y / 1.5, 0.1)
 	tween.tween_property(self, "rotation_degrees", 0, 0.1)
 	self.z_index = 1
 

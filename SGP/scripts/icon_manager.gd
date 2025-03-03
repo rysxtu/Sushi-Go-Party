@@ -10,8 +10,7 @@ const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
 var card_name_to_icon = {}
 var icon_no = 0
 
-var top_spacing
-var bot_spacing
+var markers
 
 func _ready():
 	Global.player_points_sig.connect(display_points)
@@ -19,13 +18,17 @@ func _ready():
 	load_icons()
 	Global.round_over.connect(reset)
 	
-	bot_spacing = (self.get_node("Icon3").global_position.x - self.get_node("Icon1").global_position.x) / Global.hand_size
-	top_spacing = (self.get_node("Icon4").global_position.x - self.get_node("Icon2").global_position.x) / Global.hand_size
-
+	const path = "res://scenes/game/display_"
+	var markers_local = load(path + str(Global.hand_size) + ".tscn").instantiate()
+	markers_local.name = "markers"
+	markers = markers_local
+	self.add_child(markers)
+	
 func reset():
-	for child in self.get_children():
-		if child is Panel:
-			self.remove_child(child)
+	for child in markers.get_children():
+		if child is Marker2D:
+			for panel in child.get_children():
+				child.remove_child(panel)
 	icon_no = 0
 
 
@@ -44,14 +47,6 @@ func add_icon(player, card, info):
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
 		
-		# calculate whether icon goes on top or botton
-		var marker =  self.get_node("Icon" + str(icon_no % 2 + 1))
-		new_icon.position = marker.position
-		if icon_no % 2 + 1 == 1:
-			new_icon.position += Vector2(bot_spacing * icon_no, 0)
-		else:
-			new_icon.position += Vector2(top_spacing * icon_no, 0)
-		
 		# check for extra info
 		# check if variation card is nigiri and if it was added with wasabi
 		if card_name == "nigiri" and info == "wasabi":
@@ -63,7 +58,8 @@ func add_icon(player, card, info):
 			side_icon.position = Vector2(new_icon_size.x / 2 + WASABI_ADJUSTMENT, new_icon_size.y / 2 + WASABI_ADJUSTMENT)
 		
 		# display
-		self.add_child(new_icon)
+		var marker = markers.get_node("Icon" + str(icon_no + 1))
+		marker.add_child(new_icon)
 		icon_no += 1
 
 func display_points(player, points):

@@ -74,14 +74,6 @@ func make_players(player_number, players_points):
 	for i in player_number:
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
-		
-		if player.name == "player_0":
-			player.global_position = Vector2(500, 550)
-		elif player.name == "player_1":
-			player.global_position = Vector2(500, 170)
-		else:
-			player.global_position = Vector2(500, 330)
-		
 		player.card_played.connect(store_card_played)
 		get_hand(player).name = "player_hand_" + str(i)
 		self.add_child(player)

@@ -8,7 +8,7 @@
 shader = ExtResource("2_h1b8e")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
-shader_parameter/line_thickness = 10.0
+shader_parameter/line_thickness = 4.0
 
 [node name="tea_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)

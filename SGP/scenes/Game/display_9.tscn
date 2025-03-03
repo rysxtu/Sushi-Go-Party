@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://c2ed8a2jrmsuu"]
+
+[node name="display_9" type="Node2D"]
+
+[node name="Icon2" type="Marker2D" parent="."]
+position = Vector2(90, 25)
+
+[node name="Icon4" type="Marker2D" parent="."]
+position = Vector2(157, 25)
+
+[node name="Icon8" type="Marker2D" parent="."]
+position = Vector2(274, 25)
+
+[node name="Icon6" type="Marker2D" parent="."]
+position = Vector2(217, 25)
+
+[node name="Icon1" type="Marker2D" parent="."]
+z_index = 1
+position = Vector2(42, 79)
+
+[node name="Icon3" type="Marker2D" parent="."]
+z_index = 1
+position = Vector2(114, 79)
+
+[node name="Icon5" type="Marker2D" parent="."]
+z_index = 1
+position = Vector2(187, 79)
+
+[node name="Icon7" type="Marker2D" parent="."]
+z_index = 1
+position = Vector2(257, 79)
+
+[node name="Icon9" type="Marker2D" parent="."]
+z_index = 1
+position = Vector2(329, 79)

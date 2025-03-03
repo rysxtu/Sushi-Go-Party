@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="29_gfy2f"]
 
 [node name="Player" type="Node2D"]
+position = Vector2(582, 560)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
@@ -32,11 +33,12 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Counter" type="Control" parent="display" node_paths=PackedStringArray("_self")]
+visible = false
 anchors_preset = 0
 offset_left = -88.0
-offset_top = -167.0
+offset_top = -158.0
 offset_right = -88.0
-offset_bottom = -167.0
+offset_bottom = -158.0
 script = ExtResource("4_82ypc")
 _self = NodePath("../..")
 
@@ -181,12 +183,13 @@ text = "0"
 horizontal_alignment = 2
 
 [node name="icon_manager" type="Control" parent="display" node_paths=PackedStringArray("_self", "points_label", "plate")]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = -187.0
 offset_top = -50.0
 offset_right = 188.0
-offset_bottom = 50.0
+offset_bottom = 80.0
 pivot_offset = Vector2(187, 50)
 mouse_filter = 2
 script = ExtResource("5_qmi1v")
@@ -196,24 +199,13 @@ plate = NodePath("Plate")
 
 [node name="Plate" parent="display/icon_manager" instance=ExtResource("4_hwgcs")]
 layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.103
+anchor_bottom = 0.892
 offset_left = 187.0
-offset_top = 50.0
+offset_top = 77.45
 offset_right = -188.0
-offset_bottom = -50.0
-
-[node name="Icon2" type="Marker2D" parent="display/icon_manager"]
-position = Vector2(55, 10)
-
-[node name="Icon1" type="Marker2D" parent="display/icon_manager"]
-z_index = 1
-position = Vector2(42, 64)
-
-[node name="Icon4" type="Marker2D" parent="display/icon_manager"]
-position = Vector2(316, 10)
-
-[node name="Icon3" type="Marker2D" parent="display/icon_manager"]
-z_index = 1
-position = Vector2(329, 64)
+offset_bottom = -22.05
 
 [node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "counter", "player_hand")]
 layout_mode = 0
