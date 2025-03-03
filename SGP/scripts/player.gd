@@ -38,7 +38,7 @@ func _on_player_has_hand(player):
 		for card in player_hand.get_children():
 			card.card_pressed.connect(_card_pressed_from_hand)
 		# span the cards
-		if player_hand.get_child_count() > 1:
+		if player_hand.get_child_count() >= 1:
 			_update_cards()
 
 # disconnect the curr hand from player
@@ -69,7 +69,7 @@ func _update_cards():
 		var rot_multiplier := rotation_curve.sample(1.0 / (cards-1) * i)
 		
 		if cards == 1:
-			y_multiplier = 0.0
+			y_multiplier = height_curve.sample(0.5)
 			rot_multiplier = 0.0
 		
 		var final_x: float = Card.get_size().x  * i + final_x_sep * i
