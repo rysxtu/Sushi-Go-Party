@@ -21,9 +21,6 @@ func _on_player_has_hand(player):
 		player_hand = get_hand(player)
 		print("DEBUG: ", player, ' ', player_hand.get_children())
 		print("---Player: ", player_hand, " connected to ", self)
-		# connect the cards to know when they are pressed
-		for card in player_hand.get_children():
-			card.card_pressed.connect(_card_pressed_from_hand)
 
 
 # disconnect the curr hand from player
@@ -31,27 +28,26 @@ func disconnect_hand_from_player(player):
 	if self == player:
 		player_hand = get_hand(player)
 		print("---Player: ", player_hand, " disconnected from ", self)
-		# connect the cards to know when they are pressed
-		for card in player_hand.get_children():
-			card.card_pressed.disconnect(_card_pressed_from_hand)
 
-# plays a card when pressed if allowed
-func _card_pressed_from_hand(card):
+var rng = RandomNumberGenerator.new()
+# when bot is able to play calculate
+func _player_allowed_to_play():
+	allowed_to_play_card = true
+	
 	if allowed_to_play_card:
+		# code to choose card
+		var random_n = rng.randi_range(0, player_hand.get_child_count() - 1)
+		var card = player_hand.get_child(random_n)
+		
 		print("---Player: ", self, " played ", card.name, " from ", player_hand)
 		
 		player_hand.remove_child(card)
 		allowed_to_play_card = false
 		
-		# for now extra info is null, only when its is special order
-		# first one for 
 		var info = null
 		if card.name.split('_')[0] == "miso":
 			info = "miso"
 		card_played.emit(self, card, null)
-
-func _player_allowed_to_play():
-	allowed_to_play_card = true
 
 """HELPER FUNCTIONS"""
 

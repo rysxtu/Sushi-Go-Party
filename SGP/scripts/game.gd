@@ -98,6 +98,10 @@ func make_players(player_number, players_points):
 	for i in bots_number:
 		bot = bot_scene.instantiate()
 		bot.name = "bot_" + str(i)
+		
+		if bot.name == "bot_0":
+			bot.global_position = Vector2(500, 300)
+		
 		bot.card_played.connect(store_card_played)
 		get_hand(bot).name = "bot_hand_" + str(i)
 		player_decks[bot] = get_hand(bot)
@@ -204,7 +208,7 @@ func store_card_played(player, card, extra_info):
 	
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
-	if taken_turn.size() == players_number:
+	if taken_turn.size() == players_number + bots_number:
 		cards_left_in_round -= 1
 		calc_points("during_round", played_dr_cards)
 		# displays icons fnction here

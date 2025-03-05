@@ -1,8 +1,8 @@
 extends Node
 
 var viewport_size
-var players_number = 2
-var bots_number = 0
+var players_number = 1
+var bots_number = 1
 var states = {}
 var cards = {}
 var cards_loaded = {}
