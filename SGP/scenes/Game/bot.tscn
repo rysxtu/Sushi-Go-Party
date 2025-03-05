@@ -1,3 +1,28 @@
-[gd_scene format=3 uid="uid://h6tsjwmkq1u3"]
+[gd_scene load_steps=4 format=3 uid="uid://h6tsjwmkq1u3"]
+
+[ext_resource type="PackedScene" uid="uid://0unixqt76ikh" path="res://scenes/icons/plate.tscn" id="1_pedpw"]
+[ext_resource type="Script" path="res://scripts/bot.gd" id="1_t5ysm"]
+[ext_resource type="Script" path="res://scripts/icon_manager_bot.gd" id="2_xoevq"]
 
 [node name="Bot" type="Node2D"]
+script = ExtResource("1_t5ysm")
+
+[node name="icon_manager_bot" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -187.0
+offset_top = -50.0
+offset_right = 188.0
+offset_bottom = 80.0
+pivot_offset = Vector2(187, 50)
+mouse_filter = 2
+script = ExtResource("2_xoevq")
+
+[node name="Plate" parent="icon_manager_bot" instance=ExtResource("1_pedpw")]
+layout_mode = 1
+offset_left = 187.0
+offset_top = 50.0
+offset_right = -188.0
+offset_bottom = -80.0
+
+[node name="bot_hand" type="Node2D" parent="."]

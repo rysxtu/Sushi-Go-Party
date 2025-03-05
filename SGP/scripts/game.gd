@@ -23,6 +23,7 @@ const WASABI_CARDS = {"nigiri": null, "wasabi": null}
 var cards_no = Global.cards_no
 # number of player: initially set at 1
 var players_number = Global.players_number
+var bots_number = Global.bots_number
 # dictionary to store the points of each person/bot
 var players_points = {}
 # dictionary to store the cards played of each person/bot
@@ -43,6 +44,9 @@ var desserts_per_round = dpr()
 # remembers which dessert cards were not played in a round, readded to deck
 var desserts_in_round = []
 
+var player_decks = {}
+var card_name_to_icon = {}
+
 signal player_has_hand_sig(player)
 signal player_points_sig(player, points)
 
@@ -56,6 +60,7 @@ func _ready():
 	var cards = Global.cards
 	var cards_loaded = {}
 	load_cards(cards, cards_loaded)
+	load_icons()
 	make_deck(cards_loaded, desserts_per_round, true)
 	# make number of player
 	make_players(players_number, players_points)
@@ -67,27 +72,57 @@ func _ready():
 @warning_ignore("shadowed_variable")
 func make_players(player_number, players_points):
 	# loading player scene
-	const path = "res://scenes/game/player.tscn"
+	var path = "res://scenes/game/player.tscn"
 	var player_scene = load(path)
 	var player
-	# creating player_number of players
+	# creating player_number of players and bots
 	for i in player_number:
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
+		
+		if player.name == "player_0":
+			player.global_position = Vector2(500, 500)
+		else:
+			player.global_position = Vector2(500, 300)
+		
 		player.card_played.connect(store_card_played)
 		get_hand(player).name = "player_hand_" + str(i)
+		player_decks[player] = get_hand(player)
 		self.add_child(player)
 		players_points[player] = 0
+		
+	# load bots
+	path = "res://scenes/game/bot.tscn"
+	var bot_scene = load(path)
+	var bot
+	for i in bots_number:
+		bot = bot_scene.instantiate()
+		bot.name = "bot_" + str(i)
+		bot.card_played.connect(store_card_played)
+		get_hand(bot).name = "bot_hand_" + str(i)
+		player_decks[bot] = get_hand(bot)
+		self.add_child(bot)
+		players_points[bot] = 0
 
 # moves 8 cards to the players hand from the deck
 func populate_player_hand(player):
 	var card
-	for i in Global.hand_size:
-		card = deck.get_children().pick_random()
-		scale_card(card, 1)
-		card.global_position = player.global_position
-		move_node(card, deck, get_hand(player))
-		flip_card_to_front(card)
+	
+	if player.name.contains("player"):
+		for i in Global.hand_size:
+			card = deck.get_children().pick_random()
+			scale_card(card, 1)
+			card.global_position = player.global_position
+			move_node(card, deck, get_hand(player))
+			flip_card_to_front(card)
+	else:
+		for i in Global.hand_size:
+			card = deck.get_children().pick_random()
+			card.visible = false
+			scale_card(card, 1)
+			card.global_position = player.global_position
+			move_node(card, deck, get_hand(player))
+			
 	Global.emit_signal("player_has_hand_sig", player)
 	cards_left_in_round = Global.hand_size
 	
@@ -188,30 +223,29 @@ func store_card_played(player, card, extra_info):
 func turn_over():
 	# need to swap all the player_hands
 	# can play animation here 
-	var curr_player
-	var next_player
-	
-	var extra_hand
-	# shuffle hands from player_0 to last player, last player to second last player and so on
-	for i in players_number:
+	var curr_deck 
+	var prev_deck 
+	var first_player
+	for player in player_decks:
 		# disconnect the hand form the curr player
-		curr_player = self.get_node("player_" + str(i))
-		# make sure last player does not have a disconnected hand
-		Global.emit_signal("disconnect_hand_from_player", curr_player)
-		# send the hand to the next player
-		if i == 0:
-			extra_hand = get_hand(curr_player)
-			curr_player.remove_child(curr_player.get_child(1))
+		curr_deck = get_hand(player)
+		Global.emit_signal("disconnect_hand_from_player", player)
+		player.remove_child(curr_deck)
+		# connect the previous deck to player
+		if prev_deck:
+			player_decks[player] = prev_deck
+			player.add_child(prev_deck)
+			Global.emit_signal("player_has_hand_sig", player)
 		else:
-			next_player = self.get_node("player_" + str(i - 1))
-			move_node(get_hand(curr_player), curr_player, next_player)
-			# connect the hand
-			Global.emit_signal("player_has_hand_sig", next_player)
+			first_player = player
+		# prev_deck will be added to next player
+		prev_deck = curr_deck
 	
-	# last player gets new hand
-	next_player = self.get_node("player_" + str(players_number - 1))
-	next_player.add_child(extra_hand)
-	Global.emit_signal("player_has_hand_sig", next_player)
+	# make sure first player also gets hand
+	if prev_deck and first_player:
+		player_decks[first_player] = prev_deck
+		first_player.add_child(prev_deck)
+		Global.emit_signal("player_has_hand_sig", first_player)
 		
 	# if the hand we just receive is of length 1, end round
 	if cards_left_in_round == 0:
@@ -586,6 +620,27 @@ func record_miso(miso_per_turn, miso_player, miso_card):
 			players_played_cards[miso_player]["miso"] += 1
 		Global.display_card_icon.emit(miso_player, miso_card, "")
 
+# load icons to be displayed
+func load_icons():
+	var path
+	for card in Global.cards:
+		var card_name = card.split("_")[0]
+		if Global.cards[card] >= 1:
+			if "fruit" in card:
+				path = "res://scenes/icons/fruit_icon.tscn"
+				card_name_to_icon["fruit"] = (load(path))
+				
+				# need to get specific fruit
+			elif card_name == "nigiri":
+				for i in 3:
+					path = "res://scenes/icons/nigiri" + '_' + str(i + 1) + "_icon.tscn"
+					card_name_to_icon["nigiri" + '_' + str(i + 1)] = (load(path))
+			else:
+				# get the correct number of cards needed for each type
+				path = "res://scenes/icons/" + card_name + "_icon.tscn"
+				card_name_to_icon[card_name] = (load(path))
+	Global.icons = card_name_to_icon
+	
 """ Helper Functions Below"""
 # function to help store cards
 # increment_val is true if we want to just increament a string: int pair, set_info is for incrementing string: set pairs

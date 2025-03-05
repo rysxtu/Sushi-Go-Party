@@ -2,19 +2,18 @@
 extends Control
 # the root player node
 @export var _self: Node2D
-@export var points_label: Label
 @export var plate: Control
 
 const WASABI_ADJUSTMENT = -8
 const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
-var card_name_to_icon = Global.icons
+var card_name_to_icon = {}
 var icon_no = 0
 
 var markers
 
 func _ready():
-	Global.player_points_sig.connect(display_points)
 	Global.display_card_icon.connect(add_icon)
+	load_icons()
 	Global.round_over.connect(reset)
 	
 	const path = "res://scenes/game/display_"
@@ -61,7 +60,21 @@ func add_icon(player, card, info):
 		marker.add_child(new_icon)
 		icon_no += 1
 
-func display_points(player, points):
-	if _self == player:
-		points_label.text = "Points: " + str(points)
-
+func load_icons():
+	var path
+	for card in Global.cards:
+		var card_name = card.split("_")[0]
+		if Global.cards[card] >= 1:
+			if "fruit" in card:
+				path = "res://scenes/icons/fruit_icon.tscn"
+				card_name_to_icon["fruit"] = (load(path))
+				
+				# need to get specific fruit
+			elif card_name == "nigiri":
+				for i in 3:
+					path = "res://scenes/icons/nigiri" + '_' + str(i + 1) + "_icon.tscn"
+					card_name_to_icon["nigiri" + '_' + str(i + 1)] = (load(path))
+			else:
+				# get the correct number of cards needed for each type
+				path = "res://scenes/icons/" + card_name + "_icon.tscn"
+				card_name_to_icon[card_name] = (load(path))

@@ -2,7 +2,7 @@ extends Button
 
 @export var icon_manager: Control
 @export var counter: Control
-@export var player_hand: Node2D
+@export var player: Node2D
 
 var deck_seeable = false
 
@@ -15,10 +15,14 @@ func _on_pressed():
 	if deck_seeable == false:
 		counter.visible = true
 		icon_manager.visible = true
-		player_hand.visible = false
+		get_hand(player).visible = false
+		
 	else:
 		counter.visible = false
 		icon_manager.visible = false
-		player_hand.visible = true
+		get_hand(player).visible = true
 	deck_seeable = !deck_seeable
 	
+# returns the player's hand
+func get_hand(player):
+	return player.get_child(1)

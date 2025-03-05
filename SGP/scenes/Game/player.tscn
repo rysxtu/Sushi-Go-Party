@@ -207,7 +207,7 @@ offset_top = 77.45
 offset_right = -188.0
 offset_bottom = -22.05
 
-[node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "counter", "player_hand")]
+[node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "counter", "player")]
 layout_mode = 0
 offset_left = 355.0
 offset_right = 402.0
@@ -216,7 +216,7 @@ text = "Deck"
 script = ExtResource("8_jwv54")
 icon_manager = NodePath("../icon_manager")
 counter = NodePath("../Counter")
-player_hand = NodePath("../../player_hand")
+player = NodePath("../..")
 
 [node name="points" type="Label" parent="display"]
 layout_mode = 0
