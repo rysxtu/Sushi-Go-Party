@@ -6,6 +6,7 @@ var states = {}
 var cards = {}
 var cards_loaded = {}
 var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][players_number - 1]
+var online
 
 # how many cards there are of each type
 var cards_no = {

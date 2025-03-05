@@ -1,4 +1,4 @@
-[gd_scene load_steps=75 format=3 uid="uid://kpyw4t0jr0ii"]
+[gd_scene load_steps=74 format=3 uid="uid://kpyw4t0jr0ii"]
 
 [ext_resource type="Texture2D" uid="uid://c68p6up8vq7xx" path="res://assets/Other/istockphoto-672617568-612x612.jpg" id="1_28ayn"]
 [ext_resource type="PackedScene" uid="uid://bh3dxcxi1v06g" path="res://scenes/UI/set_bg.tscn" id="2_nmhwi"]
@@ -31,7 +31,6 @@
 [ext_resource type="PackedScene" uid="uid://c044e4niiadcs" path="res://scenes/card2D/set_up_cards/appetizer/eel.tscn" id="24_d4fdk"]
 [ext_resource type="PackedScene" uid="uid://4ysmebqstsip" path="res://scenes/card2D/set_up_cards/special/soy_sauce.tscn" id="25_ewwtv"]
 [ext_resource type="PackedScene" uid="uid://dxla3yt0g5he3" path="res://scenes/UI/drag_and_drop.tscn" id="31_cacbo"]
-[ext_resource type="PackedScene" uid="uid://dhkcev4eoj5w5" path="res://scenes/UI/back_button.tscn" id="31_d4h0c"]
 [ext_resource type="PackedScene" uid="uid://lwfnxvcmr50i" path="res://scenes/UI/select_button.tscn" id="32_hfdtw"]
 [ext_resource type="PackedScene" uid="uid://dq6x58kkyj01w" path="res://scenes/UI/custom_display.tscn" id="32_opsgf"]
 [ext_resource type="Texture2D" uid="uid://0vu8krtd8m0c" path="res://assets/better_cards_final/sc_final/nigiri.png" id="34_62h2s"]
@@ -175,7 +174,7 @@ VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_e0n6k")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_n2fhs")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_x556a")
 
-[node name="Set up" type="Control" node_paths=PackedStringArray("custom", "mfm", "sg", "ps", "mm", "pp", "cc", "bb", "dft", "menu_v_box_container", "custom_h_box_container", "Menu_select", "back_button", "select_button")]
+[node name="Set up" type="Control" node_paths=PackedStringArray("custom", "mfm", "sg", "ps", "mm", "pp", "cc", "bb", "dft", "menu_v_box_container", "custom_h_box_container", "Menu_select", "select_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -195,7 +194,6 @@ dft = NodePath("Menu_select/Menus/menu_vbox/dft")
 menu_v_box_container = NodePath("Menu_select/Menus/menu_vbox")
 custom_h_box_container = NodePath("Menu_select/Custom/custom_vbox/custom/custom")
 Menu_select = NodePath("Menu_select")
-back_button = NodePath("back_button")
 select_button = NodePath("Select_button")
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -886,21 +884,6 @@ layout_mode = 2
 [node name="HSeparator3" type="HSeparator" parent="Menu_select/Custom/custom_vbox"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
-
-[node name="back_button" parent="." instance=ExtResource("31_d4h0c")]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.02
-anchor_top = 0.031
-anchor_right = 0.074
-anchor_bottom = 0.146
-offset_left = -0.0399978
-offset_top = -0.0880104
-offset_right = 0.512001
-offset_bottom = 0.116983
-grow_horizontal = 1
-grow_vertical = 1
 
 [node name="Select_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1

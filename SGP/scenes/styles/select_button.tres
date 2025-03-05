@@ -1,7 +1,8 @@
 [gd_resource type="StyleBoxFlat" format=3 uid="uid://xeni601ishq3"]
 
 [resource]
-bg_color = Color(0.634048, 0.681782, 0.177622, 0.92549)
+bg_color = Color(0.551702, 0.708387, 0.163204, 0.92549)
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20

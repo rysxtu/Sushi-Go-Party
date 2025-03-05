@@ -1,0 +1,103 @@
+[gd_scene load_steps=5 format=3 uid="uid://lxor3k677l50"]
+
+[ext_resource type="Script" path="res://scripts/lobby.gd" id="1_5axxw"]
+[ext_resource type="Texture2D" uid="uid://c68p6up8vq7xx" path="res://assets/Other/istockphoto-672617568-612x612.jpg" id="2_t1tg2"]
+[ext_resource type="PackedScene" uid="uid://dhkcev4eoj5w5" path="res://scenes/UI/back_button.tscn" id="3_g8nvk"]
+[ext_resource type="PackedScene" uid="uid://lwfnxvcmr50i" path="res://scenes/UI/select_button.tscn" id="4_1max1"]
+
+[node name="Lobby" type="Control" node_paths=PackedStringArray("play_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5axxw")
+play_button = NodePath("play_button")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_t1tg2")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 113.0
+offset_top = 140.0
+offset_right = 153.0
+offset_bottom = 180.0
+
+[node name="back_button" parent="." instance=ExtResource("3_g8nvk")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.02
+anchor_top = 0.031
+anchor_right = 0.074
+anchor_bottom = 0.146
+offset_left = -0.0399978
+offset_top = -0.0880104
+offset_right = 0.512001
+offset_bottom = 0.116983
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="play_button" parent="." instance=ExtResource("4_1max1")]
+layout_mode = 1
+anchor_left = 0.701389
+anchor_top = 0.714506
+anchor_right = 0.874535
+anchor_bottom = 0.791852
+offset_left = 3.99999
+offset_top = 2.0
+offset_right = 4.53596
+offset_bottom = 1.87996
+text = "Play
+"
+
+[node name="select_button" parent="." instance=ExtResource("4_1max1")]
+layout_mode = 1
+anchor_left = 0.630407
+anchor_top = 0.552264
+anchor_right = 0.803553
+anchor_bottom = 0.62961
+offset_left = 85.7709
+offset_top = 45.1329
+offset_right = 86.3069
+offset_bottom = 45.0128
+disabled = false
+text = "Select Deck
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="Players_temp" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 94.0
+offset_top = 122.0
+offset_right = 734.0
+offset_bottom = 572.0
+
+[node name="deck" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 759.0
+offset_top = 122.0
+offset_right = 1059.0
+offset_bottom = 322.0
+
+[node name="add_bots" type="Button" parent="."]
+layout_mode = 0
+offset_left = 645.0
+offset_top = 125.0
+offset_right = 693.0
+offset_bottom = 156.0
+text = "+ bot"
+
+[connection signal="pressed" from="back_button" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="play_button" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="select_button" to="." method="_on_select_button_pressed"]

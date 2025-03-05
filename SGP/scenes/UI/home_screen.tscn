@@ -1,0 +1,94 @@
+[gd_scene load_steps=9 format=3 uid="uid://dlrrxd0ka4ptc"]
+
+[ext_resource type="Texture2D" uid="uid://c68p6up8vq7xx" path="res://assets/Other/istockphoto-672617568-612x612.jpg" id="1_ev10v"]
+[ext_resource type="Script" path="res://scripts/home_screen.gd" id="1_n1i1n"]
+[ext_resource type="PackedScene" uid="uid://lwfnxvcmr50i" path="res://scenes/UI/select_button.tscn" id="3_r610y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cgl3h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2yrg8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7b8h0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_43c3l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rmetj"]
+
+[node name="HomeScreen" type="Control" node_paths=PackedStringArray("single_player", "multi_player")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n1i1n")
+single_player = NodePath("")
+multi_player = NodePath("multi_button")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ev10v")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="multi_button" parent="." instance=ExtResource("3_r610y")]
+layout_mode = 1
+anchor_left = 0.417535
+anchor_top = 0.674382
+anchor_right = 0.590681
+anchor_bottom = 0.751728
+offset_right = 0.53598
+offset_bottom = -0.120037
+theme_override_styles/normal = SubResource("StyleBoxFlat_cgl3h")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2yrg8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7b8h0")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_43c3l")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rmetj")
+disabled = false
+text = "Multiplayer
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="single_button" parent="." instance=ExtResource("3_r610y")]
+layout_mode = 1
+anchor_left = 0.417535
+anchor_top = 0.580247
+anchor_right = 0.590681
+anchor_bottom = 0.657593
+offset_right = 0.53598
+offset_bottom = -0.120037
+theme_override_styles/normal = SubResource("StyleBoxFlat_cgl3h")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2yrg8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7b8h0")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_43c3l")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rmetj")
+disabled = false
+text = "Single Player
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 186.0
+offset_right = 765.0
+offset_bottom = 255.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "Sushi Go Party!"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 355.0
+offset_top = 171.0
+offset_right = 805.0
+offset_bottom = 271.0
+
+[connection signal="pressed" from="multi_button" to="." method="_on_multi_button_pressed"]
+[connection signal="pressed" from="single_button" to="." method="_on_single_button_pressed"]

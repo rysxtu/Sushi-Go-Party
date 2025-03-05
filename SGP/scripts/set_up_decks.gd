@@ -13,7 +13,6 @@ extends Control
 @export var custom_h_box_container: HBoxContainer
 @export var Menu_select: TabContainer
 
-@export var back_button: Button
 @export var select_button: Button
 
 var states = {"custom": 0, "mfm": 0, "sg": 0, "ps": 0, 
@@ -75,7 +74,8 @@ func _on_select_button_pressed():
 	Global.cards = cards
 	print(cards)
 	print("switch scene")
-	get_tree().change_scene_to_file("res://scenes/Game/Board.tscn")
+	get_tree().change_scene_to_file("res://scenes/UI/lobby.tscn")
+	
 
 # identitfy what cards will be in the game
 func cards_in_play():

@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="29_gfy2f"]
 
 [node name="Player" type="Node2D"]
-position = Vector2(582, 560)
+position = Vector2(582, 568)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
