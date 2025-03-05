@@ -37,6 +37,7 @@ func _on_player_has_hand(player):
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
 			card.visible = true
+			flip_card_to_front(card)
 			card.card_pressed.connect(_card_pressed_from_hand)
 		# span the cards
 		if player_hand.get_child_count() >= 1:
@@ -50,6 +51,7 @@ func disconnect_hand_from_player(player):
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
 			card.visible = false
+			flip_card_to_back(card)
 			card.card_pressed.disconnect(_card_pressed_from_hand)
 
 # have to fix the positioning of update cards
@@ -118,3 +120,16 @@ func scale_card(card, ratio):
 # returns the player's hand
 func get_hand(player):
 	return player.get_child(1)
+
+# make the top of a card visible
+func flip_card_to_front(card):
+	card.get_child(0).visible = true
+	card.get_child(-2).visible = false
+	card.mouse_filter = 0
+
+# make the back of a card visible
+func flip_card_to_back(card):
+	card.get_child(0).visible = false
+	card.get_child(-2).visible = true
+	card.mouse_filter = 2
+

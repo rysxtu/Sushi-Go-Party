@@ -67,6 +67,7 @@ func _ready():
 	for player in players_points:
 		populate_player_hand(player)
 	Global.emit_signal("game_started_sig")
+	Global.emit_signal("allowed_to_play")
 
 # make all the players in the game
 @warning_ignore("shadowed_variable")
@@ -175,7 +176,7 @@ func store_card_played(player, card, extra_info):
 			desserts_in_round.erase(card)
 		# store the variations of onigiri and fruits as sets
 		update_player_dict(players_played_cards, player, card_name, false, 1, variation)
-		Global.display_card_icon.emit(player, card, "")
+		Global.emit_signal("display_card_icon", player, card, "")
 	elif extra_info == null and card_name in DURING_ROUND_CARDS:
 		# during round (call calc_points) : uramaki, miso soup
 		played_dr_cards.append([card_name, card, player])
@@ -189,21 +190,21 @@ func store_card_played(player, card, extra_info):
 			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
 				players_played_cards[player]["wasabi"][0] -= 1
 				players_played_cards[player]["wasabi"][1].append(variation)
-				Global.display_card_icon.emit(player, card, "wasabi")
+				Global.emit_signal("display_card_icon", player, card, "wasabi")
 			else:
 				# store as just nigiri
 				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
-				Global.display_card_icon.emit(player, card, "")
+				Global.emit_signal("display_card_icon", player, card, "")
 		else:
 			if "wasabi" not in players_played_cards[player]:
 				players_played_cards[player]["wasabi"] = [1, []]
 			else:
 				players_played_cards[player]["wasabi"][0] += 1
-			Global.display_card_icon.emit(player, card, "")
+			Global.emit_signal("display_card_icon", player, card, "")
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
-		Global.display_card_icon.emit(player, card, "")
+		Global.emit_signal("display_card_icon", player, card, "")
 	# wasabi a bit different
 	
 	# wait for the card to be flipped over & animation

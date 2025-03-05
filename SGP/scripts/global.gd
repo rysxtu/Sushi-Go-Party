@@ -6,7 +6,7 @@ var bots_number = 1
 var states = {}
 var cards = {}
 var cards_loaded = {}
-var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][players_number - 1]
+var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][players_number + bots_number - 1]
 var online
 var icons = {}
 
