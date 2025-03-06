@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://0unixqt76ikh" path="res://scenes/icons/plate.tscn" id="1_pedpw"]
 [ext_resource type="Script" path="res://scripts/bot.gd" id="1_t5ysm"]
+[ext_resource type="Script" path="res://scripts/Counter_bot.gd" id="2_hl52d"]
 [ext_resource type="Script" path="res://scripts/icon_manager_bot.gd" id="2_xoevq"]
-[ext_resource type="Script" path="res://scripts/Counter.gd" id="2_yd7r5"]
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="3_5t5js"]
 [ext_resource type="PackedScene" uid="uid://61crp3wan0wg" path="res://scenes/icons/maki_icon.tscn" id="4_0bjwy"]
 [ext_resource type="PackedScene" uid="uid://b6wckr1tw82vi" path="res://scenes/icons/tangerine_icon.tscn" id="5_pwlti"]
@@ -32,7 +32,7 @@ offset_left = -88.0
 offset_top = -158.0
 offset_right = -88.0
 offset_bottom = -158.0
-script = ExtResource("2_yd7r5")
+script = ExtResource("2_hl52d")
 _self = NodePath("../..")
 
 [node name="uramaki_icon" parent="display/Counter" instance=ExtResource("3_5t5js")]

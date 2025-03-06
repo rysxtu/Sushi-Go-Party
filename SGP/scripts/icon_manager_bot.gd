@@ -13,6 +13,7 @@ var icon_no = 0
 var markers
 # used globally to ensure that the icon can be displayed when the turn is oevr
 var new_icon 
+var my_points = 0
 
 func _ready():
 	Global.player_points_sig.connect(display_points)
@@ -70,4 +71,4 @@ func display_icons():
 
 func display_points(player, points):
 	if _self == player:
-		points_label.text = "Points: " + str(points)
+		points_label.text = "Points: " + str(my_points)
