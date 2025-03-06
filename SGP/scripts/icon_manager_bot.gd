@@ -11,10 +11,14 @@ var card_name_to_icon = Global.icons
 var icon_no = 0
 
 var markers
+# used globally to ensure that the icon can be displayed when the turn is oevr
+var new_icon 
 
 func _ready():
+	Global.player_points_sig.connect(display_points)
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
+	Global.turn_over.connect(display_icons)
 	
 	const path = "res://scenes/game/display_"
 	var markers_local = load(path + str(Global.hand_size) + ".tscn").instantiate()
@@ -29,11 +33,9 @@ func reset():
 				child.remove_child(panel)
 	icon_no = 0
 
-
-func add_icon(player, card, info):	
+func add_icon(player, card, info):
 	if _self == player:
 		var card_name = card.name.split("_")[0]
-		var new_icon
 		var side_icon
 		
 		print("---------Plate_", _self.name, " to plate: ",card.name)
@@ -44,6 +46,9 @@ func add_icon(player, card, info):
 			new_icon = card_name_to_icon[card_name + '_' + variation].instantiate()
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
+			
+		# dont show until round is over
+		new_icon.visible = false
 		
 		# check for extra info
 		# check if variation card is nigiri and if it was added with wasabi
@@ -59,6 +64,9 @@ func add_icon(player, card, info):
 		var marker = markers.get_node("Icon" + str(icon_no + 1))
 		marker.add_child(new_icon)
 		icon_no += 1
+
+func display_icons():
+	new_icon.visible = true
 
 func display_points(player, points):
 	if _self == player:

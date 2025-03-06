@@ -34,8 +34,6 @@ var players_played_desserts = {}
 var game_round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
-# cards played in a turn (during round)
-var played_dr_cards = []
 # cards left in the round
 var cards_left_in_round = Global.hand_size
 # all desserts 
@@ -130,7 +128,9 @@ func populate_player_hand(player):
 			
 	Global.emit_signal("player_has_hand_sig", player)
 	cards_left_in_round = Global.hand_size
-	
+
+# cards played in a turn (during round)
+var played_dr_cards = []
 # stores the cards that each player has played
 func store_card_played(player, card, extra_info):
 	var card_name = card.name.split('_')[0]
@@ -209,12 +209,11 @@ func store_card_played(player, card, extra_info):
 	
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
-	if taken_turn.size() == players_number + bots_number:
+	if taken_turn.size() == Global.players_number + Global.bots_number:
 		cards_left_in_round -= 1
-		calc_points("during_round", played_dr_cards)
+		calc_points("during_round", played_dr_cards.duplicate())
 		# displays icons fnction here
 		turn_over()
-		played_dr_cards = []
 		
 	
 	"""HARD"""
@@ -226,6 +225,7 @@ func store_card_played(player, card, extra_info):
 # manages when the hands needs to be swapped (when all cards have been played for a round)
 # animation
 func turn_over():
+	Global.emit_signal("turn_over")
 	# need to swap all the player_hands
 	# can play animation here 
 	var curr_deck 
@@ -262,6 +262,7 @@ func turn_over():
 		# trigger reset round
 		new_round()
 		
+	played_dr_cards = []
 	taken_turn = {}
 	Global.emit_signal("allowed_to_play")
 
@@ -572,10 +573,8 @@ func record_uramaki(tuple, not_counted_uramaki):
 			players_played_cards[tuple[2]]["uramaki"] = [variation, false]
 		elif players_played_cards[tuple[2]]["uramaki"][0] < 10:
 			players_played_cards[tuple[2]]["uramaki"][0] += variation
-		print("Board: ", players_played_cards)
 		if players_played_cards[tuple[2]]["uramaki"][0] >= 10 and not players_played_cards[tuple[2]]["uramaki"][1]:
 			not_counted_uramaki.append([players_played_cards[tuple[2]]["uramaki"][0], tuple[2]])
-		print("Board: ", not_counted_uramaki)
 
 func count_uramaki_p(not_counted_uramaki):
 	#not_counted_uramaki is an array with players who have reached >10 uramaki and have not been awarded points yet

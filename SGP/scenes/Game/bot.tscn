@@ -27,7 +27,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Counter" type="Control" parent="display" node_paths=PackedStringArray("_self")]
-visible = false
 anchors_preset = 0
 offset_left = -88.0
 offset_top = -158.0

@@ -19,7 +19,6 @@ func _ready():
 func _on_player_has_hand(player):
 	if self == player:
 		player_hand = get_hand(player)
-		print("DEBUG: ", player, ' ', player_hand.get_children())
 		print("---Player: ", player_hand, " connected to ", self)
 
 
@@ -34,9 +33,10 @@ var rng = RandomNumberGenerator.new()
 func _player_allowed_to_play():
 	allowed_to_play_card = true
 	
-	if allowed_to_play_card:
+	if allowed_to_play_card and player_hand.get_child_count() > 0:
 		# code to choose card
-		get_tree().create_timer(2.0).timeout;
+		var random_wait =  rng.randf_range(.5, 2.0)
+		await get_tree().create_timer(random_wait).timeout;
 		var random_n = rng.randi_range(0, player_hand.get_child_count() - 1)
 		var card = player_hand.get_child(random_n)
 		

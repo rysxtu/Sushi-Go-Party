@@ -32,7 +32,6 @@ func _ready():
 func _on_player_has_hand(player):
 	if self == player:
 		player_hand = get_hand(player)
-		print("DEBUG: ", player, ' ', player_hand.get_children())
 		print("---Player: ", player_hand, " connected to ", self)
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
