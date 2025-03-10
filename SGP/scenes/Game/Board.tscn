@@ -9,6 +9,13 @@ tile_shape = 2
 script = ExtResource("1_afp0u")
 deck = NodePath("Deck")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(1152, 648)
+offset_right = 1151.0
+offset_bottom = 646.0
+expand_mode = 1
+stretch_mode = 1
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_hnuss")
 format = 2

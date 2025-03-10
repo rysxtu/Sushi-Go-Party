@@ -94,12 +94,15 @@ func make_players(player_number, players_points):
 	path = "res://scenes/game/bot.tscn"
 	var bot_scene = load(path)
 	var bot
+	var angle = 100
 	for i in bots_number:
 		bot = bot_scene.instantiate()
 		bot.name = "bot_" + str(i)
 		
 		if bot.name == "bot_0":
 			bot.global_position = Vector2(500, 300)
+		else:
+			bot.global_position = Vector2(600, 200)
 		
 		bot.card_played.connect(store_card_played)
 		get_hand(bot).name = "bot_hand_" + str(i)

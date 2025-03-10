@@ -887,12 +887,24 @@ layout_mode = 2
 
 [node name="Select_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1
-anchor_left = 0.408854
-anchor_top = 0.862654
-anchor_right = 0.582
-anchor_bottom = 0.94
+anchor_left = 0.50868
+anchor_top = 0.867284
+anchor_right = 0.681826
+anchor_bottom = 0.94463
 offset_right = 0.53598
 offset_bottom = -0.120037
+metadata/_edit_use_anchors_ = true
+
+[node name="Back_button" parent="." instance=ExtResource("32_hfdtw")]
+layout_mode = 1
+anchor_left = 0.311632
+anchor_top = 0.867284
+anchor_right = 0.484778
+anchor_bottom = 0.94463
+offset_right = 0.53598
+offset_bottom = -0.120037
+disabled = false
+text = "Back"
 metadata/_edit_use_anchors_ = true
 
 [connection signal="tab_changed" from="Menu_select" to="." method="_on_menu_select_tab_changed"]
@@ -936,3 +948,4 @@ metadata/_edit_use_anchors_ = true
 [connection signal="has_texture" from="Menu_select/Custom/custom_vbox/custom/custom/card8" to="." method="_on_card_8_has_texture"]
 [connection signal="no_texture" from="Menu_select/Custom/custom_vbox/custom/custom/card8" to="." method="_on_card_8_no_texture"]
 [connection signal="pressed" from="Select_button" to="." method="_on_select_button_pressed"]
+[connection signal="pressed" from="Back_button" to="." method="_on_back_button_pressed"]
