@@ -19,6 +19,8 @@ const DEPENDENT_CARDS = {"special": null}
 const VARIATION_CARDS = {"fruit": null, "onigiri": null}
 # nigir and wasabi
 const WASABI_CARDS = {"nigiri": null, "wasabi": null}
+# hand size
+var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][Global.players_number + Global.bots_number - 1]
 
 var cards_no = Global.cards_no
 # number of player: initially set at 1
@@ -35,7 +37,7 @@ var game_round = 1
 # record if a player has taken  a turn
 var taken_turn = {}
 # cards left in the round
-var cards_left_in_round = Global.hand_size
+var cards_left_in_round = hand_size
 # all desserts 
 var desserts = []
 var desserts_per_round = dpr()
@@ -56,6 +58,8 @@ func _ready():
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
+	# make hand size known globally for icon managers
+	Global.hand_size = hand_size
 	var cards_loaded = {}
 	load_cards(cards, cards_loaded)
 	load_icons()
@@ -100,9 +104,20 @@ func make_players(player_number, players_points):
 		bot.name = "bot_" + str(i)
 		
 		if bot.name == "bot_0":
-			bot.global_position = Vector2(500, 300)
-		else:
-			bot.global_position = Vector2(600, 200)
+			bot.global_position = Vector2(600, 100)
+		elif bot.name == "bot_1":
+			bot.global_position = Vector2(750, 100)
+		elif bot.name == "bot_2":
+			bot.global_position = Vector2(900, 100)
+		elif bot.name == "bot_3":
+			bot.global_position = Vector2(1050, 100)
+		elif bot.name == "bot_4":
+			bot.global_position = Vector2(450, 100)
+		elif bot.name == "bot_5":
+			bot.global_position = Vector2(300, 100)
+		elif bot.name == "bot_6":
+			bot.global_position = Vector2(150, 100)
+		bot.scale = Vector2(0.4, 0.4)
 		
 		bot.card_played.connect(store_card_played)
 		get_hand(bot).name = "bot_hand_" + str(i)
@@ -115,14 +130,14 @@ func populate_player_hand(player):
 	var card
 	
 	if player.name.contains("player"):
-		for i in Global.hand_size:
+		for i in hand_size:
 			card = deck.get_children().pick_random()
 			scale_card(card, 1)
 			card.global_position = player.global_position
 			move_node(card, deck, get_hand(player))
 			flip_card_to_front(card)
 	else:
-		for i in Global.hand_size:
+		for i in hand_size:
 			card = deck.get_children().pick_random()
 			card.visible = false
 			scale_card(card, 1)
@@ -130,7 +145,7 @@ func populate_player_hand(player):
 			move_node(card, deck, get_hand(player))
 			
 	Global.emit_signal("player_has_hand_sig", player)
-	cards_left_in_round = Global.hand_size
+	cards_left_in_round = hand_size
 
 # cards played in a turn (during round)
 var played_dr_cards = []

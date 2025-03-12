@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b6khrtox48fsg"]
+
+[node name="player_points" type="Label"]
+anchors_preset = -1
+anchor_right = 0.09
+anchor_bottom = 0.071
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1.32
+offset_bottom = 9.992
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "0"
+horizontal_alignment = 2

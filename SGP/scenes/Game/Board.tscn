@@ -1,13 +1,24 @@
 [gd_scene load_steps=3 format=3 uid="uid://datpj6x6xgam6"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_afp0u"]
-
-[sub_resource type="TileSet" id="TileSet_hnuss"]
-tile_shape = 2
+[ext_resource type="Script" path="res://scripts/UI_manager.gd" id="2_jhjo2"]
 
 [node name="Board" type="Node2D" node_paths=PackedStringArray("deck")]
 script = ExtResource("1_afp0u")
 deck = NodePath("Deck")
+
+[node name="UI" type="Control" parent="." node_paths=PackedStringArray("player_points")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+script = ExtResource("2_jhjo2")
+player_points = NodePath("player_points")
+
+[node name="player_points" type="Control" parent="UI"]
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
 
 [node name="TextureRect" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1152, 648)
@@ -16,12 +27,10 @@ offset_bottom = 646.0
 expand_mode = 1
 stretch_mode = 1
 
-[node name="TileMap" type="TileMap" parent="."]
-tile_set = SubResource("TileSet_hnuss")
-format = 2
-
 [node name="Played_cards" type="Node2D" parent="."]
+visible = false
 position = Vector2(302, 224)
 
 [node name="Deck" type="Node2D" parent="."]
+visible = false
 position = Vector2(148, 159)

@@ -108,6 +108,33 @@ func _on_menu_select_tab_changed(tab):
 		for state in states:
 			states[state] = 0
 
+func _on_back_button_pressed():
+	get_tree().change_scene_to_file("res://scenes/UI/home_screen.tscn")
+
+
+func _on_play_button_pressed():
+	Global.states = states
+	cards_in_play()
+	Global.cards = cards
+	print(cards)
+	print("switch scene")
+	get_tree().change_scene_to_file("res://scenes/Game/Board.tscn")
+
+
+func _on_remove_bots_pressed():
+	if Global.bots_number > 0:
+		var rmv_bot_ui = player_container.get_child(-1)
+		player_container.remove_child(rmv_bot_ui)
+		rmv_bot_ui.queue_free()
+		Global.bots_number -= 1
+
+
+func _on_add_bots_pressed():
+	if Global.bots_number < 7:
+		var new_bot_ui = bot_ui.instantiate()
+		player_container.add_child(new_bot_ui)
+		Global.bots_number += 1
+
 func reset_custom_select():
 	for card in custom.get_child(0).get_children():
 		card.texture = null
@@ -189,31 +216,3 @@ func _process(delta):
 		if sum == 8:
 			play_button.disabled = false
 
-
-
-func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/UI/home_screen.tscn")
-
-
-func _on_play_button_pressed():
-	Global.states = states
-	cards_in_play()
-	Global.cards = cards
-	print(cards)
-	print("switch scene")
-	get_tree().change_scene_to_file("res://scenes/Game/Board.tscn")
-
-
-func _on_remove_bots_pressed():
-	if Global.bots_number > 0:
-		var rmv_bot_ui = player_container.get_child(-1)
-		player_container.remove_child(rmv_bot_ui)
-		rmv_bot_ui.queue_free()
-		Global.bots_number -= 1
-
-
-func _on_add_bots_pressed():
-	var new_bot_ui = bot_ui.instantiate()
-	new_bot_ui.global_position = player_container.global_position
-	player_container.add_child(new_bot_ui)
-	Global.bots_number += 1

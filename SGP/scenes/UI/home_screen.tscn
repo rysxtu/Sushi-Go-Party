@@ -49,7 +49,6 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_2yrg8")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7b8h0")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_43c3l")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_rmetj")
-disabled = false
 text = "Multiplayer
 "
 metadata/_edit_use_anchors_ = true

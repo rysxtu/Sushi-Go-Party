@@ -65,5 +65,6 @@ func add_icon(player, card, info):
 		icon_no += 1
 
 func display_icons():
-	new_icon.visible = true
+	if new_icon:
+		new_icon.visible = true
 
