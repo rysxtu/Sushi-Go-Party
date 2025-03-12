@@ -72,28 +72,28 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bs1qg"]
-bg_color = Color(0.359069, 0.359069, 0.359069, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2eyhr"]
+bg_color = Color(0.239347, 0.239347, 0.239347, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgwyp"]
-bg_color = Color(0.230315, 0.230315, 0.230315, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cuy7y"]
+bg_color = Color(0.178212, 0.178212, 0.178212, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vyysy"]
-bg_color = Color(0.231373, 0.231373, 0.231373, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kkdbb"]
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v1v32"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_841vy"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 draw_center = false
 skew = Vector2(2.08165e-12, 2.08165e-12)
@@ -108,16 +108,16 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 corner_detail = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i7bbv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8tgm7"]
 bg_color = Color(0.425571, 0.425571, 0.425571, 1)
 
 [sub_resource type="Theme" id="Theme_p26uu"]
 default_base_scale = 1.0
-VScrollBar/styles/grabber = SubResource("StyleBoxFlat_bs1qg")
-VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_jgwyp")
-VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_vyysy")
-VScrollBar/styles/scroll = SubResource("StyleBoxFlat_v1v32")
-VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_i7bbv")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_2eyhr")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_cuy7y")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_kkdbb")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_841vy")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_8tgm7")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nc8vg"]
 content_margin_left = 20.0
@@ -126,7 +126,7 @@ bg_color = Color(0.270588, 0.270588, 0.270588, 0.654902)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xufit"]
 content_margin_left = 20.0
-content_margin_top = 5.0
+content_margin_top = 20.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(0.286275, 0.286275, 0.286275, 0.792157)
@@ -174,7 +174,7 @@ VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_e0n6k")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_n2fhs")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_x556a")
 
-[node name="Set up" type="Control" node_paths=PackedStringArray("custom", "mfm", "sg", "ps", "mm", "pp", "cc", "bb", "dft", "menu_v_box_container", "custom_h_box_container", "Menu_select", "select_button")]
+[node name="Set up" type="Control" node_paths=PackedStringArray("custom", "mfm", "sg", "ps", "mm", "pp", "cc", "bb", "dft", "menu_v_box_container", "custom_h_box_container", "Menu_select", "player_container", "play_button", "back_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -194,7 +194,9 @@ dft = NodePath("Menu_select/Menus/menu_vbox/dft")
 menu_v_box_container = NodePath("Menu_select/Menus/menu_vbox")
 custom_h_box_container = NodePath("Menu_select/Custom/custom_vbox/custom/custom")
 Menu_select = NodePath("Menu_select")
-select_button = NodePath("Select_button")
+player_container = NodePath("players/player_container")
+play_button = NodePath("play_button")
+back_button = NodePath("back_button")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2
@@ -216,16 +218,17 @@ grow_vertical = 2
 [node name="Menu_select" type="TabContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.107
-anchor_top = 0.057
-anchor_right = 0.905
-anchor_bottom = 0.829
-offset_left = -0.264001
-offset_top = 0.064
-offset_right = 0.440033
-offset_bottom = -0.192059
+anchor_left = 0.322
+anchor_top = 0.1
+anchor_right = 0.961
+anchor_bottom = 0.841
+offset_left = -89.944
+offset_top = -64.8
+offset_right = 93.928
+offset_bottom = 105.032
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.8, 0.8)
 pivot_offset = Vector2(450, 200)
 theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_cxh2e")
 theme_override_styles/panel = SubResource("StyleBoxFlat_ubpjq")
@@ -643,7 +646,6 @@ horizontal_scroll_mode = 0
 vertical_scroll_mode = 0
 
 [node name="custom_vbox" type="VBoxContainer" parent="Menu_select/Custom"]
-custom_minimum_size = Vector2(880, 182)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
@@ -707,7 +709,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="types" type="TabContainer" parent="Menu_select/Custom/custom_vbox"]
-custom_minimum_size = Vector2(850, 240)
+custom_minimum_size = Vector2(850, 380)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_xufit")
@@ -885,27 +887,59 @@ layout_mode = 2
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 
-[node name="Select_button" parent="." instance=ExtResource("32_hfdtw")]
+[node name="play_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1
-anchor_left = 0.50868
-anchor_top = 0.867284
-anchor_right = 0.681826
-anchor_bottom = 0.94463
+anchor_left = 0.505208
+anchor_top = 0.895062
+anchor_right = 0.678354
+anchor_bottom = 0.972408
 offset_right = 0.53598
 offset_bottom = -0.120037
+text = "Play"
 metadata/_edit_use_anchors_ = true
 
-[node name="Back_button" parent="." instance=ExtResource("32_hfdtw")]
+[node name="back_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1
-anchor_left = 0.311632
-anchor_top = 0.867284
-anchor_right = 0.484778
-anchor_bottom = 0.94463
+anchor_left = 0.303819
+anchor_top = 0.898148
+anchor_right = 0.476965
+anchor_bottom = 0.975494
 offset_right = 0.53598
 offset_bottom = -0.120037
 disabled = false
 text = "Back"
 metadata/_edit_use_anchors_ = true
+
+[node name="players" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 66.0
+offset_right = 353.0
+offset_bottom = 559.0
+
+[node name="player_container" type="VBoxContainer" parent="players"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 110
+
+[node name="add_bots" type="Button" parent="."]
+offset_left = 207.0
+offset_top = 514.0
+offset_right = 255.0
+offset_bottom = 545.0
+text = "+ bot"
+
+[node name="remove_bots" type="Button" parent="."]
+offset_left = 143.0
+offset_top = 513.0
+offset_right = 187.0
+offset_bottom = 544.0
+text = "- bot"
 
 [connection signal="tab_changed" from="Menu_select" to="." method="_on_menu_select_tab_changed"]
 [connection signal="pressed" from="Menu_select/Menus/menu_vbox/mfm" to="." method="_on_mfm_pressed"]
@@ -947,5 +981,7 @@ metadata/_edit_use_anchors_ = true
 [connection signal="no_texture" from="Menu_select/Custom/custom_vbox/custom/custom/card7" to="." method="_on_card_7_no_texture"]
 [connection signal="has_texture" from="Menu_select/Custom/custom_vbox/custom/custom/card8" to="." method="_on_card_8_has_texture"]
 [connection signal="no_texture" from="Menu_select/Custom/custom_vbox/custom/custom/card8" to="." method="_on_card_8_no_texture"]
-[connection signal="pressed" from="Select_button" to="." method="_on_select_button_pressed"]
-[connection signal="pressed" from="Back_button" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="play_button" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="back_button" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="add_bots" to="." method="_on_add_bots_pressed"]
+[connection signal="pressed" from="remove_bots" to="." method="_on_remove_bots_pressed"]

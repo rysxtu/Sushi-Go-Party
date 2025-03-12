@@ -1,9 +1,89 @@
-[gd_scene load_steps=5 format=3 uid="uid://lxor3k677l50"]
+[gd_scene load_steps=40 format=3 uid="uid://lxor3k677l50"]
 
 [ext_resource type="Script" path="res://scripts/lobby.gd" id="1_5axxw"]
 [ext_resource type="Texture2D" uid="uid://c68p6up8vq7xx" path="res://assets/Other/istockphoto-672617568-612x612.jpg" id="2_t1tg2"]
 [ext_resource type="PackedScene" uid="uid://dhkcev4eoj5w5" path="res://scenes/UI/back_button.tscn" id="3_g8nvk"]
 [ext_resource type="PackedScene" uid="uid://lwfnxvcmr50i" path="res://scenes/UI/select_button.tscn" id="4_1max1"]
+[ext_resource type="PackedScene" uid="uid://cuyb1u05l0kb2" path="res://scenes/UI/Header.tscn" id="5_073pj"]
+[ext_resource type="PackedScene" uid="uid://43l0pe6622pp" path="res://scenes/UI/my_h_separator.tscn" id="6_ghlvl"]
+[ext_resource type="PackedScene" uid="uid://btb2exwp1xpea" path="res://scenes/UI/Subheader.tscn" id="7_uxjuk"]
+[ext_resource type="PackedScene" uid="uid://bh3dxcxi1v06g" path="res://scenes/UI/set_bg.tscn" id="8_62p5k"]
+[ext_resource type="PackedScene" uid="uid://bsdnw85vc3q5t" path="res://scenes/UI/set.tscn" id="9_88neu"]
+[ext_resource type="PackedScene" uid="uid://ctd3nws5ojdqq" path="res://scenes/card2D/set_up_cards/nigiri.tscn" id="10_quoap"]
+[ext_resource type="PackedScene" uid="uid://bedx3g4q6tfog" path="res://scenes/card2D/set_up_cards/rolls/maki.tscn" id="11_wmrqn"]
+[ext_resource type="PackedScene" uid="uid://duhj3n3458u8c" path="res://scenes/card2D/set_up_cards/appetizer/tempura.tscn" id="12_87j37"]
+[ext_resource type="PackedScene" uid="uid://c50er4myijwbe" path="res://scenes/card2D/set_up_cards/appetizer/sashimi.tscn" id="13_23ast"]
+[ext_resource type="PackedScene" uid="uid://ddcan0t8n36mu" path="res://scenes/card2D/set_up_cards/appetizer/miso_soup.tscn" id="14_u8ucw"]
+[ext_resource type="PackedScene" uid="uid://d1qiusa54sum8" path="res://scenes/card2D/set_up_cards/special/wasabi.tscn" id="15_25byu"]
+[ext_resource type="PackedScene" uid="uid://dsx7dwwlx48l" path="res://scenes/card2D/set_up_cards/special/tea.tscn" id="16_x5rh5"]
+[ext_resource type="PackedScene" uid="uid://eb20itfgsaw5" path="res://scenes/card2D/set_up_cards/dessert/green_tea_ice_cream.tscn" id="17_pipc6"]
+[ext_resource type="PackedScene" uid="uid://j475b7qxipfo" path="res://scenes/card2D/set_up_cards/appetizer/dumplings.tscn" id="18_bg8dx"]
+[ext_resource type="PackedScene" uid="uid://p2c2xruy31u8" path="res://scenes/card2D/set_up_cards/special/chopsticks.tscn" id="19_iiedp"]
+[ext_resource type="PackedScene" uid="uid://cgo46ikwrpluu" path="res://scenes/card2D/set_up_cards/dessert/pudding.tscn" id="20_fiw5x"]
+[ext_resource type="PackedScene" uid="uid://5qj3o25qqse3" path="res://scenes/card2D/set_up_cards/rolls/temaki.tscn" id="21_axexy"]
+[ext_resource type="PackedScene" uid="uid://4qbkf8bmfhv3" path="res://scenes/card2D/set_up_cards/appetizer/tofu.tscn" id="22_6pr2u"]
+[ext_resource type="PackedScene" uid="uid://b42yco2m8hyhc" path="res://scenes/card2D/set_up_cards/special/menu.tscn" id="23_g8uag"]
+[ext_resource type="PackedScene" uid="uid://sart7ta3sb4p" path="res://scenes/card2D/set_up_cards/appetizer/onigiri.tscn" id="24_rs2jc"]
+[ext_resource type="PackedScene" uid="uid://dcm375mptpfuj" path="res://scenes/card2D/set_up_cards/special/spoon.tscn" id="25_shwgb"]
+[ext_resource type="PackedScene" uid="uid://bros3h1hp82wg" path="res://scenes/card2D/set_up_cards/special/takeout_box.tscn" id="26_6yo0h"]
+[ext_resource type="PackedScene" uid="uid://3stxdw58w3ly" path="res://scenes/card2D/set_up_cards/dessert/fruit.tscn" id="27_gqs0u"]
+[ext_resource type="PackedScene" uid="uid://xd2ywoil1pwu" path="res://scenes/card2D/set_up_cards/rolls/uramaki.tscn" id="28_81hiv"]
+[ext_resource type="PackedScene" uid="uid://0jhttkqk782e" path="res://scenes/card2D/set_up_cards/appetizer/edamame.tscn" id="29_6pet7"]
+[ext_resource type="PackedScene" uid="uid://b56ilqybwy1pq" path="res://scenes/card2D/set_up_cards/special/special_order.tscn" id="30_3b0a6"]
+[ext_resource type="PackedScene" uid="uid://c044e4niiadcs" path="res://scenes/card2D/set_up_cards/appetizer/eel.tscn" id="31_3pxgd"]
+[ext_resource type="PackedScene" uid="uid://4ysmebqstsip" path="res://scenes/card2D/set_up_cards/special/soy_sauce.tscn" id="32_uppk4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bs1qg"]
+bg_color = Color(0.359069, 0.359069, 0.359069, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgwyp"]
+bg_color = Color(0.230315, 0.230315, 0.230315, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vyysy"]
+bg_color = Color(0.231373, 0.231373, 0.231373, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v1v32"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+draw_center = false
+skew = Vector2(2.08165e-12, 2.08165e-12)
+border_width_left = 4
+border_width_top = 2
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i7bbv"]
+bg_color = Color(0.425571, 0.425571, 0.425571, 1)
+
+[sub_resource type="Theme" id="Theme_lgvba"]
+default_base_scale = 1.0
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_bs1qg")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_jgwyp")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_vyysy")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_v1v32")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_i7bbv")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qckkq"]
+content_margin_left = 20.0
+content_margin_right = 15.0
+bg_color = Color(0.270588, 0.270588, 0.270588, 0.654902)
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("play_button", "player_container")]
 layout_mode = 3
@@ -55,19 +135,19 @@ anchor_left = 0.701389
 anchor_top = 0.714506
 anchor_right = 0.874535
 anchor_bottom = 0.791852
-offset_left = 3.99999
-offset_top = 2.0
-offset_right = 4.53596
-offset_bottom = 1.87996
+offset_left = -347.0
+offset_top = 111.0
+offset_right = -346.464
+offset_bottom = 110.88
 text = "Play
 "
 
 [node name="select_button" parent="." instance=ExtResource("4_1max1")]
 layout_mode = 1
-anchor_left = 0.630407
-anchor_top = 0.552264
-anchor_right = 0.803553
-anchor_bottom = 0.62961
+anchor_left = -0.468551
+anchor_top = 0.10782
+anchor_right = -0.295405
+anchor_bottom = 0.185166
 offset_left = 85.7709
 offset_top = 45.1329
 offset_right = 86.3069
@@ -77,31 +157,31 @@ text = "Select Deck
 "
 metadata/_edit_use_anchors_ = true
 
-[node name="Players_temp" type="Panel" parent="."]
+[node name="Menu" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.082
 anchor_top = 0.188
 anchor_right = 0.637
 anchor_bottom = 0.883
-offset_left = -0.464003
-offset_top = 0.175995
-offset_right = 0.175972
-offset_bottom = -0.184011
+offset_left = 280.536
+offset_top = -29.824
+offset_right = 341.176
+offset_bottom = 8.81599
 pivot_offset = Vector2(320, 225)
 
 [node name="deck" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 759.0
-offset_top = 122.0
-offset_right = 1059.0
-offset_bottom = 322.0
+offset_left = 56.0
+offset_top = 91.0
+offset_right = 356.0
+offset_bottom = 583.0
 
 [node name="add_bots" type="Button" parent="."]
 layout_mode = 0
-offset_left = 438.0
+offset_left = 439.0
 offset_top = 525.0
-offset_right = 486.0
+offset_right = 487.0
 offset_bottom = 556.0
 text = "+ bot"
 
@@ -113,8 +193,430 @@ offset_right = 419.0
 offset_bottom = 555.0
 text = "- bot"
 
+[node name="Menus" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(910, 420)
+offset_left = 96.0
+offset_top = 129.0
+offset_right = 1006.0
+offset_bottom = 549.0
+theme = SubResource("Theme_lgvba")
+theme_override_styles/panel = SubResource("StyleBoxFlat_qckkq")
+horizontal_scroll_mode = 0
+
+[node name="menu_vbox" type="VBoxContainer" parent="Menus"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="menu_label" parent="Menus/menu_vbox" instance=ExtResource("5_073pj")]
+layout_mode = 2
+text = "Menus
+"
+
+[node name="menu_label2" parent="Menus/menu_vbox" instance=ExtResource("5_073pj")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Press on the menu you want to order
+"
+
+[node name="menu_label3" parent="Menus/menu_vbox" instance=ExtResource("5_073pj")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Left click to select, right to deselect/reset custom menu
+"
+
+[node name="my_HSeparator" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+layout_mode = 2
+
+[node name="mfm_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "My First Meal"
+
+[node name="mfm" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+
+[node name="My_first_meal" parent="Menus/menu_vbox/mfm" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -565.5
+offset_top = -79.0
+offset_right = 269.5
+offset_bottom = 39.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
+
+[node name="nigiri" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="maki" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("11_wmrqn")]
+layout_mode = 2
+
+[node name="tempura" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("12_87j37")]
+layout_mode = 2
+
+[node name="sashimi" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("13_23ast")]
+layout_mode = 2
+
+[node name="miso_soup" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("14_u8ucw")]
+layout_mode = 2
+
+[node name="wasabi" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("15_25byu")]
+layout_mode = 2
+
+[node name="tea" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("16_x5rh5")]
+layout_mode = 2
+
+[node name="green_tea_ice_cream" parent="Menus/menu_vbox/mfm/My_first_meal" instance=ExtResource("17_pipc6")]
+layout_mode = 2
+
+[node name="my_HSeparator2" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="sg_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Sushi Go!"
+
+[node name="sg" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+
+[node name="Sushi_go!" parent="Menus/menu_vbox/sg" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_right = 0.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="maki" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("11_wmrqn")]
+layout_mode = 2
+
+[node name="tempura" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("12_87j37")]
+layout_mode = 2
+
+[node name="sashimi" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("13_23ast")]
+layout_mode = 2
+
+[node name="dumplings" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("18_bg8dx")]
+layout_mode = 2
+
+[node name="chopsticks" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("19_iiedp")]
+layout_mode = 2
+
+[node name="wasabi" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("15_25byu")]
+layout_mode = 2
+
+[node name="pudding" parent="Menus/menu_vbox/sg/Sushi_go!" instance=ExtResource("20_fiw5x")]
+layout_mode = 2
+
+[node name="my_HSeparator3" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="ps_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Party Sampler
+"
+
+[node name="ps" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+
+[node name="Party_sampler" parent="Menus/menu_vbox/ps" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchor_top = -0.008
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.056
+offset_right = 0.0
+offset_bottom = 1.0
+
+[node name="nigiri" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="temaki" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("21_axexy")]
+layout_mode = 2
+
+[node name="tempura" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("12_87j37")]
+layout_mode = 2
+
+[node name="dumplings" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("18_bg8dx")]
+layout_mode = 2
+
+[node name="tofu" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("22_6pr2u")]
+layout_mode = 2
+
+[node name="wasabi" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("15_25byu")]
+layout_mode = 2
+
+[node name="menu" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("23_g8uag")]
+layout_mode = 2
+
+[node name="green_tea_ice_cream" parent="Menus/menu_vbox/ps/Party_sampler" instance=ExtResource("17_pipc6")]
+layout_mode = 2
+
+[node name="my_HSeparator4" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="mm_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Master Menu
+"
+
+[node name="mm" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+
+[node name="Master_menu" parent="Menus/menu_vbox/mm" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="temaki" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("21_axexy")]
+layout_mode = 2
+
+[node name="onigiri" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("24_rs2jc")]
+layout_mode = 2
+
+[node name="tofu" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("22_6pr2u")]
+layout_mode = 2
+
+[node name="sashimi" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("13_23ast")]
+layout_mode = 2
+
+[node name="spoon" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("25_shwgb")]
+layout_mode = 2
+
+[node name="takeout_box" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("26_6yo0h")]
+layout_mode = 2
+
+[node name="fruit" parent="Menus/menu_vbox/mm/Master_menu" instance=ExtResource("27_gqs0u")]
+layout_mode = 2
+
+[node name="my_HSeparator5" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="pp_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Points Platter
+"
+
+[node name="pp" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="Points_platter" parent="Menus/menu_vbox/pp" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_right = 0.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="uramaki" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("28_81hiv")]
+layout_mode = 2
+
+[node name="onigiri" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("24_rs2jc")]
+layout_mode = 2
+
+[node name="dumplings" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("18_bg8dx")]
+layout_mode = 2
+
+[node name="edamame" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("29_6pet7")]
+layout_mode = 2
+
+[node name="special_order" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("30_3b0a6")]
+layout_mode = 2
+
+[node name="tea" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("16_x5rh5")]
+layout_mode = 2
+
+[node name="green_tea_ice_cream" parent="Menus/menu_vbox/pp/Points_platter" instance=ExtResource("17_pipc6")]
+layout_mode = 2
+
+[node name="my_HSeparator6" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="cc_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Cutthroat Combo
+
+"
+
+[node name="cc" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="Cutthroat_combo2" parent="Menus/menu_vbox/cc" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="temaki" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("21_axexy")]
+layout_mode = 2
+
+[node name="eel" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("31_3pxgd")]
+layout_mode = 2
+
+[node name="tofu" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("22_6pr2u")]
+layout_mode = 2
+
+[node name="miso_soup" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("14_u8ucw")]
+layout_mode = 2
+
+[node name="spoon" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("25_shwgb")]
+layout_mode = 2
+
+[node name="soy_sauce" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("32_uppk4")]
+layout_mode = 2
+
+[node name="pudding" parent="Menus/menu_vbox/cc/Cutthroat_combo2" instance=ExtResource("20_fiw5x")]
+layout_mode = 2
+
+[node name="my_HSeparator7" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="bb_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Big Banquet
+
+"
+
+[node name="bb" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="Big_banquet" parent="Menus/menu_vbox/bb" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_right = 0.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="maki" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("11_wmrqn")]
+layout_mode = 2
+
+[node name="tempura" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("12_87j37")]
+layout_mode = 2
+
+[node name="dumplings" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("18_bg8dx")]
+layout_mode = 2
+
+[node name="eel" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("31_3pxgd")]
+layout_mode = 2
+
+[node name="spoon" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("25_shwgb")]
+layout_mode = 2
+
+[node name="chopsticks" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("19_iiedp")]
+layout_mode = 2
+
+[node name="green_tea_ice_cream" parent="Menus/menu_vbox/bb/Big_banquet" instance=ExtResource("17_pipc6")]
+layout_mode = 2
+
+[node name="my_HSeparator8" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+
+[node name="dft_label" parent="Menus/menu_vbox" instance=ExtResource("7_uxjuk")]
+layout_mode = 2
+text = "Dinner for Two
+"
+
+[node name="dft" parent="Menus/menu_vbox" instance=ExtResource("8_62p5k")]
+custom_minimum_size = Vector2(2.08165e-12, 118)
+layout_mode = 2
+
+[node name="Dinner_for_two" parent="Menus/menu_vbox/dft" instance=ExtResource("9_88neu")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nigiri" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("10_quoap")]
+layout_mode = 2
+
+[node name="uramaki" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("28_81hiv")]
+layout_mode = 2
+
+[node name="onigiri" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("24_rs2jc")]
+layout_mode = 2
+
+[node name="tofu" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("22_6pr2u")]
+layout_mode = 2
+
+[node name="miso_soup" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("14_u8ucw")]
+layout_mode = 2
+
+[node name="menu" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("23_g8uag")]
+layout_mode = 2
+
+[node name="special_order" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("30_3b0a6")]
+layout_mode = 2
+
+[node name="fruit" parent="Menus/menu_vbox/dft/Dinner_for_two" instance=ExtResource("27_gqs0u")]
+layout_mode = 2
+
+[node name="my_HSeparator9" parent="Menus/menu_vbox" instance=ExtResource("6_ghlvl")]
+layout_mode = 2
+theme_override_constants/separation = 55
+
 [connection signal="pressed" from="back_button" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="play_button" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="select_button" to="." method="_on_select_button_pressed"]
 [connection signal="pressed" from="add_bots" to="." method="_on_add_bots_pressed"]
 [connection signal="pressed" from="remove_bots" to="." method="_on_remove_bots_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/sg" to="Menus/menu_vbox" method="_on_sg_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/ps" to="Menus/menu_vbox" method="_on_ps_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/mm" to="Menus/menu_vbox" method="_on_mm_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/pp" to="Menus/menu_vbox" method="_on_pp_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/cc" to="Menus/menu_vbox" method="_on_cc_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/bb" to="Menus/menu_vbox" method="_on_bb_pressed"]
+[connection signal="pressed" from="Menus/menu_vbox/dft" to="Menus/menu_vbox" method="_on_dft_pressed"]

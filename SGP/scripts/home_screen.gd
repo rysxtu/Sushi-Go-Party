@@ -20,4 +20,4 @@ func _on_multi_button_pressed():
 
 func _on_single_button_pressed():
 	Global.online = false
-	get_tree().change_scene_to_file("res://scenes/UI/lobby.tscn")
+	get_tree().change_scene_to_file("res://scenes/UI/set_up.tscn")

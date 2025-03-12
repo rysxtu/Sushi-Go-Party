@@ -13,7 +13,12 @@ extends Control
 @export var custom_h_box_container: HBoxContainer
 @export var Menu_select: TabContainer
 
-@export var select_button: Button
+@export var player_container: VBoxContainer
+@export var play_button: Button
+@export var back_button: Button
+
+const bot_ui_path = "res://scenes/UI/bot_ui.tscn"
+var bot_ui = load(bot_ui_path)
 
 var states = {"custom": 0, "mfm": 0, "sg": 0, "ps": 0, 
 			  "mm": 0, "pp": 0, "cc": 0,
@@ -49,7 +54,7 @@ func button_click(button_name, obj):
 					child.modulate = Color(.4, .4, .4, .7)
 			elif child != null:
 					child.modulate = Color(1, 1, 1)
-		select_button.disabled = false
+		play_button.disabled = false
 				
 	elif  states[button_name] == 1:
 		for state in states:
@@ -66,16 +71,6 @@ func _input(event:InputEvent):
 			reset_select(menu_v_box_container)
 		elif e.button_mask == MOUSE_BUTTON_RIGHT and Menu_select.current_tab == 1:
 			reset_custom_select()
-
-# move to the playing scene
-func _on_select_button_pressed():
-	Global.states = states
-	cards_in_play()
-	Global.cards = cards
-	print(cards)
-	print("switch scene")
-	get_tree().change_scene_to_file("res://scenes/UI/lobby.tscn")
-	
 
 # identitfy what cards will be in the game
 func cards_in_play():
@@ -100,7 +95,7 @@ func reset_select(v_box: VBoxContainer):
 			if child is Button:
 				child.button_pressed = false
 				child.modulate = Color(1,1,1)
-	select_button.disabled = true
+	play_button.disabled = true
 
 # when changing tabs, ensure selection is redone
 func _on_menu_select_tab_changed(tab):
@@ -192,9 +187,33 @@ func _process(delta):
 			sum += custom_states[state]
 		
 		if sum == 8:
-			select_button.disabled = false
+			play_button.disabled = false
+
 
 
 func _on_back_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/UI/lobby.tscn")
-	
+	get_tree().change_scene_to_file("res://scenes/UI/home_screen.tscn")
+
+
+func _on_play_button_pressed():
+	Global.states = states
+	cards_in_play()
+	Global.cards = cards
+	print(cards)
+	print("switch scene")
+	get_tree().change_scene_to_file("res://scenes/Game/Board.tscn")
+
+
+func _on_remove_bots_pressed():
+	if Global.bots_number > 0:
+		var rmv_bot_ui = player_container.get_child(-1)
+		player_container.remove_child(rmv_bot_ui)
+		rmv_bot_ui.queue_free()
+		Global.bots_number -= 1
+
+
+func _on_add_bots_pressed():
+	var new_bot_ui = bot_ui.instantiate()
+	new_bot_ui.global_position = player_container.global_position
+	player_container.add_child(new_bot_ui)
+	Global.bots_number += 1

@@ -175,7 +175,7 @@ pivot_offset = Vector2(10, 11)
 text = "0"
 horizontal_alignment = 2
 
-[node name="icon_manager_bot" type="Control" parent="display" node_paths=PackedStringArray("_self", "plate", "points_label")]
+[node name="icon_manager_bot" type="Control" parent="display" node_paths=PackedStringArray("_self", "plate")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -187.0
@@ -187,7 +187,6 @@ mouse_filter = 2
 script = ExtResource("2_xoevq")
 _self = NodePath("../..")
 plate = NodePath("Plate")
-points_label = NodePath("../points")
 
 [node name="Plate" parent="display/icon_manager_bot" instance=ExtResource("1_pedpw")]
 layout_mode = 1
@@ -198,13 +197,5 @@ offset_left = 187.0
 offset_top = 77.45
 offset_right = -188.0
 offset_bottom = -22.05
-
-[node name="points" type="Label" parent="display"]
-layout_mode = 0
-offset_left = 356.0
-offset_top = -30.0
-offset_right = 413.0
-offset_bottom = -7.0
-text = "Points: "
 
 [node name="bot_hand" type="Node2D" parent="."]

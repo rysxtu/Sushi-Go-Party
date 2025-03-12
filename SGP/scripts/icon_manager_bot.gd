@@ -3,7 +3,6 @@ extends Control
 # the root player node
 @export var _self: Node2D
 @export var plate: Control
-@export var points_label: Label
 
 const WASABI_ADJUSTMENT = -8
 const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
@@ -16,7 +15,6 @@ var new_icon
 var my_points = 0
 
 func _ready():
-	Global.player_points_sig.connect(display_points)
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
 	Global.turn_over.connect(display_icons)
@@ -69,6 +67,3 @@ func add_icon(player, card, info):
 func display_icons():
 	new_icon.visible = true
 
-func display_points(player, points):
-	if _self == player:
-		points_label.text = "Points: " + str(my_points)
