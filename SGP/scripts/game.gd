@@ -379,6 +379,7 @@ func new_round():
 	Global.uramaki_curr_points = 2
 
 func end_game():
+	Global.emit_signal("round_over")
 	calc_points("game_end", null)
 
 # populates the cards_loaded dictionary with 

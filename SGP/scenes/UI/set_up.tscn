@@ -905,6 +905,7 @@ offset_bottom = 559.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p7nu5")
 
 [node name="menu_label" parent="players" instance=ExtResource("3_qi84u")]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 293.0
@@ -953,6 +954,7 @@ text = "Back"
 metadata/_edit_use_anchors_ = true
 
 [node name="add_bots" type="Button" parent="."]
+layout_mode = 0
 offset_left = 213.0
 offset_top = 564.0
 offset_right = 261.0
@@ -960,6 +962,7 @@ offset_bottom = 595.0
 text = "+ bot"
 
 [node name="remove_bots" type="Button" parent="."]
+layout_mode = 0
 offset_left = 149.0
 offset_top = 563.0
 offset_right = 193.0

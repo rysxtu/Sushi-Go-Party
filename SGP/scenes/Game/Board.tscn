@@ -15,12 +15,15 @@ offset_bottom = 648.0
 script = ExtResource("2_jhjo2")
 player_points = NodePath("player_points")
 
-[node name="player_points" type="Control" parent="UI"]
-anchors_preset = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+[node name="player_points" type="VBoxContainer" parent="UI"]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 218.0
+offset_right = 898.0
+offset_bottom = 410.0
+theme_override_constants/separation = 10
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1152, 648)
 offset_right = 1151.0
 offset_bottom = 646.0

@@ -5,16 +5,36 @@
 [ext_resource type="PackedScene" uid="uid://lwfnxvcmr50i" path="res://scenes/UI/select_button.tscn" id="3_r610y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cgl3h"]
+bg_color = Color(0.54902, 0.65098, 0.215686, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2yrg8"]
+bg_color = Color(0.532932, 0.632241, 0.208054, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7b8h0"]
+bg_color = Color(0.533333, 0.631373, 0.207843, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_43c3l"]
+bg_color = Color(0, 0, 0, 0.466667)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rmetj"]
 
-[node name="HomeScreen" type="Control" node_paths=PackedStringArray("single_player", "multi_player")]
+[node name="HomeScreen" type="Control" node_paths=PackedStringArray("multi_player")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +42,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_n1i1n")
-single_player = NodePath("")
 multi_player = NodePath("multi_button")
 
 [node name="TextureRect" type="TextureRect" parent="."]

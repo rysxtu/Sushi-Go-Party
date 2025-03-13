@@ -35,8 +35,8 @@ func _player_allowed_to_play():
 	
 	if allowed_to_play_card and player_hand.get_child_count() > 0:
 		# code to choose card
-		var random_wait =  rng.randf_range(.5, 2.0)
-		await get_tree().create_timer(random_wait).timeout;
+		#var random_wait =  rng.randf_range(.5, 2.0)
+		#await get_tree().create_timer(random_wait).timeout;
 		var random_n = rng.randi_range(0, player_hand.get_child_count() - 1)
 		var card = player_hand.get_child(random_n)
 		
