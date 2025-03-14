@@ -132,6 +132,11 @@ func _on_remove_bots_pressed():
 func _on_add_bots_pressed():
 	if Global.bots_number < 7:
 		var new_bot_ui = bot_ui.instantiate()
+		
+		new_bot_ui.name = "bot_" + str(Global.bots_number)
+		new_bot_ui.get_node("Name").text = new_bot_ui.name
+		Global.bot_difficulties[new_bot_ui.name] = ""
+		
 		player_container.add_child(new_bot_ui)
 		Global.bots_number += 1
 

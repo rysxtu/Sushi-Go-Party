@@ -28,8 +28,10 @@ func _on_mouse_entered():
 func _on_mouse_exited():
 	timer.stop()
 	hovering = 0
+	sprite_2d.visible = true
 	pop_up.visible = false
 
 func _on_timer_timeout():
 	if hovering:
+		sprite_2d.visible = false
 		pop_up.visible = true

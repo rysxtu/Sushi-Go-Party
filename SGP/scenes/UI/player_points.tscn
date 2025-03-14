@@ -4,10 +4,10 @@
 anchors_preset = -1
 anchor_right = 0.091
 anchor_bottom = 0.045
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 0.167994
-offset_bottom = -0.160001
+offset_left = -50.0
+offset_top = -16.0
+offset_right = -50.832
+offset_bottom = -17.16
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20

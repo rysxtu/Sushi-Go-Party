@@ -176,11 +176,15 @@ VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_x556a")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7nu5"]
 bg_color = Color(0.145868, 0.145868, 0.145868, 0.647059)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
 border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Set up" type="Control" node_paths=PackedStringArray("custom", "mfm", "sg", "ps", "mm", "pp", "cc", "bb", "dft", "menu_v_box_container", "custom_h_box_container", "Menu_select", "player_container", "play_button", "back_button")]
 layout_mode = 3
@@ -231,9 +235,9 @@ anchor_top = 0.1
 anchor_right = 0.961
 anchor_bottom = 0.841
 offset_left = -89.944
-offset_top = -64.8
+offset_top = -74.8
 offset_right = 93.928
-offset_bottom = 105.032
+offset_bottom = 95.032
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.8, 0.8)
@@ -602,6 +606,7 @@ layout_mode = 2
 [node name="dft_label" parent="Menu_select/Menus/menu_vbox" instance=ExtResource("5_ccbcd")]
 layout_mode = 2
 text = "Dinner for Two
+
 "
 
 [node name="dft" parent="Menu_select/Menus/menu_vbox" instance=ExtResource("2_nmhwi")]
@@ -899,9 +904,9 @@ layout_mode = 2
 [node name="players" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 53.0
-offset_top = 66.0
+offset_top = 56.0
 offset_right = 353.0
-offset_bottom = 559.0
+offset_bottom = 549.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p7nu5")
 
 [node name="menu_label" parent="players" instance=ExtResource("3_qi84u")]
@@ -930,10 +935,10 @@ theme_override_constants/separation = 60
 
 [node name="play_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1
-anchor_left = 0.505208
-anchor_top = 0.895062
-anchor_right = 0.678354
-anchor_bottom = 0.972408
+anchor_left = 0.497396
+anchor_top = 0.888889
+anchor_right = 0.670542
+anchor_bottom = 0.966235
 offset_left = -2.28882e-05
 offset_right = 0.535957
 offset_bottom = -0.12006
@@ -942,10 +947,10 @@ metadata/_edit_use_anchors_ = true
 
 [node name="back_button" parent="." instance=ExtResource("32_hfdtw")]
 layout_mode = 1
-anchor_left = 0.303819
-anchor_top = 0.898148
-anchor_right = 0.476965
-anchor_bottom = 0.975494
+anchor_left = 0.296007
+anchor_top = 0.891975
+anchor_right = 0.469153
+anchor_bottom = 0.969321
 offset_top = 1.85966e-05
 offset_right = 0.536003
 offset_bottom = -0.120056
@@ -955,18 +960,18 @@ metadata/_edit_use_anchors_ = true
 
 [node name="add_bots" type="Button" parent="."]
 layout_mode = 0
-offset_left = 213.0
-offset_top = 564.0
-offset_right = 261.0
-offset_bottom = 595.0
+offset_left = 214.0
+offset_top = 554.0
+offset_right = 262.0
+offset_bottom = 585.0
 text = "+ bot"
 
 [node name="remove_bots" type="Button" parent="."]
 layout_mode = 0
-offset_left = 149.0
-offset_top = 563.0
-offset_right = 193.0
-offset_bottom = 594.0
+offset_left = 150.0
+offset_top = 553.0
+offset_right = 194.0
+offset_bottom = 584.0
 text = "- bot"
 
 [connection signal="tab_changed" from="Menu_select" to="." method="_on_menu_select_tab_changed"]

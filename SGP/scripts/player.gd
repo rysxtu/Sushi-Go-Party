@@ -25,14 +25,13 @@ func _ready():
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_player_allowed_to_play)
 	
-	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
 # or when player gets a new hand
 func _on_player_has_hand(player):
 	if self == player:
 		player_hand = get_hand(player)
-		print("---Player: ", player_hand, " connected to ", self)
+		#print("---Player: ", player_hand, " connected to ", self)
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
 			card.visible = true
@@ -46,7 +45,7 @@ func _on_player_has_hand(player):
 func disconnect_hand_from_player(player):
 	if self == player:
 		player_hand = get_hand(player)
-		print("---Player: ", player_hand, " disconnected from ", self)
+		#print("---Player: ", player_hand, " disconnected from ", self)
 		# connect the cards to know when they are pressed
 		for card in player_hand.get_children():
 			card.visible = false

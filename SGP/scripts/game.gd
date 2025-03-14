@@ -83,10 +83,12 @@ func make_players(player_number, players_points):
 		player = player_scene.instantiate()
 		player.name = "player_" + str(i)
 		
+		# get the players's name tag and set its name
+		player.get_child(0).get_node("Name").text = player.name
 		if player.name == "player_0":
-			player.global_position = Vector2(500, 500)
+			player.global_position = Vector2(600, 500)
 		else:
-			player.global_position = Vector2(500, 300)
+			player.global_position = Vector2(600, 300)
 		
 		player.card_played.connect(store_card_played)
 		get_hand(player).name = "player_hand_" + str(i)
@@ -103,21 +105,24 @@ func make_players(player_number, players_points):
 		bot = bot_scene.instantiate()
 		bot.name = "bot_" + str(i)
 		
+		# get the bot's name tag and set its name
+		bot.get_child(0).get_node("Name").text = bot.name
+		bot.difficulty = Global.bot_difficulties[bot.name]
 		if bot.name == "bot_0":
 			bot.global_position = Vector2(600, 100)
 		elif bot.name == "bot_1":
-			bot.global_position = Vector2(750, 100)
+			bot.global_position = Vector2(770, 100)
 		elif bot.name == "bot_2":
-			bot.global_position = Vector2(900, 100)
+			bot.global_position = Vector2(940, 100)
 		elif bot.name == "bot_3":
-			bot.global_position = Vector2(1050, 100)
+			bot.global_position = Vector2(1110, 100)
 		elif bot.name == "bot_4":
-			bot.global_position = Vector2(450, 100)
+			bot.global_position = Vector2(430, 100)
 		elif bot.name == "bot_5":
-			bot.global_position = Vector2(300, 100)
+			bot.global_position = Vector2(260, 100)
 		elif bot.name == "bot_6":
-			bot.global_position = Vector2(150, 100)
-		bot.scale = Vector2(0.4, 0.4)
+			bot.global_position = Vector2(90, 100)
+		bot.scale = Vector2(0.5, 0.5)
 		
 		bot.card_played.connect(store_card_played)
 		get_hand(bot).name = "bot_hand_" + str(i)
@@ -229,7 +234,7 @@ func store_card_played(player, card, extra_info):
 	# check if every player has taken their turn
 	if taken_turn.size() == Global.players_number + Global.bots_number:
 		cards_left_in_round -= 1
-		calc_points("during_round", played_dr_cards.duplicate())
+		calc_points("during_round", played_dr_cards)
 		# displays icons fnction here
 		turn_over()
 		
@@ -279,7 +284,8 @@ func turn_over():
 		calc_points("round_end", null)
 		# trigger reset round
 		new_round()
-		
+	
+	Global.player_played_cards = players_played_cards
 	played_dr_cards = []
 	taken_turn = {}
 	Global.emit_signal("allowed_to_play")
@@ -381,6 +387,7 @@ func new_round():
 func end_game():
 	Global.emit_signal("round_over")
 	calc_points("game_end", null)
+	Global.player_played_cards = {}
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need
@@ -654,6 +661,10 @@ func load_icons():
 				card_name_to_icon["fruit"] = (load(path))
 				
 				# need to get specific fruit
+			elif "onigiri" in card:
+				for i in 4:
+					path = "res://scenes/icons/onigiri" + '_' + str(i + 1) + "_icon.tscn"
+					card_name_to_icon["onigiri" + '_' + str(i + 1)] = (load(path))
 			elif card_name == "nigiri":
 				for i in 3:
 					path = "res://scenes/icons/nigiri" + '_' + str(i + 1) + "_icon.tscn"

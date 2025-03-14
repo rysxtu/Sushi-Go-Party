@@ -37,3 +37,10 @@ signal allowed_to_play()
 signal game_started_sig()
 # to display the played card in icons (should be received by icons)
 signal display_card_icon(player, card, extra_info)
+
+"""STUFF FOR BOTS"""
+# played_cards for search trees for bot algorithms
+var player_played_cards = {}
+
+# difficulties of bots
+var bot_difficulties = {}
