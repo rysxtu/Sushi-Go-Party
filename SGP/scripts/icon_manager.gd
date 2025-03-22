@@ -6,7 +6,7 @@ extends Control
 @export var plate: Control
 
 const WASABI_ADJUSTMENT = -8
-const VARIATION_CARDS = {"fruit": null, "onigiri": null, "nigiri": null}
+const VARIATION_CARDS = {"onigiri": null, "nigiri": null}
 var card_name_to_icon = Global.icons
 var icon_no = 0
 

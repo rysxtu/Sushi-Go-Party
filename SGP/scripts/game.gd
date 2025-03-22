@@ -54,7 +54,7 @@ signal player_points_sig(player, points)
 
 func _ready():
 	Global.viewport_size = get_viewport().size
-	
+		
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
@@ -244,7 +244,6 @@ func store_card_played(player, card, extra_info):
 	# look at deck & choose: menu
 	# flip: takeout box
 
-
 # manages when the hands needs to be swapped (when all cards have been played for a round)
 # animation
 func turn_over():
@@ -298,21 +297,36 @@ func calc_points(calc_type, played_dr_cards):
 	
 	if calc_type == "round_end":
 		var makis_played = []
+		var temakis_played = []
+		var edamame_played = [0, []]
 		
 		for player in players_played_cards:
 			played_cards = players_played_cards[player]
 			
+			# add points for each card played, or gather all cards for global analysis
 			for card in played_cards:
-				count_nigiri_p(player, card)
+				count_nonglobal_p(player, card)
+				
+				# these cards need global information
 				if card == "maki":
 					makis_played.append([played_cards[card][0], player])
-				count_tempura_p(player, card)
-				count_sashimi_p(player, card)
-				count_miso_p(player, card)
-				count_wasabi_p(player, card)
-				count_tea_p(player, card)
-				
-		count_maki_p(makis_played)
+				if card == "temaki":
+					temakis_played.append([played_cards[card], player])
+				if card == "edamame":
+					edamame_played[0] += played_cards[card]
+					edamame_played[1].append(player)
+			
+			# if not temaki played, means 0 played for this player
+			if "temaki" not in played_cards:
+				temakis_played.append([0, player])
+		
+		if makis_played:
+			count_global_p(makis_played, "maki")
+		if temakis_played:
+			count_global_p(temakis_played, "temaki")
+		if edamame_played[0] != 0:
+			count_global_p(edamame_played, "edamame")
+			
 		send_points_to_players()
 			
 	elif calc_type == "during_round" and played_dr_cards:
@@ -334,7 +348,8 @@ func calc_points(calc_type, played_dr_cards):
 		record_miso(miso_per_turn, miso_player, miso_card)
 		
 		# award points to uramaki now
-		count_uramaki_p(not_counted_uramaki)
+		if not_counted_uramaki:
+			count_global_p(not_counted_uramaki, "uramaki")
 	elif calc_type == "game_end":
 		# desserts
 		var puddings_played = []
@@ -445,7 +460,6 @@ func make_deck(cards_loaded, desserts_per_round, initial):
 		desserts.erase(d_card)
 		desserts_in_round.append(d_card)
 		deck.add_child(d_card)
-	print("Board:", desserts_in_round)
 
 # instantiate needed cards, stores to deck or append to desserts
 func instantiate_card(cards_loaded, card, number, to_deck):
@@ -462,10 +476,68 @@ func instantiate_card(cards_loaded, card, number, to_deck):
 
 """Point Functions Below"""
 
+# function that adds points for cards that dont require knowledge on all cards
+func count_nonglobal_p(player, card):
+	# look into speeding up, this is like ~64 operations
+	count_sashimi_p(player, card)
+	count_dumplings_p(player, card)
+	count_eel_p(player, card)
+	count_tempura_p(player, card)
+	count_tofu_p(player, card)
+	count_miso_p(player, card)
+	count_tea_p(player, card)
+	count_nigiri_p(player, card)
+	count_wasabi_p(player, card)
+	count_green_p(player, card)
+	count_fruit_p(player, card)
+	count_onigiri_p(player, card)
+	
+func count_global_p(arr, arr_name):
+	if arr_name == "maki":
+		count_maki_p(arr)
+	elif arr_name == "uramaki":
+		count_uramaki_p(arr)
+	elif arr_name == "temaki":
+		count_temaki_p(arr)
+	elif arr_name == "edamame":
+		count_edamame_p(arr)
+
 func count_sashimi_p(player, card):
 	if card == "sashimi":
 		players_points[player] += (players_played_cards[player]["sashimi"] / 3) * 10
-	
+
+func count_onigiri_p(player, card):
+	if card == "onigiri":
+		# minus from keys, until all zero and make groups of however many unique e.g [3, 1], 3 unique and 1 separate groups
+		
+		# keep track of how many are in a group
+		var group_count = 0
+		var onigiri_played = players_played_cards[player]["onigiri"]
+		
+		# ensure no key errors
+		for i in range(1, 5):
+			if str(i) not in onigiri_played:
+				onigiri_played[str(i)] = 0
+
+		# while another group can be formed
+		var i = 1
+		while onigiri_played["1"] > 0 or onigiri_played["2"] > 0 or onigiri_played["3"] > 0 or onigiri_played["4"] > 0:
+			
+			if onigiri_played[str(i)] > 0:
+				onigiri_played[str(i)] -= 1
+				group_count += 1
+			i += 1
+			
+			# reset group counting
+			if i > 4:
+				players_points[player] += Global.onigiri_points[group_count - 1]
+				i = 1
+				group_count = 0
+		
+		# check if last group was counted
+		if group_count > 0:
+			players_points[player] += Global.onigiri_points[group_count - 1]
+
 func count_dumplings_p(player, card):
 	if card == "dumplings":
 		var p = (players_played_cards[player]["dumplings"] * (players_played_cards[player]["dumplings"] + 1)) / 2
@@ -553,20 +625,19 @@ func count_fruit_p(player, card):
 				players_points[player] += Global.fruits_points[types[type]]
 
 func count_maki_p(makis_played):
-	if makis_played:
 	# give points to players with largest and second largest no of maki
-		makis_played.sort()
-		makis_played.reverse()
-		
-		var count = 0
-		for i in makis_played.size() - 1:
-			if count == 2:
-				break
-			players_points[makis_played[i][1]] += Global.maki_points[count]
-			if makis_played[i] != makis_played[i + 1]:
-				count += 1
-		if count < 2:
-			players_points[makis_played[makis_played.size() - 1][1]] += Global.maki_points[count]
+	makis_played.sort()
+	makis_played.reverse()
+	
+	var count = 0
+	for i in makis_played.size() - 1:
+		if count == 2:
+			break
+		players_points[makis_played[i][1]] += Global.maki_points[count]
+		if makis_played[i] != makis_played[i + 1]:
+			count += 1
+	if count < 2:
+		players_points[makis_played[makis_played.size() - 1][1]] += Global.maki_points[count]
 
 func count_pudding_p(puddings_played):
 	# if pudding was played
@@ -604,41 +675,39 @@ func record_uramaki(tuple, not_counted_uramaki):
 
 func count_uramaki_p(not_counted_uramaki):
 	#not_counted_uramaki is an array with players who have reached >10 uramaki and have not been awarded points yet
-	
 	# check for any ties in uramaki, if any player has uramaki > 10
-	if not_counted_uramaki:
-		not_counted_uramaki.sort()
-		not_counted_uramaki.reverse()
-		var n = not_counted_uramaki.size()
-		
-		if n > 1:
-			# checking for ties and awarding points
-			var i = 0
-			var allowed = Global.uramaki_curr_points
-			while i < n - 1 and not_counted_uramaki[i][0] == not_counted_uramaki[i + 1][0] and allowed >= 0:
-				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-				# make sure that the player can no longer add uramaki
-				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-				allowed -= 1
-				i += 1
-			if i > 0 and not_counted_uramaki[i - 1][0] == not_counted_uramaki[i][0] and allowed >= 0:
-				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-				# make sure that the player can no longer add uramaki
-				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-				allowed -= 1
-				i += 1
-			Global.uramaki_curr_points = allowed
-			
-			# check for no ties
-			while i < n and Global.uramaki_curr_points >= 0:
-				players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
-				players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
-				Global.uramaki_curr_points -= 1
-		else:
-			players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+	not_counted_uramaki.sort()
+	not_counted_uramaki.reverse()
+	var n = not_counted_uramaki.size()
+	
+	if n > 1:
+		# checking for ties and awarding points
+		var i = 0
+		var allowed = Global.uramaki_curr_points
+		while i < n - 1 and not_counted_uramaki[i][0] == not_counted_uramaki[i + 1][0] and allowed >= 0:
+			players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
 			# make sure that the player can no longer add uramaki
-			players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
+			players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+			allowed -= 1
+			i += 1
+		if i > 0 and not_counted_uramaki[i - 1][0] == not_counted_uramaki[i][0] and allowed >= 0:
+			players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+			# make sure that the player can no longer add uramaki
+			players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
+			allowed -= 1
+			i += 1
+		Global.uramaki_curr_points = allowed
+		
+		# check for no ties
+		while i < n and Global.uramaki_curr_points >= 0:
+			players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+			players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
 			Global.uramaki_curr_points -= 1
+	else:
+		players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
+		# make sure that the player can no longer add uramaki
+		players_played_cards[not_counted_uramaki[0][1]]["uramaki"][1] = true
+		Global.uramaki_curr_points -= 1
 	
 func record_miso(miso_per_turn, miso_player, miso_card):
 	# send back into deck if > 1
@@ -649,6 +718,39 @@ func record_miso(miso_per_turn, miso_player, miso_card):
 		else:
 			players_played_cards[miso_player]["miso"] += 1
 		Global.display_card_icon.emit(miso_player, miso_card, "")
+
+# assume that if everyone has the least and the most, then just add
+func count_temaki_p(temaki_played):
+	# give points to players with largest and del from smallest
+	temaki_played.sort()
+	var n = temaki_played.size()
+	
+	# max number of temaki played and min number played
+	var max_count = temaki_played[n - 1][0]
+	var min_count = temaki_played[0][0]
+
+	for i in n:
+		# minus from players who played the least, not in two player game, and not if max == min
+		if temaki_played[i][0] == min_count and (players_number + bots_number) > 2 and min_count != max_count:
+			players_points[temaki_played[i][1]] -= 4
+		if temaki_played[i][0] == max_count:
+			players_points[temaki_played[i][1]] += 4
+
+func count_edamame_p(edamame_played):
+	# check for each player, how many edamame they played
+	var tot_other_edamame = 0
+	var played = 0
+	for player in edamame_played[1]:
+		# get how many edamame the player has played, and how many other edamame were played
+		played = players_played_cards[player]["edamame"]
+		tot_other_edamame = edamame_played[0] - played
+		
+		# max an edamame is worth is 4
+		if tot_other_edamame >= 4:
+			players_points[player] += 4 * played
+		else:
+			players_points[player] += tot_other_edamame * played
+
 
 # load icons to be displayed
 func load_icons():
@@ -691,6 +793,39 @@ func update_player_dict(dict, player,key, increment=true, val=1, variation=null)
 			dict[player][key][variation] = 1
 		else:
 			dict[player][key][variation] += 1
+
+# select k-th smallest element, using quick sort
+func quick_select(arr, left, right, k):
+	if left == right:
+		return arr[left]
+	var pivotIndex = left + floor(randi() % (right - left + 1))
+	pivotIndex = qs_partition(arr, left, right, pivotIndex)
+	if k == pivotIndex:
+		return arr[k]
+	elif k < pivotIndex:
+		return quick_select(arr, left, pivotIndex - 1, k)
+	else:
+		return quick_select(arr, pivotIndex + 1, right, k) 
+
+# helper function to quick select algo
+func qs_partition(arr, left, right, pivotIndex):
+	var pivotValue = arr[pivotIndex]
+	swap(arr, pivotIndex, right)
+	var storeIndex = left
+	
+	for i in right - left - 1:
+		if arr[i] < pivotValue:
+			swap(arr, i, storeIndex)
+			storeIndex += 1
+	swap(arr, right, storeIndex)
+	return storeIndex
+
+# swap two elements based on index
+func swap(arr, idx1, idx2):
+	var temp = arr[idx2]
+	arr[idx2] = arr[idx1]
+	arr[idx2] = temp
+	
 
 # moves node between nodes
 func move_node(node, old_node, new_node): 

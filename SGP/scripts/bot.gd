@@ -99,7 +99,9 @@ func simple_greedy():
 	best_card = best_cards[random_n]
 	
 	return best_card
-
+	
+func med_rl():
+	pass
 """HELPER FUNCTIONS"""
 
 # moves cards between nodes

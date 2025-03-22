@@ -16,13 +16,15 @@ offset_bottom = 648.0
 script = ExtResource("2_jhjo2")
 player_points = NodePath("player_points")
 
-[node name="player_points" type="VBoxContainer" parent="UI"]
+[node name="player_points" type="GridContainer" parent="UI"]
 layout_mode = 0
-offset_left = 318.0
-offset_top = 242.0
-offset_right = 642.0
-offset_bottom = 434.0
-theme_override_constants/separation = 10
+offset_left = 469.0
+offset_top = 217.0
+offset_right = 709.0
+offset_bottom = 317.0
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
+columns = 2
 
 [node name="Background" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1152, 648)
@@ -32,10 +34,10 @@ expand_mode = 1
 stretch_mode = 1
 
 [node name="Train_tracks" type="TextureRect" parent="."]
-offset_left = 372.0
-offset_top = 195.0
-offset_right = 797.0
-offset_bottom = 387.0
+offset_left = 342.0
+offset_top = 178.0
+offset_right = 823.0
+offset_bottom = 404.0
 texture = ExtResource("3_h85kc")
 expand_mode = 1
 

@@ -1,6 +1,6 @@
 extends Control
 
-@export var player_points: VBoxContainer
+@export var player_points: GridContainer
 var player_to_lbl = {}
 var points_dict = {}
 
