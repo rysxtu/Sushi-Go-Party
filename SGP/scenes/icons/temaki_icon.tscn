@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://ckaehje13he18"]
+[gd_scene load_steps=7 format=3 uid="uid://ckaehje13he18"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_1sqon"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_cheu1"]
 [ext_resource type="Texture2D" uid="uid://dbgobh66nytf" path="res://assets/icons/edited/temaki.png" id="3_lwqkq"]
+
+[sub_resource type="Gradient" id="Gradient_udoqt"]
+offsets = PackedFloat32Array(0.406015, 0.433584)
+colors = PackedColorArray(0.478431, 0.121569, 0.360784, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_obw4b"]
+gradient = SubResource("Gradient_udoqt")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uyglx"]
 shader = ExtResource("2_cheu1")
@@ -22,6 +33,11 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_1sqon")
 sprite = NodePath("Sprite2D")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(8.57139, 20.1429)
+scale = Vector2(1, 1)
+texture = SubResource("GradientTexture2D_obw4b")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_uyglx")

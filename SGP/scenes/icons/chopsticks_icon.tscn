@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://cnuopvr5makhs"]
+[gd_scene load_steps=7 format=3 uid="uid://cnuopvr5makhs"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_dc7ku"]
 [ext_resource type="Texture2D" uid="uid://dg3dwp2lepfxy" path="res://assets/icons/edited/chopsticks.png" id="2_5kl2q"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_d25kr"]
+
+[sub_resource type="Gradient" id="Gradient_tsxh2"]
+offsets = PackedFloat32Array(0.406015, 0.433584)
+colors = PackedColorArray(0.603922, 0.835294, 0.811765, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bcde8"]
+gradient = SubResource("Gradient_tsxh2")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
 shader = ExtResource("2_d25kr")
@@ -22,6 +33,11 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_dc7ku")
 sprite = NodePath("Sprite2D")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(-0.333334, 35.888)
+scale = Vector2(0.999999, 1)
+texture = SubResource("GradientTexture2D_bcde8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")

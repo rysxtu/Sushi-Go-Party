@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2507jyp0olmj"]
+[gd_scene load_steps=7 format=3 uid="uid://d2507jyp0olmj"]
 
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="1_301tv"]
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_umcrr"]
 [ext_resource type="Texture2D" uid="uid://dxqh0i5ftpyeu" path="res://assets/icons/edited/edamame.png" id="2_0ylbl"]
+
+[sub_resource type="Gradient" id="Gradient_tsxh2"]
+offsets = PackedFloat32Array(0.403509, 0.433584)
+colors = PackedColorArray(0.560784, 0.2, 0.47451, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m0o5r"]
+gradient = SubResource("Gradient_tsxh2")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
 shader = ExtResource("1_301tv")
@@ -22,6 +33,11 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_umcrr")
 sprite = NodePath("Sprite2D")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(4.66667, 16)
+scale = Vector2(0.764706, 0.764706)
+texture = SubResource("GradientTexture2D_m0o5r")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")

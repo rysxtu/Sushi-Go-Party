@@ -43,6 +43,7 @@ var desserts = []
 var desserts_per_round = dpr()
 # remembers which dessert cards were not played in a round, readded to deck
 var desserts_in_round = []
+var dessert_name = ""
 
 var player_decks = {}
 var card_name_to_icon = {}
@@ -299,6 +300,7 @@ func calc_points(calc_type, played_dr_cards):
 		var makis_played = []
 		var temakis_played = []
 		var edamame_played = [0, []]
+		var soy_sauce_played = 0
 		
 		for player in players_played_cards:
 			played_cards = players_played_cards[player]
@@ -310,11 +312,13 @@ func calc_points(calc_type, played_dr_cards):
 				# these cards need global information
 				if card == "maki":
 					makis_played.append([played_cards[card][0], player])
-				if card == "temaki":
+				elif card == "temaki":
 					temakis_played.append([played_cards[card], player])
-				if card == "edamame":
+				elif card == "edamame":
 					edamame_played[0] += played_cards[card]
 					edamame_played[1].append(player)
+				elif card == "soy":
+					soy_sauce_played = 1
 			
 			# if not temaki played, means 0 played for this player
 			if "temaki" not in played_cards:
@@ -326,6 +330,8 @@ func calc_points(calc_type, played_dr_cards):
 			count_global_p(temakis_played, "temaki")
 		if edamame_played[0] != 0:
 			count_global_p(edamame_played, "edamame")
+		if soy_sauce_played == 1:
+			count_global_p(null, "soy_sauce")
 			
 		send_points_to_players()
 			
@@ -353,20 +359,20 @@ func calc_points(calc_type, played_dr_cards):
 	elif calc_type == "game_end":
 		# desserts
 		var puddings_played = []
-		
+		print("DEBUG desserts played: ", players_played_desserts)
 		for player in players_played_desserts:
-			for dessert in DESSERT_CARDS:
-				# skip if dessert not in set
-				if dessert not in players_played_desserts[player]:
-					continue
+			var played_desserts
+			# number of dessert played or types played
+			if dessert_name in players_played_desserts[player]:
+				played_desserts = players_played_desserts[player][dessert_name]
+			else:
+				played_desserts = 0
 				
-				# number of dessert played or types played
-				var played_dessert = players_played_desserts[player][dessert]
-				count_green_p(player, dessert)
-				count_fruit_p(player, dessert)
-				if dessert == "pudding":
-					# number of pudding from each player appended
-					puddings_played.append([played_dessert, player])
+			count_green_p(player, dessert_name)
+			count_fruit_p(player, dessert_name)
+			if dessert_name == "pudding":
+				# number of pudding from each player appended
+				puddings_played.append([played_desserts, player])
 		
 		count_pudding_p(puddings_played)
 		send_points_to_players()
@@ -424,6 +430,7 @@ func load_cards(cards, cards_loaded):
 					path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
 					cards_loaded[str(card) + "_" + str(i)] = (load(path))
 			elif card == "fruit":
+				dessert_name = "fruit"
 				path = "res://scenes/card2D/playing_card/" + str(card) + "_ww.tscn"
 				cards_loaded[str(card) + "_ww"] = (load(path))
 				path = "res://scenes/card2D/playing_card/" + str(card) + "_wp.tscn"
@@ -437,6 +444,9 @@ func load_cards(cards, cards_loaded):
 				path = "res://scenes/card2D/playing_card/" + str(card) + "_pt.tscn"
 				cards_loaded[str(card) + "_pt"] = (load(path))
 			else:
+				# store the dessert we are dealing with
+				if card in DESSERT_CARDS:
+					dessert_name = card
 				path = "res://scenes/card2D/playing_card/" + str(card) + ".tscn"
 				cards_loaded[str(card)] = (load(path))
 	Global.cards_loaded = cards_loaded
@@ -501,6 +511,8 @@ func count_global_p(arr, arr_name):
 		count_temaki_p(arr)
 	elif arr_name == "edamame":
 		count_edamame_p(arr)
+	elif arr_name == "soy_sauce":
+		count_soy_sauce_p()
 
 func count_sashimi_p(player, card):
 	if card == "sashimi":
@@ -644,19 +656,21 @@ func count_pudding_p(puddings_played):
 	if puddings_played:
 		# sort to help find max and min
 		puddings_played.sort()
-		var minimum = puddings_played[0]
-		var maximum = puddings_played[-1]
+		var minimum = puddings_played[0][0]
+		var maximum = puddings_played[-1][0]
 		
+		print("DDBJD ", players_points)
 		# if only one value, give them all max points
-		if minimum == maximum:
+		if minimum == maximum and maximum != 0:
 			for tuple in puddings_played:
 				players_points[tuple[1]] += 6
 		else:
 			for tuple in puddings_played:
 				if tuple[0] == minimum:
 					players_points[tuple[1]] -= 6
-				elif tuple[0] == maximum:
+				elif tuple[0] == maximum and maximum:
 					players_points[tuple[1]] += 6
+		print("DDBJD ", players_points)
 
 # function to get call uramaki played during a turn by all players
 func record_uramaki(tuple, not_counted_uramaki):
@@ -751,6 +765,36 @@ func count_edamame_p(edamame_played):
 		else:
 			players_points[player] += tot_other_edamame * played
 
+func count_soy_sauce_p():
+	# have to have max no backgrounds, and check for soy
+	var max_backgrounds = 0
+	var player_to_backgrounds = {}
+	var count = 0
+	
+	# get the max number of backgrounds
+	for player in players_played_cards:
+		var backgrounds = {}
+		for card in players_played_cards[player]:
+			if card == "wasabi" and "nigiri" not in backgrounds and card not in backgrounds:
+				backgrounds["wasabi"] = null
+			elif card == "nigiri" and "wasabi" not in backgrounds and card not in backgrounds:
+				backgrounds["nigiri"] = null
+			elif card not in backgrounds:
+				backgrounds[card] = null
+		count = backgrounds.size()
+		player_to_backgrounds[player] = count
+		max_backgrounds = max(max_backgrounds, count)
+	
+	print("DEBUG ", player_to_backgrounds)
+	for player in players_played_cards:
+		# has max number of background and has play soy_sauce
+		if player_to_backgrounds[player] == max_backgrounds and "soy" in players_played_cards[player]:
+			# 4 points for each soy sauce card
+			print("DEBUG ", players_points[player])
+			players_points[player] += 4 * players_played_cards[player]["soy"]
+			print("DEBUG ", players_points[player])
+			
+	
 
 # load icons to be displayed
 func load_icons():

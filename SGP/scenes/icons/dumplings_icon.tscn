@@ -1,7 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://di0o0ypbpklko"]
+[gd_scene load_steps=7 format=3 uid="uid://di0o0ypbpklko"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_ughv4"]
+[ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_4pwlu"]
 [ext_resource type="Texture2D" uid="uid://dqfodap8yjly" path="res://assets/icons/edited/dumplings.png" id="2_fkolf"]
+
+[sub_resource type="Gradient" id="Gradient_u26m2"]
+offsets = PackedFloat32Array(0.406015, 0.433584)
+colors = PackedColorArray(0.411765, 0.588235, 0.807843, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_b22ch"]
+gradient = SubResource("Gradient_u26m2")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4dk8h"]
+shader = ExtResource("2_4pwlu")
+shader_parameter/onoff = null
+shader_parameter/line_color = Color(1, 0, 0, 1)
+shader_parameter/line_thickness = 4.0
 
 [node name="dumplings_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
@@ -16,7 +34,12 @@ size_flags_vertical = 4
 script = ExtResource("1_ughv4")
 sprite = NodePath("Sprite2D")
 
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(6.33333, 10)
+texture = SubResource("GradientTexture2D_b22ch")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_4dk8h")
 position = Vector2(25, 16)
 scale = Vector2(0.145, 0.145)
 texture = ExtResource("2_fkolf")

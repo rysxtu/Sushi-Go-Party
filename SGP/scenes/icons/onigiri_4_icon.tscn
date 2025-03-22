@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://b376uanwl04s"]
+[gd_scene load_steps=7 format=3 uid="uid://b376uanwl04s"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_lqfc7"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_mcj8l"]
 [ext_resource type="Texture2D" uid="uid://ca20tp2rjwxjy" path="res://assets/icons/edited/onigiri_4.png" id="3_dqfk2"]
+
+[sub_resource type="Gradient" id="Gradient_yb365"]
+offsets = PackedFloat32Array(0.406015, 0.433584)
+colors = PackedColorArray(0.831373, 0.180392, 0.576471, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rhdnn"]
+gradient = SubResource("Gradient_yb365")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
 shader = ExtResource("2_mcj8l")
@@ -15,7 +26,7 @@ self_modulate = Color(1, 1, 1, 0)
 clip_contents = true
 offset_left = -25.0
 offset_top = -30.0
-offset_right = 23.0
+offset_right = 25.0
 offset_bottom = 13.0
 scale = Vector2(1.3, 1.3)
 pivot_offset = Vector2(25, 30)
@@ -23,9 +34,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_lqfc7")
 
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(6.53846, 24.6154)
+texture = SubResource("GradientTexture2D_rhdnn")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
-position = Vector2(24.2308, 24.9231)
+position = Vector2(25.7692, 24.6154)
 scale = Vector2(0.151, 0.151)
 texture = ExtResource("3_dqfk2")
 

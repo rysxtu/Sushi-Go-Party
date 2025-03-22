@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://yr4rkmg5imk8"]
+[gd_scene load_steps=7 format=3 uid="uid://yr4rkmg5imk8"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_3lbuf"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_g21ke"]
 [ext_resource type="Texture2D" uid="uid://qvd7yglhglu6" path="res://assets/icons/edited/uramaki.png" id="3_1dgsf"]
+
+[sub_resource type="Gradient" id="Gradient_k5suy"]
+offsets = PackedFloat32Array(0.406015, 0.433584)
+colors = PackedColorArray(0.901961, 0.901961, 0.211765, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_c85qp"]
+gradient = SubResource("Gradient_k5suy")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uyglx"]
 shader = ExtResource("2_g21ke")
@@ -21,6 +32,11 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_3lbuf")
 sprite = NodePath("Sprite2D")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(-1.90735e-06, 36)
+scale = Vector2(0.999999, 0.999999)
+texture = SubResource("GradientTexture2D_c85qp")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_uyglx")

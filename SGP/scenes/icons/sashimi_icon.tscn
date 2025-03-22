@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://bc7mppnh4opl6"]
+[gd_scene load_steps=7 format=3 uid="uid://bc7mppnh4opl6"]
 
 [ext_resource type="Script" path="res://scripts/icon.gd" id="1_1o6ey"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_0eegw"]
 [ext_resource type="Texture2D" uid="uid://61f2piavhlcp" path="res://assets/icons/edited/sashimi.png" id="3_t1ntl"]
+
+[sub_resource type="Gradient" id="Gradient_qvqm6"]
+offsets = PackedFloat32Array(0.388471, 0.433584)
+colors = PackedColorArray(0.788235, 0.854902, 0.168627, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2ythu"]
+gradient = SubResource("Gradient_qvqm6")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86hkx"]
 shader = ExtResource("2_0eegw")
@@ -22,6 +33,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_1o6ey")
 sprite = NodePath("Sprite2D")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(4.66667, 16)
+texture = SubResource("GradientTexture2D_2ythu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_86hkx")
