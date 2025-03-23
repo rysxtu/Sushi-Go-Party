@@ -6,6 +6,7 @@ var original_z_idx
 var scale_x
 var scale_y
 
+var player
 var clickable
 var using = false
 var hovering = false
@@ -16,7 +17,8 @@ func _ready():
 	scale_y = scale[1]
 	original_z_idx = self.z_index
 	
-	if clickable:
+	if clickable == true:
+		# CLEAN aesthetics
 		sprite.material.set_shader_parameter("is_grey", true)
 
 func _on_mouse_entered():
@@ -43,6 +45,9 @@ func _input(event):
 				using = !using
 				if using:
 					sprite.material.set_shader_parameter("is_grey", false)
+					# need to edit number
+					Global.emit_signal("chopsticks_played", player, 3, true)
 				else:
 					sprite.material.set_shader_parameter("is_grey", true)
+					Global.emit_signal("chopsticks_played", player, 3, false)
 				print("Clicked On Object")

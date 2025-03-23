@@ -34,6 +34,7 @@ signal round_over()
 signal turn_over()
 signal disconnect_hand_from_player(player)
 signal allowed_to_play()
+signal player_allowed_to_play(player, type)
 signal game_started_sig()
 # to display the played card in icons (should be received by icons)
 signal display_card_icon(player, card, extra_info)
@@ -41,7 +42,7 @@ signal display_card_icon(player, card, extra_info)
 # signal to allow players to have chopsticks options
 signal display_chopsticks_option(player, card_order)
 # signal to record chopsticks being played
-signal chopsticks_played(player, card_order)
+signal chopsticks_played(player, card_order, played)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

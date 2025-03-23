@@ -23,7 +23,8 @@ signal card_played(player, card, extra_info)
 func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
-	Global.allowed_to_play.connect(_player_allowed_to_play)
+	Global.allowed_to_play.connect(_allowed_to_play)
+	Global.player_allowed_to_play.connect(_player_allowed_to_play)
 	Global.display_chopsticks_option.connect(display_chopstick_option)
 	
 # runs when all the cards have been instantiated in board
@@ -102,14 +103,25 @@ func _card_pressed_from_hand(card):
 			info = "miso"
 		card_played.emit(self, card, null)
 
-func _player_allowed_to_play():
+func _allowed_to_play():
 	allowed_to_play_card = true
+
+func _player_allowed_to_play(player, type):
+	allowed_to_play_card = true
+	
+	# remove card from special cards desiplay
+	# CLEAN: for card_order
+	if type == "chopsticks":
+		for child in special_cards.get_children():
+			if "chopsticks" == child.name.split('_')[0]:
+				special_cards.remove_child(child)
+				break
 
 func display_chopstick_option(player, card_order):
 	if player == self:
-		print("display")
 		var chopstick = Global.icons["chopsticks"].instantiate()
 		chopstick.scale = Vector2(.9, .9)
+		chopstick.player = self
 		chopstick.clickable = true
 		
 		special_cards.add_child(chopstick)

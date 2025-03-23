@@ -46,6 +46,8 @@ var desserts_per_round = dpr()
 var desserts_in_round = []
 var dessert_name = ""
 
+var played_special_cards = [null, null, null, null, null, null, null, null, null, null, null, null]
+
 var player_decks = {}
 var card_name_to_icon = {}
 
@@ -56,7 +58,7 @@ signal player_points_sig(player, points)
 
 func _ready():
 	Global.viewport_size = get_viewport().size
-		
+	Global.chopsticks_played.connect(chopsticks)
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
@@ -189,7 +191,7 @@ func store_card_played(player, card, extra_info):
 				players_played_cards[player]["maki"][1] += 1
 		else:
 			update_player_dict(players_played_cards, player, card_name)
-		Global.display_card_icon.emit(player, card, "")
+		Global.emit_signal("display_card_icon", player, card, "")
 	elif extra_info == null and card_name in VARIATION_CARDS:
 		# onigiri and fruits
 		variation = card.name.split("_")[1]
@@ -206,7 +208,7 @@ func store_card_played(player, card, extra_info):
 		# during round (call calc_points) : uramaki, miso soup
 		played_dr_cards.append([card_name, card, player])
 		if card_name == "uramaki":
-			Global.display_card_icon.emit(player, card, "")
+			Global.emit_signal("display_card_icon", player, card, "")
 	elif extra_info == null and card_name in WASABI_CARDS:
 		# nigiri and wasabi
 		if card_name == "nigiri":
@@ -236,12 +238,22 @@ func store_card_played(player, card, extra_info):
 		# create button to allow the play of chopsticks
 		
 		# need chopsticks number
-		Global.display_chopsticks_option.emit(player, 0)
-		Global.display_card_icon.emit(player, card, "")
+		Global.emit_signal("display_chopsticks_option", player, 3)
+		Global.emit_signal("display_card_icon", player, card, "")
 	
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
 	if taken_turn.size() == Global.players_number + Global.bots_number:
+		# do the extra actions from special cards, need timer and animation here
+		# temp chopsticks
+		# CLEAN and implement card_order
+		print(played_special_cards)
+		for i in range(0, 12):
+			if played_special_cards[i]:
+				Global.emit_signal("player_allowed_to_play", played_special_cards[i], "chopsticks")
+				played_special_cards[i] = null
+				return
+		
 		cards_left_in_round -= 1
 		calc_points("during_round", played_dr_cards)
 		# displays icons fnction here
@@ -497,6 +509,13 @@ func instantiate_card(cards_loaded, card, number, to_deck):
 	else:
 		desserts.append(card_copy)
 
+# function to do with anything chopsticks
+func chopsticks(player, card_order, played):
+	if played == true:
+		played_special_cards[card_order] = player
+	else:
+		played_special_cards[card_order] = null
+
 """Point Functions Below"""
 
 # function that adds points for cards that dont require knowledge on all cards
@@ -744,7 +763,7 @@ func record_miso(miso_per_turn, miso_player, miso_card):
 			players_played_cards[miso_player]["miso"] = 1
 		else:
 			players_played_cards[miso_player]["miso"] += 1
-		Global.display_card_icon.emit(miso_player, miso_card, "")
+		Global.emit("display_card_icon", miso_player, miso_card, "")
 
 # assume that if everyone has the least and the most, then just add
 func count_temaki_p(temaki_played):
@@ -806,8 +825,6 @@ func count_soy_sauce_p():
 			print("DEBUG ", players_points[player])
 			players_points[player] += 4 * players_played_cards[player]["soy"]
 			print("DEBUG ", players_points[player])
-			
-	
 
 # load icons to be displayed
 func load_icons():
