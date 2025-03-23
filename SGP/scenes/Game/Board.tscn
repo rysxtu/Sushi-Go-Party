@@ -1,18 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://datpj6x6xgam6"]
+[gd_scene load_steps=5 format=3 uid="uid://datpj6x6xgam6"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_afp0u"]
 [ext_resource type="Script" path="res://scripts/UI_manager.gd" id="2_jhjo2"]
 [ext_resource type="Texture2D" uid="uid://dlvvn1v7q3lmy" path="res://assets/Other/train_tracks1.png" id="3_h85kc"]
+[ext_resource type="Script" path="res://scenes/Game/End_game_btn.gd" id="3_mc5s0"]
 
-[node name="Board" type="Node2D" node_paths=PackedStringArray("deck")]
+[node name="Board" type="Node2D" node_paths=PackedStringArray("deck", "end_game_btn")]
 script = ExtResource("1_afp0u")
 deck = NodePath("Deck")
+end_game_btn = NodePath("UI/End_game_btn")
 
 [node name="UI" type="Control" parent="." node_paths=PackedStringArray("player_points")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
+mouse_filter = 2
 script = ExtResource("2_jhjo2")
 player_points = NodePath("player_points")
 
@@ -22,14 +25,27 @@ offset_left = 469.0
 offset_top = 217.0
 offset_right = 709.0
 offset_bottom = 317.0
+mouse_filter = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 10
 columns = 2
+
+[node name="End_game_btn" type="Button" parent="UI"]
+visible = false
+offset_left = 510.0
+offset_top = 316.0
+offset_right = 643.0
+offset_bottom = 347.0
+button_mask = 7
+text = "Return to Lobby
+"
+script = ExtResource("3_mc5s0")
 
 [node name="Background" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1152, 648)
 offset_right = 1151.0
 offset_bottom = 646.0
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 1
 
@@ -38,6 +54,7 @@ offset_left = 342.0
 offset_top = 178.0
 offset_right = 823.0
 offset_bottom = 404.0
+mouse_filter = 2
 texture = ExtResource("3_h85kc")
 expand_mode = 1
 
@@ -48,3 +65,5 @@ position = Vector2(302, 224)
 [node name="Deck" type="Node2D" parent="."]
 visible = false
 position = Vector2(148, 159)
+
+[connection signal="pressed" from="UI/End_game_btn" to="UI" method="_on_end_game_btn_pressed"]

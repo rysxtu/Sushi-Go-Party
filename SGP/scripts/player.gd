@@ -2,6 +2,7 @@ extends Node2D
 
 @export var height_curve: Curve
 @export var rotation_curve: Curve
+@export var special_cards: Control
 @export var max_rotation_degrees := 10
 @export var x_sep := 5
 @export var y_min := 50
@@ -19,11 +20,11 @@ var allowed_to_play_card = true
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
 
-
 func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_player_allowed_to_play)
+	Global.display_chopsticks_option.connect(display_chopstick_option)
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -86,6 +87,7 @@ func _update_cards():
 # plays a card when pressed if allowed
 func _card_pressed_from_hand(card):
 	if allowed_to_play_card:
+		var card_name = card.name.split('_')[0]
 		print("---Player: ", self, " played ", card.name, " from ", player_hand)
 		
 		player_hand.remove_child(card)
@@ -96,12 +98,22 @@ func _card_pressed_from_hand(card):
 		# for now extra info is null, only when its is special order
 		# first one for 
 		var info = null
-		if card.name.split('_')[0] == "miso":
+		if card_name == "miso":
 			info = "miso"
 		card_played.emit(self, card, null)
 
 func _player_allowed_to_play():
 	allowed_to_play_card = true
+
+func display_chopstick_option(player, card_order):
+	if player == self:
+		print("display")
+		var chopstick = Global.icons["chopsticks"].instantiate()
+		chopstick.scale = Vector2(.9, .9)
+		chopstick.clickable = true
+		
+		special_cards.add_child(chopstick)
+		
 
 """HELPER FUNCTIONS"""
 
@@ -130,4 +142,3 @@ func flip_card_to_back(card):
 	card.get_child(0).visible = false
 	card.get_child(-2).visible = true
 	card.mouse_filter = 2
-

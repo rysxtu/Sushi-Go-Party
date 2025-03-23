@@ -38,6 +38,11 @@ signal game_started_sig()
 # to display the played card in icons (should be received by icons)
 signal display_card_icon(player, card, extra_info)
 
+# signal to allow players to have chopsticks options
+signal display_chopsticks_option(player, card_order)
+# signal to record chopsticks being played
+signal chopsticks_played(player, card_order)
+
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms
 var player_played_cards = {}

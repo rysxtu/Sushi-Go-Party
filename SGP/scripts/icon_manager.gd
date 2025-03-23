@@ -4,6 +4,7 @@ extends Control
 @export var _self: Node2D
 @export var points_label: Label
 @export var plate: Control
+@export var special_card: Control
 
 const WASABI_ADJUSTMENT = -8
 const VARIATION_CARDS = {"onigiri": null, "nigiri": null}
@@ -17,20 +18,26 @@ func _ready():
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
 	
+	# set up the positioning of the icons
 	const path = "res://scenes/game/display_"
 	var markers_local = load(path + str(Global.hand_size) + ".tscn").instantiate()
 	markers_local.name = "markers"
 	markers = markers_local
 	self.add_child(markers)
-	
+
+# reset the icons on displays
 func reset():
 	for child in markers.get_children():
 		if child is Marker2D:
 			for panel in child.get_children():
 				child.remove_child(panel)
+	
+	# get rid of any special orders
+	for child in special_card.get_children():
+		special_card.remove_child(child)
 	icon_no = 0
 
-
+# add an icon to the board
 func add_icon(player, card, info):	
 	if _self == player:
 		var card_name = card.name.split("_")[0]

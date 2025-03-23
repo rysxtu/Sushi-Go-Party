@@ -1,6 +1,7 @@
 extends Node2D
 
 @export var deck: Node2D
+@export var end_game_btn: Button
 
 #types of cards
 const NIGIRI_CARDS = {"nigiri": null}
@@ -229,7 +230,14 @@ func store_card_played(player, card, extra_info):
 		# dependent: special order 
 		pass
 		Global.emit_signal("display_card_icon", player, card, "")
-	# wasabi a bit different
+	elif card_name == "chopsticks":
+		# store in played cards dictionary
+		update_player_dict(players_played_cards, player, card_name)
+		# create button to allow the play of chopsticks
+		
+		# need chopsticks number
+		Global.display_chopsticks_option.emit(player, 0)
+		Global.display_card_icon.emit(player, card, "")
 	
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
@@ -409,6 +417,11 @@ func end_game():
 	Global.emit_signal("round_over")
 	calc_points("game_end", null)
 	Global.player_played_cards = {}
+	
+	# ADD: need stats displayed
+	
+	end_game_btn.visible = true
+
 
 # populates the cards_loaded dictionary with 
 # the names of what cards we need

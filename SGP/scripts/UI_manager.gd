@@ -36,4 +36,6 @@ func init_player_points():
 		lbl.name = "bot_" + str(i)
 		lbl.text = "bot_" + str(i) + ": 0"
 		player_to_lbl["bot_" + str(i)] = lbl
-		
+
+func _on_end_game_btn_pressed():
+	get_tree().change_scene_to_file("res://scenes/UI/set_up.tscn")

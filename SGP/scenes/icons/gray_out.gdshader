@@ -1,7 +1,4 @@
 shader_type canvas_item;
-uniform float onoff;
-uniform vec4 line_color : source_color = vec4(1.0, 0.0, 0.0, 1.0);
-uniform float line_thickness : hint_range(0, 10) = 4.0;
 
 // 'uniform' exposes variable so it can be changed externally (for example, in a script)
 uniform bool is_grey = false;
@@ -13,25 +10,10 @@ const float RED_LUMINANCE = 0.2126;
 const float GREEN_LUMINANCE = 0.7152;
 const float BLUE_LUMINANCE = 0.0722;
 
-const vec2 OFFSETS[8] = {
-	vec2(-1, -1), vec2(-1, 0), vec2(-1, 1), vec2(0, -1), vec2(0, 1), 
-	vec2(1, -1), vec2(1, 0), vec2(1, 1)
-};
 
+// 'fragment' function is called for each individual pixel of the image
 void fragment() {
-	vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
-	float outline = 1.0;
-	
-	for (int i = 0; i < OFFSETS.length(); i++) {
-		outline *= texture(TEXTURE, UV + size * OFFSETS[i]).a;
-	}
-	outline = 1.0 - outline;
-	
-	vec4 color = texture(TEXTURE, UV);
-	vec4 outlined_result = mix(color, line_color, outline * color.a);
-	COLOR = mix(color, outlined_result, outlined_result.a * onoff);
-	
-	// We get the RGBA value of current pixel
+    // We get the RGBA value of current pixel
     vec4 col = COLOR;
 
     if(is_grey)
@@ -47,5 +29,4 @@ void fragment() {
 
     // Finally, we set the color of current pixel to a new value
     COLOR = col;
-
 }
