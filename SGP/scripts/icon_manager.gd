@@ -69,7 +69,6 @@ func add_icon(player, card, info):
 		
 		# have to watch out for special cards, e.g chopsticks
 		
-		# check for extra info
 		# check if variation card is nigiri and if it was added with wasabi
 		if card_name == "nigiri" and info == "wasabi":
 			side_icon = card_name_to_icon["wasabi"].instantiate()
@@ -97,6 +96,7 @@ func chopsticks_played(icon_name):
 	
 	# remove the chopstick icon from the board, as it has been used
 	for i in range(Global.hand_size):
+		# shoykd be icons[i].name
 		if icons[i] && icons[i].name.split('_')[0] == icon_name:
 			icons[i] = null
 			var marker_w_chopstick = markers.get_node("Icon" + str(i + 1))

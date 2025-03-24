@@ -105,6 +105,7 @@ func _card_pressed_from_hand(card):
 		# CLEAN
 		if add_card_back_to_hand:
 			var special_card = Global.cards_loaded[add_card_back_to_hand].instantiate()
+			special_card.name = add_card_back_to_hand
 			player_hand.add_child(special_card)
 			special_card.card_pressed.connect(_card_pressed_from_hand)
 			add_card_back_to_hand = null
@@ -123,18 +124,23 @@ func _all_players_allowed_to_play():
 
 # runs when signaled for player to have anotehr turn (e.g chopsticks)
 func _player_allowed_to_play(player, type, card_order):
-	
-	# remove card from special cards desiplay
-	# need number
-	# CLEAN: for card_order
-	test_chopticks_lbl.visible = true
-	if type == "chopsticks":
-		# add card_order: type + "_" + str(card_order)
-		add_card_back_to_hand = type
-		# should emit type + "_" + str(card_order) with order
-		chopsticks_played.emit(type)
-	
-	allowed_to_play_card = true
+	if player == self:
+		if player_hand.get_child_count() == 0:
+			card_played.emit(self, null, null)
+			chopsticks_played.emit(type)
+			return
+		
+		# remove card from special cards desiplay
+		# need number
+		# CLEAN: for card_order
+		test_chopticks_lbl.visible = true
+		if type == "chopsticks":
+			# add card_order: type + "_" + str(card_order)
+			add_card_back_to_hand = type
+			# should emit type + "_" + str(card_order) with order
+			chopsticks_played.emit(type)
+		
+		allowed_to_play_card = true
 
 func display_chopstick_option(player, card_order):
 	if player == self:

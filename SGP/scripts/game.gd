@@ -160,8 +160,11 @@ func populate_player_hand(player):
 var played_dr_cards = []
 # stores the cards that each player has played
 func store_card_played(player, card, extra_info):
-	var card_name = card.name.split('_')[0]
+	var card_name
 	var variation 
+	
+	if card:
+		card_name = card.name.split('_')[0]
 	
 	if player not in players_played_cards:
 		players_played_cards[player] = {}
@@ -251,8 +254,9 @@ func store_card_played(player, card, extra_info):
 		print(played_special_cards)
 		for i in range(0, 12):
 			if played_special_cards[i]:
-				Global.emit_signal("player_allowed_to_play", played_special_cards[i], "chopsticks", 3)
+				var player_temp = played_special_cards[i]
 				played_special_cards[i] = null
+				Global.emit_signal("player_allowed_to_play", player_temp, "chopsticks", 3)
 				return
 		
 		cards_left_in_round -= 1
