@@ -473,6 +473,23 @@ func load_cards(cards, cards_loaded):
 				cards_loaded[str(card) + "_pp"] = (load(path))
 				path = "res://scenes/card2D/playing_card/" + str(card) + "_pt.tscn"
 				cards_loaded[str(card) + "_pt"] = (load(path))
+			elif card in {"takeout": null, "spoon": null, "menu": null, "chopsticks": null}:
+				if card == "takeout":
+					for i in range(10, 13):
+						path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
+						cards_loaded[str(card) + "_" + str(i)] = (load(path))
+				elif card == "spoon":
+					for i in range(4, 7):
+						path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
+						cards_loaded[str(card) + "_" + str(i)] = (load(path))
+				elif card == "menu":
+					for i in range(7, 10):
+						path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
+						cards_loaded[str(card) + "_" + str(i)] = (load(path))
+				elif card == "chopsticks":
+					for i in range(1, 4):
+						path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
+						cards_loaded[str(card) + "_" + str(i)] = (load(path))
 			else:
 				# store the dessert we are dealing with
 				if card in DESSERT_CARDS:
@@ -696,7 +713,6 @@ func count_pudding_p(puddings_played):
 		var minimum = puddings_played[0][0]
 		var maximum = puddings_played[-1][0]
 		
-		print("DDBJD ", players_points)
 		# if only one value, give them all max points
 		if minimum == maximum and maximum != 0:
 			for tuple in puddings_played:
@@ -707,7 +723,6 @@ func count_pudding_p(puddings_played):
 					players_points[tuple[1]] -= 6
 				elif tuple[0] == maximum and maximum:
 					players_points[tuple[1]] += 6
-		print("DDBJD ", players_points)
 
 # function to get call uramaki played during a turn by all players
 func record_uramaki(tuple, not_counted_uramaki):
@@ -822,14 +837,11 @@ func count_soy_sauce_p():
 		player_to_backgrounds[player] = count
 		max_backgrounds = max(max_backgrounds, count)
 	
-	print("DEBUG ", player_to_backgrounds)
 	for player in players_played_cards:
 		# has max number of background and has play soy_sauce
 		if player_to_backgrounds[player] == max_backgrounds and "soy" in players_played_cards[player]:
 			# 4 points for each soy sauce card
-			print("DEBUG ", players_points[player])
 			players_points[player] += 4 * players_played_cards[player]["soy"]
-			print("DEBUG ", players_points[player])
 
 # load icons to be displayed
 func load_icons():

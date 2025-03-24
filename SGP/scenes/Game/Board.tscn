@@ -32,6 +32,7 @@ columns = 2
 
 [node name="End_game_btn" type="Button" parent="UI"]
 visible = false
+layout_mode = 0
 offset_left = 510.0
 offset_top = 316.0
 offset_right = 643.0
