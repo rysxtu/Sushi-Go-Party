@@ -244,13 +244,14 @@ func store_card_played(player, card, extra_info):
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
 	if taken_turn.size() == Global.players_number + Global.bots_number:
+		
 		# do the extra actions from special cards, need timer and animation here
 		# temp chopsticks
 		# CLEAN and implement card_order
 		print(played_special_cards)
 		for i in range(0, 12):
 			if played_special_cards[i]:
-				Global.emit_signal("player_allowed_to_play", played_special_cards[i], "chopsticks")
+				Global.emit_signal("player_allowed_to_play", played_special_cards[i], "chopsticks", 3)
 				played_special_cards[i] = null
 				return
 		

@@ -191,7 +191,7 @@ pivot_offset = Vector2(10, 11)
 text = "0"
 horizontal_alignment = 2
 
-[node name="icon_manager" type="Control" parent="display" node_paths=PackedStringArray("_self", "points_label", "plate", "special_card")]
+[node name="icon_manager" type="Control" parent="display" node_paths=PackedStringArray("_self", "points_label", "plate", "special_cards")]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -205,7 +205,7 @@ script = ExtResource("5_qmi1v")
 _self = NodePath("../..")
 points_label = NodePath("../points")
 plate = NodePath("Plate")
-special_card = NodePath("../special_cards")
+special_cards = NodePath("../special_cards")
 
 [node name="Plate" parent="display/icon_manager" instance=ExtResource("4_hwgcs")]
 layout_mode = 1
@@ -254,6 +254,14 @@ offset_left = 366.0
 offset_top = 100.0
 offset_right = 566.0
 offset_bottom = 180.0
+
+[node name="Temp_chopsticks" type="Label" parent="display"]
+visible = false
+offset_left = -550.0
+offset_top = -87.0
+offset_right = -285.0
+offset_bottom = -64.0
+text = "Chopsticks: Second turn for player"
 
 [node name="player_hand" type="Node2D" parent="."]
 

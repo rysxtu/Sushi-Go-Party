@@ -5,6 +5,7 @@ var players_number = 1
 var bots_number = 0
 var states = {}
 var cards = {}
+# stores the scene of each card that we can play
 var cards_loaded = {}
 var hand_size = 0
 var online
@@ -28,13 +29,21 @@ const dumplings_points = [1, 3, 6, 10, 15]
 const fruits_points = [-2, 0, 1, 3, 6, 10]
 const onigiri_points = [1, 4, 9, 16]
 
+# signals players when they have their hands and can play
 signal player_has_hand_sig(player)
+# signal for a player to have thier points displayed (redundant?)
 signal player_points_sig(player, points)
+# signal to icon_manager and counter that round is over, and player
 signal round_over()
+# signal to icon_manager and counter that turn is over, and player
 signal turn_over()
+# signal to disconnect a hand from a player
 signal disconnect_hand_from_player(player)
+# signal for all players to be able to play
 signal allowed_to_play()
-signal player_allowed_to_play(player, type)
+# signal for a players to be able to play again (chopsticks), need order
+signal player_allowed_to_play(player, type, card_order)
+# tell all players that game has started
 signal game_started_sig()
 # to display the played card in icons (should be received by icons)
 signal display_card_icon(player, card, extra_info)

@@ -84,6 +84,7 @@ func simple_greedy():
 		var t = card.name.rstrip("0123456789")
 		t = t.rstrip("_")
 		
+		print(t, card)
 		if ppc[t] > best_card_points:
 			best_card_points = ppc[t]
 	

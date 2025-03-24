@@ -6,9 +6,6 @@ var original_z_idx
 var scale_x
 var scale_y
 
-var player
-var clickable
-var using = false
 var hovering = false
 
 func _ready():
@@ -16,38 +13,18 @@ func _ready():
 	scale_x = scale[0]
 	scale_y = scale[1]
 	original_z_idx = self.z_index
-	
-	if clickable == true:
-		# CLEAN aesthetics
-		sprite.material.set_shader_parameter("is_grey", true)
+	sprite.material.set_shader_parameter("is_grey", false)
 
 func _on_mouse_entered():
 	hovering = true
-	if !clickable:
-		sprite.material.set_shader_parameter("onoff",1)
-		var tween = get_tree().create_tween()
-		tween.tween_property(self, "scale", Vector2(scale_up * scale_x, scale_up * scale_y), 0.01)
-		self.z_index = 2
+	sprite.material.set_shader_parameter("onoff",1)
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "scale", Vector2(scale_up * scale_x, scale_up * scale_y), 0.01)
+	self.z_index = 2
 
 func _on_mouse_exited():
 	hovering = false
-	if !clickable:
-		sprite.material.set_shader_parameter("onoff",0)
-		var tween = get_tree().create_tween()
-		tween.tween_property(self, "scale", Vector2(scale_x, scale_y), 0.01)
-		self.z_index = original_z_idx
-
-func _input(event):
-	if event is InputEventMouseButton:
-		var e:InputEventMouseButton = event
-		if e.button_mask == MOUSE_BUTTON_LEFT:
-			if clickable and hovering:
-				using = !using
-				if using:
-					sprite.material.set_shader_parameter("is_grey", false)
-					# need to edit number
-					Global.emit_signal("chopsticks_played", player, 3, true)
-				else:
-					sprite.material.set_shader_parameter("is_grey", true)
-					Global.emit_signal("chopsticks_played", player, 3, false)
-				print("Clicked On Object")
+	sprite.material.set_shader_parameter("onoff",0)
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "scale", Vector2(scale_x, scale_y), 0.01)
+	self.z_index = original_z_idx

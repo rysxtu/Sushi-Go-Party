@@ -16,14 +16,21 @@ const HAND_ROT = 0.2
 @onready var player_hand = get_hand(self)
 
 var allowed_to_play_card = true
+# store the card we need to add back to the deck
+var add_card_back_to_hand
 
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
+# signal to tell that icon_manager should get rid of chopsticks icons as it has been used
+signal chopsticks_played(icon_name)
+
+# CLEAN: temp for when chopsticks are played
+@onready var test_chopticks_lbl = self.get_node("display/Temp_chopsticks")
 
 func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
-	Global.allowed_to_play.connect(_allowed_to_play)
+	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
 	Global.display_chopsticks_option.connect(display_chopstick_option)
 	
@@ -55,7 +62,6 @@ func disconnect_hand_from_player(player):
 			card.card_pressed.disconnect(_card_pressed_from_hand)
 
 # have to fix the positioning of update cards
-
 # positions and spans the cards
 func _update_cards():
 	var cards = player_hand.get_child_count()
@@ -96,6 +102,14 @@ func _card_pressed_from_hand(card):
 			_update_cards()
 		allowed_to_play_card = false
 		
+		# CLEAN
+		if add_card_back_to_hand:
+			var special_card = Global.cards_loaded[add_card_back_to_hand].instantiate()
+			player_hand.add_child(special_card)
+			special_card.card_pressed.connect(_card_pressed_from_hand)
+			add_card_back_to_hand = null
+			test_chopticks_lbl.visible = false
+		
 		# for now extra info is null, only when its is special order
 		# first one for 
 		var info = null
@@ -103,23 +117,34 @@ func _card_pressed_from_hand(card):
 			info = "miso"
 		card_played.emit(self, card, null)
 
-func _allowed_to_play():
+# runs when signale for new turn
+func _all_players_allowed_to_play():
 	allowed_to_play_card = true
 
-func _player_allowed_to_play(player, type):
-	allowed_to_play_card = true
+# runs when signaled for player to have anotehr turn (e.g chopsticks)
+func _player_allowed_to_play(player, type, card_order):
 	
 	# remove card from special cards desiplay
+	# need number
 	# CLEAN: for card_order
+	test_chopticks_lbl.visible = true
 	if type == "chopsticks":
-		for child in special_cards.get_children():
-			if "chopsticks" == child.name.split('_')[0]:
-				special_cards.remove_child(child)
-				break
+		# add card_order: type + "_" + str(card_order)
+		add_card_back_to_hand = type
+		# should emit type + "_" + str(card_order) with order
+		chopsticks_played.emit(type)
+	
+	allowed_to_play_card = true
 
 func display_chopstick_option(player, card_order):
 	if player == self:
 		var chopstick = Global.icons["chopsticks"].instantiate()
+		
+		# need order
+		chopstick.name = "chopsticks_" + str(card_order)
+		
+		# CLEAN: the get_child(1) is dependent
+		chopstick.get_child(1).material.set_local_to_scene(true)
 		chopstick.scale = Vector2(.9, .9)
 		chopstick.player = self
 		chopstick.clickable = true
