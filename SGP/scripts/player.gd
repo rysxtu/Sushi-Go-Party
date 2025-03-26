@@ -22,17 +22,17 @@ var add_card_back_to_hand
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
 # signal to tell that icon_manager should get rid of chopsticks icons as it has been used
-signal chopsticks_played(icon_name)
+signal chopsticks_played_ic(icon_name)
 
 # CLEAN: temp for when chopsticks are played
 @onready var test_chopticks_lbl = self.get_node("display/Temp_chopsticks")
 
+# player script only deals with playing cards, not the ui
 func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
-	Global.display_chopsticks_option.connect(display_chopstick_option)
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -102,7 +102,7 @@ func _card_pressed_from_hand(card):
 			_update_cards()
 		allowed_to_play_card = false
 		
-		# CLEAN
+		# CLEAN, adding chopsticks back into hand
 		if add_card_back_to_hand:
 			var special_card = Global.cards_loaded[add_card_back_to_hand].instantiate()
 			special_card.name = add_card_back_to_hand
@@ -127,7 +127,7 @@ func _player_allowed_to_play(player, type, card_order):
 	if player == self:
 		if player_hand.get_child_count() == 0:
 			card_played.emit(self, null, null)
-			chopsticks_played.emit(type)
+			chopsticks_played_ic.emit(type)
 			return
 		
 		# remove card from special cards desiplay
@@ -136,27 +136,11 @@ func _player_allowed_to_play(player, type, card_order):
 		test_chopticks_lbl.visible = true
 		if type == "chopsticks":
 			# add card_order: type + "_" + str(card_order)
-			add_card_back_to_hand = type
+			add_card_back_to_hand = type + "_" + str(card_order)
 			# should emit type + "_" + str(card_order) with order
-			chopsticks_played.emit(type)
+			chopsticks_played_ic.emit(type + "_" + str(card_order))
 		
 		allowed_to_play_card = true
-
-func display_chopstick_option(player, card_order):
-	if player == self:
-		var chopstick = Global.icons["chopsticks"].instantiate()
-		
-		# need order
-		chopstick.name = "chopsticks_" + str(card_order)
-		
-		# CLEAN: the get_child(1) is dependent
-		chopstick.get_child(1).material.set_local_to_scene(true)
-		chopstick.scale = Vector2(.9, .9)
-		chopstick.player = self
-		chopstick.clickable = true
-		
-		special_cards.add_child(chopstick)
-		
 
 """HELPER FUNCTIONS"""
 

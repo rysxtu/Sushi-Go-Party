@@ -239,9 +239,9 @@ func store_card_played(player, card, extra_info):
 		# store in played cards dictionary
 		update_player_dict(players_played_cards, player, card_name)
 		# create button to allow the play of chopsticks
-		
+		variation = int(card.name.split("_")[1])
 		# need chopsticks number
-		Global.emit_signal("display_chopsticks_option", player, 3)
+		Global.emit_signal("display_chopsticks_option", player, variation)
 		Global.emit_signal("display_card_icon", player, card, "")
 	
 	# wait for the card to be flipped over & animation
@@ -251,12 +251,12 @@ func store_card_played(player, card, extra_info):
 		# do the extra actions from special cards, need timer and animation here
 		# temp chopsticks
 		# CLEAN and implement card_order
-		print(played_special_cards)
+		print("SPECIAL CARDS: ", played_special_cards)
 		for i in range(0, 12):
 			if played_special_cards[i]:
 				var player_temp = played_special_cards[i]
 				played_special_cards[i] = null
-				Global.emit_signal("player_allowed_to_play", player_temp, "chopsticks", 3)
+				Global.emit_signal("player_allowed_to_play", player_temp, "chopsticks", i + 1)
 				return
 		
 		cards_left_in_round -= 1
@@ -508,8 +508,11 @@ func make_deck(cards_loaded, desserts_per_round, initial):
 			for i in cards_no[card]:
 				instantiate_card(cards_loaded, card, i, false)
 		elif card_name not in DESSERT_CARDS:
-			for i in cards_no[card]:
-				instantiate_card(cards_loaded, card, i, true)
+			if card_name in {"chopsticks": null, "menu": null, "spoon": null, "takeout": null}:
+				instantiate_card(cards_loaded, card, -1, true)
+			else:
+				for i in cards_no[card]:
+					instantiate_card(cards_loaded, card, i, true)
 				
 	var d_card
 	for j in desserts_per_round[game_round - 1]:
@@ -521,7 +524,12 @@ func make_deck(cards_loaded, desserts_per_round, initial):
 # instantiate needed cards, stores to deck or append to desserts
 func instantiate_card(cards_loaded, card, number, to_deck):
 	var card_copy = cards_loaded[card].instantiate()
-	card_copy.name = str(card) + "_" + str(number)
+	
+	# if card is chopsticks or a special card, dont add a number
+	if number >= 0: 
+		card_copy.name = str(card) + "_" + str(number)
+	else:
+		card_copy.name = str(card)
 	card_copy.global_position = deck.global_position
 	scale_card(card_copy, 0.7)
 	# flips card so we cant see what it is
@@ -531,12 +539,13 @@ func instantiate_card(cards_loaded, card, number, to_deck):
 	else:
 		desserts.append(card_copy)
 
-# function to do with anything chopsticks
+# function that tells us which special card we played (order)
 func chopsticks(player, card_order, played):
 	if played == true:
-		played_special_cards[card_order] = player
+		# card_order starts at 1, array is 0 indexed
+		played_special_cards[card_order - 1] = player
 	else:
-		played_special_cards[card_order] = null
+		played_special_cards[card_order - 1] = null
 
 """Point Functions Below"""
 

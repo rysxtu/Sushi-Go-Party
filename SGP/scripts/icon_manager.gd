@@ -16,11 +16,13 @@ var markers
 # arr of all icons on board
 var icons = []
 
+# icon_manager script deals with a player's ui
 func _ready():
 	Global.player_points_sig.connect(display_points)
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
-	_self.chopsticks_played.connect(chopsticks_played)
+	_self.chopsticks_played_ic.connect(chopsticks_played)
+	Global.display_chopsticks_option.connect(display_chopstick_option)
 	
 	# set up the positioning of the icons
 	const path = "res://scenes/game/display_"
@@ -87,25 +89,39 @@ func add_icon(player, card, info):
 				break
 		icon_no += 1
 
+# get rids of the chopsticks ui when a chopsticks are used
 func chopsticks_played(icon_name):
 	# remove the icon from the special_cards area, so we cant replay it
 	for child in special_cards.get_children():
 		# should be child.name
-		if child.name.split('_')[0] == icon_name:
+		if child.name == icon_name:
 			special_cards.remove_child(child)
 	
 	# remove the chopstick icon from the board, as it has been used
 	for i in range(Global.hand_size):
 		# shoykd be icons[i].name
-		if icons[i] && icons[i].name.split('_')[0] == icon_name:
+		if icons[i] && icons[i].name == icon_name:
 			icons[i] = null
 			var marker_w_chopstick = markers.get_node("Icon" + str(i + 1))
 			var chopstick = marker_w_chopstick.get_child(0)
 			marker_w_chopstick.remove_child(chopstick)
 			chopstick.queue_free()
 			break
-	
+
+# displays the chopstick ui, allowing player to use chopsticks
+func display_chopstick_option(player, card_order):
+	if player == _self:
+		var chopstick = Global.icons["chopsticks"].instantiate()
 		
+		chopstick.name = "chopsticks_" + str(card_order)
+		
+		# CLEAN: the get_child(1) is dependent
+		chopstick.get_child(1).material.set_local_to_scene(true)
+		chopstick.scale = Vector2(.9, .9)
+		chopstick.player = _self
+		chopstick.clickable = true
+		
+		special_cards.add_child(chopstick)
 
 func display_points(player, points):
 	if _self == player:

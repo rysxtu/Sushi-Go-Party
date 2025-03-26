@@ -55,10 +55,10 @@ func _input(event):
 				if using:
 					sprite.material.set_shader_parameter(\"is_grey\", false)
 					# need to edit number
-					Global.emit_signal(\"chopsticks_played\", player, 3, true)
+					Global.emit_signal(\"chopsticks_played\", player, int(self.name.split('_')[1]), true)
 				else:
 					sprite.material.set_shader_parameter(\"is_grey\", true)
-					Global.emit_signal(\"chopsticks_played\", player, 3, false)
+					Global.emit_signal(\"chopsticks_played\", player,  int(self.name.split('_')[1]), false)
 				print(\"Clicked On Object\")
 "
 
