@@ -20,6 +20,7 @@ shader = ExtResource("2_2xrqc")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
 shader_parameter/line_thickness = 4.0
+shader_parameter/is_grey = false
 
 [node name="takeout_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
@@ -35,8 +36,7 @@ script = ExtResource("1_r0qdx")
 sprite = NodePath("Sprite2D")
 
 [node name="bg" type="Sprite2D" parent="."]
-position = Vector2(2.33339, 18.6667)
-scale = Vector2(1, 1)
+position = Vector2(3.66667, 14.6667)
 texture = SubResource("GradientTexture2D_s63s5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

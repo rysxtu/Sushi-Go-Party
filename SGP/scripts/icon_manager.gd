@@ -7,7 +7,7 @@ extends Control
 @export var special_cards: Control
 
 const WASABI_ADJUSTMENT = -8
-const VARIATION_CARDS = {"onigiri": null, "nigiri": null}
+const VARIATION_CARDS = {"onigiri": null, "nigiri": null, "maki": null, "chopsticks": null, "fruit": null, "uramaki": null}
 var card_name_to_icon = Global.icons
 var icon_no = 0
 
@@ -63,7 +63,12 @@ func add_icon(player, card, info):
 		# have to look out for variations
 		if card_name in VARIATION_CARDS:
 			var variation = card.name.split("_")[1]
-			new_icon = card_name_to_icon[card_name + '_' + variation].instantiate()
+			# these two cards need to be spawned correcly 
+			if card_name in {"onigiri": null, "nigiri": null}:
+				new_icon = card_name_to_icon[card_name + '_' + variation].instantiate()
+			else:
+				# these only need to have their name info
+				new_icon = card_name_to_icon[card_name].instantiate()
 			new_icon.name = card_name + '_' + variation
 		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
@@ -73,6 +78,7 @@ func add_icon(player, card, info):
 		
 		# check if variation card is nigiri and if it was added with wasabi
 		if card_name == "nigiri" and info == "wasabi":
+			new_icon.name += "_wasabi"
 			side_icon = card_name_to_icon["wasabi"].instantiate()
 			side_icon.scale.x = 0.5
 			side_icon.scale.y = 0.5

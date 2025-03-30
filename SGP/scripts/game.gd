@@ -243,6 +243,11 @@ func store_card_played(player, card, extra_info):
 		# need chopsticks number
 		Global.emit_signal("display_chopsticks_option", player, variation)
 		Global.emit_signal("display_card_icon", player, card, "")
+	elif card_name == "takeout":
+		variation = int(card.name.split("_")[1])
+		# need takeout number
+		played_special_cards[variation - 1] = player
+		
 	
 	# wait for the card to be flipped over & animation
 	# check if every player has taken their turn
@@ -256,7 +261,18 @@ func store_card_played(player, card, extra_info):
 			if played_special_cards[i]:
 				var player_temp = played_special_cards[i]
 				played_special_cards[i] = null
-				Global.emit_signal("player_allowed_to_play", player_temp, "chopsticks", i + 1)
+				if 0 <= i and i <= 2:
+					# chopsticks played
+					Global.emit_signal("player_allowed_to_play", player_temp, "chopsticks", i + 1)
+				elif 3 <= i and i <= 5:
+					# spoon was played
+					pass
+				elif 6 <= i and i <= 8:
+					# menu was played
+					pass
+				elif 9 <= i and i <= 11:
+					# takeout box played
+					Global.emit_signal("takeout_box", player_temp)
 				return
 		
 		cards_left_in_round -= 1
@@ -473,8 +489,8 @@ func load_cards(cards, cards_loaded):
 				cards_loaded[str(card) + "_pp"] = (load(path))
 				path = "res://scenes/card2D/playing_card/" + str(card) + "_pt.tscn"
 				cards_loaded[str(card) + "_pt"] = (load(path))
-			elif card in {"takeout": null, "spoon": null, "menu": null, "chopsticks": null}:
-				if card == "takeout":
+			elif card in {"takeout_box": null, "spoon": null, "menu": null, "chopsticks": null}:
+				if card == "takeout_box":
 					for i in range(10, 13):
 						path = "res://scenes/card2D/playing_card/" + str(card) + "_" + str(i) + ".tscn"
 						cards_loaded[str(card) + "_" + str(i)] = (load(path))
@@ -564,6 +580,7 @@ func count_nonglobal_p(player, card):
 	count_green_p(player, card)
 	count_fruit_p(player, card)
 	count_onigiri_p(player, card)
+	count_turnover_p(player, card)
 	
 func count_global_p(arr, arr_name):
 	if arr_name == "maki":
@@ -876,6 +893,11 @@ func load_icons():
 				path = "res://scenes/icons/" + card_name + "_icon.tscn"
 				card_name_to_icon[card_name] = (load(path))
 	Global.icons = card_name_to_icon
+	
+func count_turnover_p(player, card):
+	if card == "turnover":
+		players_points[player] += players_played_cards[player]["turnover"] * 2
+
 	
 """ Helper Functions Below"""
 # function to help store cards

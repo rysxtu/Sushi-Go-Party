@@ -15,12 +15,16 @@
 [ext_resource type="PackedScene" uid="uid://dl5qka0kpukkr" path="res://scenes/icons/pudding_icon.tscn" id="19_tgdl4"]
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="29_gfy2f"]
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards", "takeout_confirm", "see_deck", "takeout_lbl", "icon_manager")]
 position = Vector2(582, 568)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
 special_cards = NodePath("display/special_cards")
+takeout_confirm = NodePath("display/Temp_takeout")
+see_deck = NodePath("display/see_deck")
+takeout_lbl = NodePath("display/Temp_takeout_instructions")
+icon_manager = NodePath("display/icon_manager")
 
 [node name="display" type="Control" parent="."]
 layout_mode = 3
@@ -249,6 +253,7 @@ theme_override_font_sizes/font_size = 20
 horizontal_alignment = 2
 
 [node name="special_cards" type="Control" parent="display"]
+visible = false
 anchors_preset = 0
 offset_left = 366.0
 offset_top = 100.0
@@ -264,6 +269,25 @@ offset_right = -285.0
 offset_bottom = -64.0
 text = "Chopsticks: Second turn for player"
 
+[node name="Temp_takeout_instructions" type="Label" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -139.0
+offset_top = 87.0
+offset_right = 145.0
+offset_bottom = 110.0
+text = "Press on cards you want to turn over"
+
+[node name="Temp_takeout" type="Button" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -395.0
+offset_top = 2.0
+offset_right = -324.0
+offset_bottom = 33.0
+text = "Confirm"
+
 [node name="player_hand" type="Node2D" parent="."]
 
 [connection signal="pressed" from="display/see_deck" to="display/see_deck" method="_on_pressed"]
+[connection signal="pressed" from="display/Temp_takeout" to="." method="_confirm_turn_over"]

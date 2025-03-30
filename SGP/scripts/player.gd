@@ -3,11 +3,15 @@ extends Node2D
 @export var height_curve: Curve
 @export var rotation_curve: Curve
 @export var special_cards: Control
+@export var takeout_confirm: Button
+@export var see_deck: Button
+@export var takeout_lbl: Label
 @export var max_rotation_degrees := 10
 @export var x_sep := 5
 @export var y_min := 50
 @export var y_max := -50
 @export var hand_size := 600
+@export var icon_manager: Control
 
 const HAND_WIDTH = 200
 const HAND_HEIGHT = 50
@@ -18,6 +22,8 @@ const HAND_ROT = 0.2
 var allowed_to_play_card = true
 # store the card we need to add back to the deck
 var add_card_back_to_hand
+
+var takeout_turned_over_cards = {}
 
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
@@ -33,6 +39,7 @@ func _ready():
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
+	Global.takeout_box.connect(_takeout_box)
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -141,6 +148,53 @@ func _player_allowed_to_play(player, type, card_order):
 			chopsticks_played_ic.emit(type + "_" + str(card_order))
 		
 		allowed_to_play_card = true
+
+func _takeout_box(player):
+	if self == player:
+		# connect to icon pressed in icons
+		var markers = icon_manager.get_node("markers")
+		var icon
+		# look through each marker
+		for marker in markers.get_children():
+			# ensure that there is an icon
+			if marker is Marker2D and marker.get_child_count() > 0:
+				icon = marker.get_child(0)
+				icon.icon_pressed.connect(_turn_over_cards_tb)
+		
+		see_deck.emit_signal("pressed")
+		takeout_confirm.visible = true
+		takeout_lbl.visible = true
+
+# function to collect all turned over cards
+func _turn_over_cards_tb(icon):
+	# in and turned over, then it means to turn it back up (not fliiping it anymore)
+	if icon in takeout_turned_over_cards and takeout_turned_over_cards[icon] == 1:
+		takeout_turned_over_cards[icon] = 0
+		# get the sprite's shader
+		icon.get_node("Sprite2D").material.set_shader_parameter("is_grey", false)
+	else:
+		takeout_turned_over_cards[icon] = 1
+		icon.get_node("Sprite2D").material.set_shader_parameter("is_grey", true)
+	print(takeout_turned_over_cards)
+
+# confirm button pressed for takeout
+func _confirm_turn_over():
+	# have to send back the cards that have been turned over
+	
+	# disconnect icon pressed signal, so no confusion later
+	var markers = icon_manager.get_node("markers")
+	var icon
+	# look through each marker
+	for marker in markers.get_children():
+		# ensure that there is an icon
+		if marker is Marker2D and marker.get_child_count() > 0:
+			icon = marker.get_child(0)
+			icon.icon_pressed.disconnect(_turn_over_cards_tb)
+	# hide the board and everything related to takeout
+	see_deck.emit_signal("pressed")
+	takeout_confirm.visible = false
+	takeout_lbl.visible = false
+	card_played.emit(self, null, null)
 
 """HELPER FUNCTIONS"""
 

@@ -53,6 +53,9 @@ signal display_chopsticks_option(player, card_order)
 # signal to record chopsticks being played
 signal chopsticks_played(player, card_order, played)
 
+# signal to allow player to take takeout box actions
+signal takeout_box(player)
+
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms
 var player_played_cards = {}
