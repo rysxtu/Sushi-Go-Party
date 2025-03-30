@@ -21,7 +21,7 @@ const VARIATION_CARDS = {"fruit": null, "onigiri": null}
 # nigir and wasabi
 const WASABI_CARDS = {"nigiri": null, "wasabi": null}
 # hand size
-var hand_size = [8, 10, 10, 9, 9, 8, 8, 7][Global.players_number + Global.bots_number - 1]
+var hand_size = [10, 10, 10, 9, 9, 8, 8, 7][Global.players_number + Global.bots_number - 1]
 
 var cards_no = Global.cards_no
 # number of player: initially set at 1
@@ -584,9 +584,8 @@ func _turn_over_card(player, card):
 	elif card_name in VARIATION_CARDS:
 		players_played_cards[player][card_name][variation] -= 1
 	elif card_name == "nigiri":
-		if has_wasabi:
-			# gray out of the wasabi icon	
-			
+		# has wasabi on it and the wasabi is not turned over
+		if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
 			# getting the nigiri with a wasabi out
 			players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = 0
 			players_played_cards[player]["wasabi"][0] += 1
@@ -595,15 +594,18 @@ func _turn_over_card(player, card):
 	elif card_name ==  "wasabi":
 		# the wasabi has a nigiri on it
 		if players_played_cards[player]["wasabi"][1].size() > int(variation):
-			# remove of the nigiri icon	
+			# remove of the wasabi icon	on the nigiri
 			
 			# get the type of nigiri
 			var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
 			# revert it back to a nigiri without a wasabi
-			if "nigiri_" + str(nigiri_type) in players_played_cards[player]:
-				players_played_cards[player]["nigiri"][nigiri_type] += 1
+			if "nigiri" in players_played_cards[player]:
+				if nigiri_type in players_played_cards[player]["nigiri"]:
+					players_played_cards[player]["nigiri"][nigiri_type] += 1
+				else:
+					players_played_cards[player]["nigiri"][nigiri_type] = 1
 			else:
-				players_played_cards[player]["nigiri"][nigiri_type]  = 1
+				players_played_cards[player]["nigiri"] = {nigiri_type: 1}
 			players_played_cards[player]["wasabi"][1][int(variation)] = 0
 		else:
 			# one less wasabi to play on

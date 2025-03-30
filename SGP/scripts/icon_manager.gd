@@ -79,7 +79,7 @@ func add_icon(player, card, info):
 		
 		# check if variation card is nigiri and if it was added with wasabi
 		if card_name == "nigiri" and info != "":
-			new_icon.name += "_wasabi"
+			new_icon.name += "_" + info
 			side_icon = card_name_to_icon["wasabi"].instantiate()
 			side_icon.scale.x = 0.5
 			side_icon.scale.y = 0.5

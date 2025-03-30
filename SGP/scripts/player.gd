@@ -159,7 +159,9 @@ func _takeout_box(player):
 			# ensure that there is an icon
 			if marker is Marker2D and marker.get_child_count() > 0:
 				icon = marker.get_child(0)
-				icon.icon_pressed.connect(_turn_over_cards_tb)
+				# make sure it hasnt already been tunred over
+				if icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
+					icon.icon_pressed.connect(_turn_over_cards_tb)
 		
 		see_deck.emit_signal("pressed")
 		takeout_confirm.visible = true
@@ -172,16 +174,29 @@ func _turn_over_cards_tb(icon):
 		takeout_turned_over_cards[icon] = 0
 		# get the sprite's shader
 		icon.get_node("Sprite2D").material.set_shader_parameter("is_grey", false)
+		
+		# if it is a nigiri on top of a wasabi
+		if icon.get_child_count() == 3:
+			icon.get_node("wasabi_icon").get_node("Sprite2D").material.set_shader_parameter("is_grey", false)
 	else:
 		takeout_turned_over_cards[icon] = 1
 		icon.get_node("Sprite2D").material.set_shader_parameter("is_grey", true)
+		
+		# if it is a nigiri on top of a wasabi
+		if icon.get_child_count() == 3:
+			icon.get_node("wasabi_icon").get_node("Sprite2D").material.set_shader_parameter("is_grey", true)
 	print(takeout_turned_over_cards)
 
 # confirm button pressed for takeout
 func _confirm_turn_over():
+	var icons = takeout_turned_over_cards.keys()
+	icons.sort_custom(func(a, b): return a.name < b.name)
+	
+	print(icons)
 	# have to send back the cards that have been turned over
-	for icon in takeout_turned_over_cards:
-		Global.emit_signal("turn_over_card", self, icon)
+	for icon in icons:
+		if takeout_turned_over_cards[icon] == 1:
+			Global.emit_signal("turn_over_card", self, icon)
 	
 	# disconnect icon pressed signal, so no confusion later
 	var markers = icon_manager.get_node("markers")
@@ -191,11 +206,13 @@ func _confirm_turn_over():
 		# ensure that there is an icon
 		if marker is Marker2D and marker.get_child_count() > 0:
 			icon = marker.get_child(0)
-			icon.icon_pressed.disconnect(_turn_over_cards_tb)
+			if icon.icon_pressed.is_connected(_turn_over_cards_tb):
+				icon.icon_pressed.disconnect(_turn_over_cards_tb)
 	# hide the board and everything related to takeout
 	see_deck.emit_signal("pressed")
 	takeout_confirm.visible = false
 	takeout_lbl.visible = false
+	takeout_turned_over_cards = {}
 	card_played.emit(self, null, null)
 
 """HELPER FUNCTIONS"""
