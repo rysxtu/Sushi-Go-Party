@@ -1,7 +1,7 @@
 extends Control
 
 @export var sprite: Sprite2D
-@export var scale_up := 1.75
+@export var scale_up := 1.4
 var original_z_idx
 var scale_x
 var scale_y

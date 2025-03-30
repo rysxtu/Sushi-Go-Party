@@ -59,6 +59,7 @@ signal player_points_sig(player, points)
 func _ready():
 	Global.viewport_size = get_viewport().size
 	Global.chopsticks_played.connect(chopsticks)
+	Global.turn_over_card.connect(_turn_over_card)
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
@@ -220,7 +221,7 @@ func store_card_played(player, card, extra_info):
 			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
 				players_played_cards[player]["wasabi"][0] -= 1
 				players_played_cards[player]["wasabi"][1].append(variation)
-				Global.emit_signal("display_card_icon", player, card, "wasabi")
+				Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][0]))
 			else:
 				# store as just nigiri
 				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
@@ -230,7 +231,7 @@ func store_card_played(player, card, extra_info):
 				players_played_cards[player]["wasabi"] = [1, []]
 			else:
 				players_played_cards[player]["wasabi"][0] += 1
-			Global.emit_signal("display_card_icon", player, card, "")
+			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1)
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -562,6 +563,60 @@ func chopsticks(player, card_order, played):
 		played_special_cards[card_order - 1] = player
 	else:
 		played_special_cards[card_order - 1] = null
+		
+func _turn_over_card(player, card):
+	var card_info = card.name.split("_")
+	var card_name = card.name.split("_")[0]
+	var has_wasabi = null
+	var variation = null
+	
+	if card_info.size() == 3:
+		has_wasabi = card.name.split("_")[2]
+	if card_info.size() >= 2:
+		variation = card.name.split("_")[1]
+		
+	if card_name == "maki" or card_name == "uramaki":
+		if card_name == "uramaki" and players_played_cards[player]["uramaki"] < 10:
+			players_played_cards[player]["uramaki"][0] -= int(variation)
+		else:
+			players_played_cards[player]["maki"][0] -= int(variation)
+			players_played_cards[player]["maki"][1] -= 1
+	elif card_name in VARIATION_CARDS:
+		players_played_cards[player][card_name][variation] -= 1
+	elif card_name == "nigiri":
+		if has_wasabi:
+			# gray out of the wasabi icon	
+			
+			# getting the nigiri with a wasabi out
+			players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = 0
+			players_played_cards[player]["wasabi"][0] += 1
+		else:
+			players_played_cards[player]["nigiri"][int(variation)] -= 1
+	elif card_name ==  "wasabi":
+		# the wasabi has a nigiri on it
+		if players_played_cards[player]["wasabi"][1].size() > int(variation):
+			# remove of the nigiri icon	
+			
+			# get the type of nigiri
+			var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
+			# revert it back to a nigiri without a wasabi
+			if "nigiri_" + str(nigiri_type) in players_played_cards[player]:
+				players_played_cards[player]["nigiri"][nigiri_type] += 1
+			else:
+				players_played_cards[player]["nigiri"][nigiri_type]  = 1
+			players_played_cards[player]["wasabi"][1][int(variation)] = 0
+		else:
+			# one less wasabi to play on
+			players_played_cards[player]["wasabi"][0] -= 1
+	else:
+		players_played_cards[player][card_name] -= 1
+		
+	if "turn_over" in players_played_cards[player]:
+		players_played_cards[player]["turn_over"] += 1
+	else:
+		players_played_cards[player]["turn_over"] = 1
+	print(has_wasabi)
+	
 
 """Point Functions Below"""
 
@@ -580,7 +635,7 @@ func count_nonglobal_p(player, card):
 	count_green_p(player, card)
 	count_fruit_p(player, card)
 	count_onigiri_p(player, card)
-	count_turnover_p(player, card)
+	count_turn_over_p(player, card)
 	
 func count_global_p(arr, arr_name):
 	if arr_name == "maki":
@@ -809,7 +864,7 @@ func record_miso(miso_per_turn, miso_player, miso_card):
 			players_played_cards[miso_player]["miso"] = 1
 		else:
 			players_played_cards[miso_player]["miso"] += 1
-		Global.emit("display_card_icon", miso_player, miso_card, "")
+		Global.emit_signal("display_card_icon", miso_player, miso_card, "")
 
 # assume that if everyone has the least and the most, then just add
 func count_temaki_p(temaki_played):
@@ -894,9 +949,9 @@ func load_icons():
 				card_name_to_icon[card_name] = (load(path))
 	Global.icons = card_name_to_icon
 	
-func count_turnover_p(player, card):
-	if card == "turnover":
-		players_points[player] += players_played_cards[player]["turnover"] * 2
+func count_turn_over_p(player, card):
+	if card == "turn_over":
+		players_points[player] += players_played_cards[player]["turn_over"] * 2
 
 	
 """ Helper Functions Below"""

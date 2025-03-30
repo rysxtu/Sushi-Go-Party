@@ -9,7 +9,7 @@
 script/source = "extends Control
 
 @export var sprite: Sprite2D
-@export var scale_up := 1.75
+@export var scale_up := 1.4
 var original_z_idx
 var scale_x
 var scale_y
@@ -28,7 +28,7 @@ func _ready():
 	
 	if self.get_parent() is Control:
 		# CLEAN aesthetics
-		sprite.material.set_shader_parameter(\"is_grey\", true)
+		sprite.material.set_shader_parameter(\"is_grey\", false)
 
 func _on_mouse_entered():
 	hovering = true
@@ -53,11 +53,11 @@ func _input(event):
 			if clickable and hovering:
 				using = !using
 				if using:
-					sprite.material.set_shader_parameter(\"is_grey\", false)
+					sprite.material.set_shader_parameter(\"is_grey\", true)
 					# need to edit number
 					Global.emit_signal(\"chopsticks_played\", player, int(self.name.split('_')[1]), true)
 				else:
-					sprite.material.set_shader_parameter(\"is_grey\", true)
+					sprite.material.set_shader_parameter(\"is_grey\", false)
 					Global.emit_signal(\"chopsticks_played\", player,  int(self.name.split('_')[1]), false)
 				print(\"Clicked On Object\")
 "

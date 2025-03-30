@@ -180,6 +180,8 @@ func _turn_over_cards_tb(icon):
 # confirm button pressed for takeout
 func _confirm_turn_over():
 	# have to send back the cards that have been turned over
+	for icon in takeout_turned_over_cards:
+		Global.emit_signal("turn_over_card", self, icon)
 	
 	# disconnect icon pressed signal, so no confusion later
 	var markers = icon_manager.get_node("markers")
