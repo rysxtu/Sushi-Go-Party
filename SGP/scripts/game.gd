@@ -564,62 +564,73 @@ func chopsticks(player, card_order, played):
 	else:
 		played_special_cards[card_order - 1] = null
 		
-func _turn_over_card(player, card):
-	var card_info = card.name.split("_")
-	var card_name = card.name.split("_")[0]
-	var has_wasabi = null
-	var variation = null
-	
-	if card_info.size() == 3:
-		has_wasabi = card.name.split("_")[2]
-	if card_info.size() >= 2:
-		variation = card.name.split("_")[1]
+func _turn_over_card(player, card, zeros):
+	if card and not zeros:
+		var card_info = card.name.split("_")
+		var card_name = card.name.split("_")[0]
+		var has_wasabi = null
+		var variation = null
 		
-	if card_name == "maki" or card_name == "uramaki":
-		if card_name == "uramaki" and players_played_cards[player]["uramaki"] < 10:
-			players_played_cards[player]["uramaki"][0] -= int(variation)
-		else:
-			players_played_cards[player]["maki"][0] -= int(variation)
-			players_played_cards[player]["maki"][1] -= 1
-	elif card_name in VARIATION_CARDS:
-		players_played_cards[player][card_name][variation] -= 1
-	elif card_name == "nigiri":
-		# has wasabi on it and the wasabi is not turned over
-		if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
-			# getting the nigiri with a wasabi out
-			players_played_cards[player]["wasabi"][1].pop_at(int(has_wasabi[-1]))
-			players_played_cards[player]["wasabi"][0] += 1
-		else:
-			players_played_cards[player]["nigiri"][int(variation)] -= 1
-	elif card_name ==  "wasabi":
-		# the wasabi has a nigiri on it
-		if players_played_cards[player]["wasabi"][1].size() > int(variation):
-			# remove of the wasabi icon	on the nigiri
-			# send a signal to rename nigiri
-			Global.emit_signal("rename_nigiri_wasabi_icons", player, variation)
+		if card_info.size() == 3:
+			has_wasabi = card.name.split("_")[2]
+		if card_info.size() >= 2:
+			variation = card.name.split("_")[1]
 			
-			# get the type of nigiri
-			var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
-			# revert it back to a nigiri without a wasabi
-			if "nigiri" in players_played_cards[player]:
-				if nigiri_type in players_played_cards[player]["nigiri"]:
-					players_played_cards[player]["nigiri"][nigiri_type] += 1
-				else:
-					players_played_cards[player]["nigiri"][nigiri_type] = 1
+		if card_name == "maki" or card_name == "uramaki":
+			if card_name == "uramaki" and players_played_cards[player]["uramaki"] < 10:
+				players_played_cards[player]["uramaki"][0] -= int(variation)
 			else:
-				players_played_cards[player]["nigiri"] = {nigiri_type: 1}
-			players_played_cards[player]["wasabi"][1].pop_at(int(variation))
+				players_played_cards[player]["maki"][0] -= int(variation)
+				players_played_cards[player]["maki"][1] -= 1
+		elif card_name in VARIATION_CARDS:
+			players_played_cards[player][card_name][variation] -= 1
+		elif card_name == "nigiri":
+			# has wasabi on it and the wasabi is not turned over
+			if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
+				# getting the nigiri with a wasabi out
+				players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = 0
+				players_played_cards[player]["wasabi"][0] += 1
+			else:
+				players_played_cards[player]["nigiri"][int(variation)] -= 1
+		elif card_name ==  "wasabi":
+			# the wasabi has a nigiri on it
+			if players_played_cards[player]["wasabi"][1].size() > int(variation):
+				# remove of the wasabi icon	on the nigiri
+				# send a signal to rename nigiri
+				Global.emit_signal("rename_nigiri_wasabi_icons", player, variation)
+				
+				# get the type of nigiri
+				var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
+				# revert it back to a nigiri without a wasabi
+				if "nigiri" in players_played_cards[player]:
+					if nigiri_type in players_played_cards[player]["nigiri"]:
+						players_played_cards[player]["nigiri"][nigiri_type] += 1
+					else:
+						players_played_cards[player]["nigiri"][nigiri_type] = 1
+				else:
+					players_played_cards[player]["nigiri"] = {nigiri_type: 1}
+				players_played_cards[player]["wasabi"][1][int(variation)] = 0
+			else:
+				# one less wasabi to play on
+				players_played_cards[player]["wasabi"][0] -= 1
 		else:
-			# one less wasabi to play on
-			players_played_cards[player]["wasabi"][0] -= 1
-	else:
-		players_played_cards[player][card_name] -= 1
-		
-	if "turn_over" in players_played_cards[player]:
-		players_played_cards[player]["turn_over"] += 1
-	else:
-		players_played_cards[player]["turn_over"] = 1
-	print(has_wasabi)
+			players_played_cards[player][card_name] -= 1
+			
+		if "turn_over" in players_played_cards[player]:
+			players_played_cards[player]["turn_over"] += 1
+		else:
+			players_played_cards[player]["turn_over"] = 1
+		print(has_wasabi)
+	elif not card and zeros:
+		# check if wasabi is in player hand
+		if "wasabi" in players_played_cards[player]:
+			# collect the idx of where zeros are in the played hand
+			var new_arr = []
+			for nigiri in players_played_cards[player]["wasabi"][1]:
+				if nigiri != 0:
+					new_arr.append(nigiri)
+					
+			players_played_cards[player]["wasabi"][1] = new_arr
 	
 
 """Point Functions Below"""

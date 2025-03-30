@@ -197,7 +197,11 @@ func _confirm_turn_over():
 	# have to send back the cards that have been turned over
 	for icon in icons:
 		if takeout_turned_over_cards[icon] == 1:
-			Global.emit_signal("turn_over_card", self, icon)
+			print("DEBUG: ", icon)
+			Global.emit_signal("turn_over_card", self, icon, false)
+	
+	# have to get rid of all 0s in the wasabi afterwards
+	Global.emit_signal("turn_over_card", self, null, true)
 	
 	# disconnect icon pressed signal, so no confusion later
 	var markers = icon_manager.get_node("markers")
@@ -233,6 +237,7 @@ func _rename_nigiri_wasabi_icons(player, wasabi_number):
 					var wasabi_icon = icon.get_node("wasabi_icon")
 					icon.remove_child(wasabi_icon)
 					wasabi_icon.queue_free()
+					break
 				
 
 """HELPER FUNCTIONS"""
