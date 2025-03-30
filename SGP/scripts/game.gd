@@ -587,7 +587,7 @@ func _turn_over_card(player, card):
 		# has wasabi on it and the wasabi is not turned over
 		if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
 			# getting the nigiri with a wasabi out
-			players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = 0
+			players_played_cards[player]["wasabi"][1].pop_at(int(has_wasabi[-1]))
 			players_played_cards[player]["wasabi"][0] += 1
 		else:
 			players_played_cards[player]["nigiri"][int(variation)] -= 1
@@ -595,6 +595,8 @@ func _turn_over_card(player, card):
 		# the wasabi has a nigiri on it
 		if players_played_cards[player]["wasabi"][1].size() > int(variation):
 			# remove of the wasabi icon	on the nigiri
+			# send a signal to rename nigiri
+			Global.emit_signal("rename_nigiri_wasabi_icons", player, variation)
 			
 			# get the type of nigiri
 			var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
@@ -606,7 +608,7 @@ func _turn_over_card(player, card):
 					players_played_cards[player]["nigiri"][nigiri_type] = 1
 			else:
 				players_played_cards[player]["nigiri"] = {nigiri_type: 1}
-			players_played_cards[player]["wasabi"][1][int(variation)] = 0
+			players_played_cards[player]["wasabi"][1].pop_at(int(variation))
 		else:
 			# one less wasabi to play on
 			players_played_cards[player]["wasabi"][0] -= 1

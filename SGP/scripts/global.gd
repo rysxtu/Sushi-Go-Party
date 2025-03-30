@@ -56,6 +56,7 @@ signal chopsticks_played(player, card_order, played)
 # signal to allow player to take takeout box actions
 signal takeout_box(player)
 signal turn_over_card(player, card)
+signal rename_nigiri_wasabi_icons(player, wasabi_number)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

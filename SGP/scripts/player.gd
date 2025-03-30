@@ -40,6 +40,7 @@ func _ready():
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
 	Global.takeout_box.connect(_takeout_box)
+	Global.rename_nigiri_wasabi_icons.connect(_rename_nigiri_wasabi_icons)
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -214,6 +215,25 @@ func _confirm_turn_over():
 	takeout_lbl.visible = false
 	takeout_turned_over_cards = {}
 	card_played.emit(self, null, null)
+	
+func _rename_nigiri_wasabi_icons(player, wasabi_number):
+	if self == player:
+		var markers = icon_manager.get_node("markers")
+		var icon
+		# look through each marker
+		for marker in markers.get_children():
+		# ensure that there is an icon
+			if marker is Marker2D and marker.get_child_count() > 0:
+				icon = marker.get_child(0)
+				var icon_name = icon.name.split('_')
+				
+				# must be a nigiri on top of a wasabi
+				if icon_name.size() == 3 and icon_name[2][-1] == wasabi_number:
+					icon.name = icon_name[0] + '_' + icon_name[1]
+					var wasabi_icon = icon.get_node("wasabi_icon")
+					icon.remove_child(wasabi_icon)
+					wasabi_icon.queue_free()
+				
 
 """HELPER FUNCTIONS"""
 
