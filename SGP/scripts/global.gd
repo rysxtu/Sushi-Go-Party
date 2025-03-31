@@ -57,7 +57,8 @@ signal chopsticks_played(player, card_order, played)
 signal takeout_box(player)
 # get rid of the zeros that wasabi may have left sometimes
 signal turn_over_card(player, card, zeros)
-signal rename_nigiri_wasabi_icons(player, wasabi_number)
+signal rename_nigiri_wasabi_icons_tb(player, wasabi_number)
+signal rename_wasabi_n_icons_tb(player)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

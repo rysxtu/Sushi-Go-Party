@@ -221,7 +221,9 @@ func store_card_played(player, card, extra_info):
 			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
 				players_played_cards[player]["wasabi"][0] -= 1
 				players_played_cards[player]["wasabi"][1].append(variation)
-				Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][0]))
+				Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][1].size() - 1))
+				# have to send a signal here to make sure that the name of the nigiri to wasabi is corret
+				Global.emit_signal("rename_wasabi_n_icons_tb", player, "nigiri")
 			else:
 				# store as just nigiri
 				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
@@ -232,6 +234,8 @@ func store_card_played(player, card, extra_info):
 			else:
 				players_played_cards[player]["wasabi"][0] += 1
 			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1)
+			# have to count how many wasabi the lpayer has in their hand and rename the lastest wasabi
+			Global.emit_signal("rename_wasabi_n_icons_tb", player, "wasabi")
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -588,20 +592,19 @@ func _turn_over_card(player, card, zeros):
 			# has wasabi on it and the wasabi is not turned over
 			if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
 				# getting the nigiri with a wasabi out
-				players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = 0
+				players_played_cards[player]["wasabi"][1].pop_at(int(has_wasabi[-1]))
 				players_played_cards[player]["wasabi"][0] += 1
 			else:
 				players_played_cards[player]["nigiri"][int(variation)] -= 1
 		elif card_name ==  "wasabi":
 			# the wasabi has a nigiri on it
+			# remove of the wasabi icon	on the nigiri
+			# send a signal to rename nigiri
+			Global.emit_signal("rename_nigiri_wasabi_icons_tb", player, variation)
 			if players_played_cards[player]["wasabi"][1].size() > int(variation):
-				# remove of the wasabi icon	on the nigiri
-				# send a signal to rename nigiri
-				Global.emit_signal("rename_nigiri_wasabi_icons", player, variation)
-				
 				# get the type of nigiri
 				var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
-				# revert it back to a nigiri without a wasabi
+				# revert it back to a nigiri without a wasabid
 				if "nigiri" in players_played_cards[player]:
 					if nigiri_type in players_played_cards[player]["nigiri"]:
 						players_played_cards[player]["nigiri"][nigiri_type] += 1

@@ -24,6 +24,7 @@ var allowed_to_play_card = true
 var add_card_back_to_hand
 
 var takeout_turned_over_cards = {}
+var markers_mapping = {}
 
 # to tell the board what cards have been played by who
 signal card_played(player, card, extra_info)
@@ -40,7 +41,12 @@ func _ready():
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
 	Global.takeout_box.connect(_takeout_box)
-	Global.rename_nigiri_wasabi_icons.connect(_rename_nigiri_wasabi_icons)
+	Global.rename_nigiri_wasabi_icons_tb.connect(_rename_nigiri_wasabi_icons_tb)
+	Global.rename_wasabi_n_icons_tb.connect(_rename_wasabi_n_icons_tb)
+	
+	var markers_temp = icon_manager.get_node("markers").get_children()
+	for marker in markers_temp:
+		markers_mapping[marker.name] = marker
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -191,8 +197,8 @@ func _turn_over_cards_tb(icon):
 # confirm button pressed for takeout
 func _confirm_turn_over():
 	var icons = takeout_turned_over_cards.keys()
-	icons.sort_custom(func(a, b): return a.name < b.name)
-	
+	# if both nirgi and its wasabi are turned over at the same time, order matters
+	icons.sort_custom(func(a, b): return a.name > b.name)
 	print(icons)
 	# have to send back the cards that have been turned over
 	for icon in icons:
@@ -220,7 +226,7 @@ func _confirm_turn_over():
 	takeout_turned_over_cards = {}
 	card_played.emit(self, null, null)
 	
-func _rename_nigiri_wasabi_icons(player, wasabi_number):
+func _rename_nigiri_wasabi_icons_tb(player, wasabi_number):
 	if self == player:
 		var markers = icon_manager.get_node("markers")
 		var icon
@@ -230,15 +236,45 @@ func _rename_nigiri_wasabi_icons(player, wasabi_number):
 			if marker is Marker2D and marker.get_child_count() > 0:
 				icon = marker.get_child(0)
 				var icon_name = icon.name.split('_')
-				
+				print(icon_name)
 				# must be a nigiri on top of a wasabi
-				if icon_name.size() == 3 and icon_name[2][-1] == wasabi_number:
+				if icon_name.size() == 3 and icon_name[2] == "wasabi" + wasabi_number and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
 					icon.name = icon_name[0] + '_' + icon_name[1]
 					var wasabi_icon = icon.get_node("wasabi_icon")
 					icon.remove_child(wasabi_icon)
 					wasabi_icon.queue_free()
 					break
-				
+
+# count how many wasabi's there are and rename the newest wasabi to accurately represent what has happened
+func _rename_wasabi_n_icons_tb(player, type):
+	if self == player:
+		# map the markers to get the order we want?
+		var marker		
+		var icon
+		
+		var last_nigiri
+		var wasabis = []
+		var count = -1
+		# look through each marker in order
+		for i in Global.hand_size:
+			marker = markers_mapping["Icon" + str(i + 1)]
+			# ensure that there is an icon
+			if marker is Marker2D and marker.get_child_count() > 0:
+				icon = marker.get_child(0)
+				var icon_name = icon.name.split('_')
+				# if wasabi count one and record it
+				if icon_name[0] == "wasabi" and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
+					wasabis.append(icon)
+					count += 1
+				elif icon_name[0] == "nigiri" and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
+					last_nigiri = icon
+		if type == "wasabi":
+			# get the latest wasabi and rename it
+			wasabis[-1].name = "wasabi_" + str(count)
+		elif type == "nigiri":
+			#last_nigiri.name = last_nigiri.name.left(-1)
+			#last_nigiri.name += str(count)
+			pass
 
 """HELPER FUNCTIONS"""
 
