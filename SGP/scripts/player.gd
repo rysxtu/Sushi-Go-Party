@@ -39,10 +39,14 @@ func _ready():
 	Global.player_has_hand_sig.connect(_on_player_has_hand)
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
+	
 	Global.player_allowed_to_play.connect(_player_allowed_to_play)
+	
 	Global.takeout_box.connect(_takeout_box)
 	Global.rename_nigiri_wasabi_icons_tb.connect(_rename_nigiri_wasabi_icons_tb)
-	Global.rename_wasabi_n_icons_tb.connect(_rename_wasabi_n_icons_tb)
+	Global.rename_wasabi_icons_tb.connect(_rename_wasabi_icons_tb)
+	
+	Global.menu.connect(_menu_played)
 	
 	var markers_temp = icon_manager.get_node("markers").get_children()
 	for marker in markers_temp:
@@ -207,7 +211,7 @@ func _confirm_turn_over():
 			Global.emit_signal("turn_over_card", self, icon, false)
 	
 	# have to get rid of all 0s in the wasabi afterwards
-	Global.emit_signal("turn_over_card", self, null, true)
+	#Global.emit_signal("turn_over_card", self, null, true)
 	
 	# disconnect icon pressed signal, so no confusion later
 	var markers = icon_manager.get_node("markers")
@@ -246,13 +250,12 @@ func _rename_nigiri_wasabi_icons_tb(player, wasabi_number):
 					break
 
 # count how many wasabi's there are and rename the newest wasabi to accurately represent what has happened
-func _rename_wasabi_n_icons_tb(player, type):
+func _rename_wasabi_icons_tb(player):
 	if self == player:
 		# map the markers to get the order we want?
-		var marker		
+		var marker
 		var icon
 		
-		var last_nigiri
 		var wasabis = []
 		var count = -1
 		# look through each marker in order
@@ -266,15 +269,13 @@ func _rename_wasabi_n_icons_tb(player, type):
 				if icon_name[0] == "wasabi" and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
 					wasabis.append(icon)
 					count += 1
-				elif icon_name[0] == "nigiri" and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
-					last_nigiri = icon
-		if type == "wasabi":
-			# get the latest wasabi and rename it
-			wasabis[-1].name = "wasabi_" + str(count)
-		elif type == "nigiri":
-			#last_nigiri.name = last_nigiri.name.left(-1)
-			#last_nigiri.name += str(count)
-			pass
+					
+		# get the latest wasabi and rename it
+		wasabis[-1].name = "wasabi_" + str(count)
+
+func _menu_played(player):
+	if self == player:
+		pass
 
 """HELPER FUNCTIONS"""
 

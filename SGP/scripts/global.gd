@@ -15,7 +15,7 @@ var icons = {}
 var cards_no = {
 	"nigiri_1": 4, "nigiri_2": 5, "nigiri_3": 3, "maki_1": 4, "maki_2": 5, "maki_3": 3, "temaki": 12, "uramaki_3": 4, "uramaki_4": 5, "uramaki_5": 3,
 	"tempura": 8, "sashimi": 8, "dumplings": 8, "eel": 8, "tofu": 8, "onigiri_1": 2, "onigiri_2": 2, "onigiri_3": 2, "onigiri_4": 2, "edamame": 8, "miso_soup": 8,
-	"chopsticks_1": 1, "chopsticks_2": 1, "chopsticks_3": 1, "soy_sauce": 3, "tea": 3, "menu_7": 1, "menu_8": 1, "menu_9": 1, "spoon_4": 1, "spoon_5": 1, "spoon_6": 1, "special_order": 3, "takeout_box_10": 1, "takeout_box_11": 1, "takeout_box_12": 1, "wasabi": 3, 
+	"chopsticks_1": 1, "chopsticks_2": 1, "chopsticks_3": 1, "soy_sauce": 3, "tea": 3, "menu_7": 1, "menu_8": 1, "menu_9": 1, "spoon_4": 1, "spoon_5": 1, "spoon_6": 1, "special_order": 3, "takeout_box_10": 1, "takeout_box_11": 1, "takeout_box_12": 1, "wasabi": 5, 
 	"pudding": 15, "green_tea_ice_cream": 15, "fruit_ww": 2, "fruit_wp": 3, "fruit_wt": 3, "fruit_tt": 2, "fruit_pp": 2, "fruit_pt": 3
 	}
 
@@ -48,8 +48,9 @@ signal game_started_sig()
 # to display the played card in icons (should be received by icons)
 signal display_card_icon(player, card, extra_info)
 
-# signal to allow players to have chopsticks options
-signal display_chopsticks_option(player, card_order)
+# signal to allow players to have special options, e.g chopsticks, spoon
+signal display_special_option(player, card_order, type)
+
 # signal to record chopsticks being played
 signal chopsticks_played(player, card_order, played)
 
@@ -58,7 +59,10 @@ signal takeout_box(player)
 # get rid of the zeros that wasabi may have left sometimes
 signal turn_over_card(player, card, zeros)
 signal rename_nigiri_wasabi_icons_tb(player, wasabi_number)
-signal rename_wasabi_n_icons_tb(player)
+signal rename_wasabi_icons_tb(player)
+
+# signal to allow players to look at 4 from dexk and choose 1
+signal menu(player)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

@@ -23,7 +23,7 @@ func _ready():
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
 	_self.chopsticks_played_ic.connect(chopsticks_played)
-	Global.display_chopsticks_option.connect(display_chopstick_option)
+	Global.display_special_option.connect(display_special_option)
 	
 	# set up the positioning of the icons
 	const path = "res://scenes/game/display_"
@@ -119,20 +119,22 @@ func chopsticks_played(icon_name):
 			break
 
 # displays the chopstick ui, allowing player to use chopsticks
-func display_chopstick_option(player, card_order):
+func display_special_option(player, card_order, type):
 	if player == _self:
-		print("display")
-		var chopstick = Global.icons["chopsticks"].instantiate()
-		
-		chopstick.name = "chopsticks_" + str(card_order)
-		
-		# CLEAN: the get_child(1) is dependent
-		chopstick.get_child(1).material.set_local_to_scene(true)
-		chopstick.scale = Vector2(.9, .9)
-		chopstick.player = _self
-		chopstick.clickable = true
-		
-		special_cards.add_child(chopstick)
+		if type == "chopsticks":
+			var chopstick = Global.icons["chopsticks"].instantiate()
+			
+			chopstick.name = "chopsticks_" + str(card_order)
+			
+			# CLEAN: the get_child(1) is dependent
+			chopstick.get_child(1).material.set_local_to_scene(true)
+			chopstick.scale = Vector2(.9, .9)
+			chopstick.player = _self
+			chopstick.clickable = true
+			
+			special_cards.add_child(chopstick)
+		elif type == "spoon":
+			pass
 
 func display_points(player, points):
 	if _self == player:

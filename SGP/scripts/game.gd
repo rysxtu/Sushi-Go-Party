@@ -219,11 +219,21 @@ func store_card_played(player, card, extra_info):
 			variation = int(card.name.split("_")[1])
 			# check if wasabi is in the player_played cards and if there is an empty one
 			if "wasabi" in players_played_cards[player] and players_played_cards[player]["wasabi"][0] > 0:
+				
+				var old_wasabi = null
+				var count_old_wasabi = 0
+				for i in range(players_played_cards[player]["wasabi"][1].size()):
+					if players_played_cards[player]["wasabi"][1][i] == -1:
+						old_wasabi = i
+						break
+						
+				if old_wasabi == null :
+					players_played_cards[player]["wasabi"][1].append(variation)
+					Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][1].size() - 1))
+				else:
+					players_played_cards[player]["wasabi"][1][old_wasabi] = (variation)
+					Global.emit_signal("display_card_icon", player, card, "wasabi" + str(old_wasabi))
 				players_played_cards[player]["wasabi"][0] -= 1
-				players_played_cards[player]["wasabi"][1].append(variation)
-				Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][1].size() - 1))
-				# have to send a signal here to make sure that the name of the nigiri to wasabi is corret
-				Global.emit_signal("rename_wasabi_n_icons_tb", player, "nigiri")
 			else:
 				# store as just nigiri
 				update_player_dict(players_played_cards, player, "nigiri", false, 1, variation)
@@ -233,9 +243,15 @@ func store_card_played(player, card, extra_info):
 				players_played_cards[player]["wasabi"] = [1, []]
 			else:
 				players_played_cards[player]["wasabi"][0] += 1
-			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1)
+				
+			var non_neg = 0
+			for i in range(players_played_cards[player]["wasabi"][1].size()):
+				if players_played_cards[player]["wasabi"][1][i] == -1:
+					non_neg += 1
+			
+			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1 - non_neg)
 			# have to count how many wasabi the lpayer has in their hand and rename the lastest wasabi
-			Global.emit_signal("rename_wasabi_n_icons_tb", player, "wasabi")
+			Global.emit_signal("rename_wasabi_icons_tb", player, "wasabi")
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -243,14 +259,17 @@ func store_card_played(player, card, extra_info):
 	elif card_name == "chopsticks":
 		# store in played cards dictionary
 		update_player_dict(players_played_cards, player, card_name)
-		# create button to allow the play of chopsticks
+		# chopstick number
 		variation = int(card.name.split("_")[1])
-		# need chopsticks number
-		Global.emit_signal("display_chopsticks_option", player, variation)
+		Global.emit_signal("display_special_option", player, variation, "chopsticks")
 		Global.emit_signal("display_card_icon", player, card, "")
 	elif card_name == "takeout":
+		# takeout number
 		variation = int(card.name.split("_")[1])
-		# need takeout number
+		played_special_cards[variation - 1] = player
+	elif card_name == "menu":
+		# menu number
+		variation = int(card.name.split("_")[1])
 		played_special_cards[variation - 1] = player
 		
 	
@@ -274,7 +293,7 @@ func store_card_played(player, card, extra_info):
 					pass
 				elif 6 <= i and i <= 8:
 					# menu was played
-					pass
+					Global.emit_signal("menu", player_temp)
 				elif 9 <= i and i <= 11:
 					# takeout box played
 					Global.emit_signal("takeout_box", player_temp)
@@ -282,14 +301,7 @@ func store_card_played(player, card, extra_info):
 		
 		cards_left_in_round -= 1
 		calc_points("during_round", played_dr_cards)
-		# displays icons fnction here
 		turn_over()
-		
-	
-	"""HARD"""
-	# bonus action: chopsticks, spoon
-	# look at deck & choose: menu
-	# flip: takeout box
 
 # manages when the hands needs to be swapped (when all cards have been played for a round)
 # animation
@@ -592,7 +604,7 @@ func _turn_over_card(player, card, zeros):
 			# has wasabi on it and the wasabi is not turned over
 			if has_wasabi and players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] != 0:
 				# getting the nigiri with a wasabi out
-				players_played_cards[player]["wasabi"][1].pop_at(int(has_wasabi[-1]))
+				players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = -1
 				players_played_cards[player]["wasabi"][0] += 1
 			else:
 				players_played_cards[player]["nigiri"][int(variation)] -= 1
@@ -601,7 +613,7 @@ func _turn_over_card(player, card, zeros):
 			# remove of the wasabi icon	on the nigiri
 			# send a signal to rename nigiri
 			Global.emit_signal("rename_nigiri_wasabi_icons_tb", player, variation)
-			if players_played_cards[player]["wasabi"][1].size() > int(variation):
+			if players_played_cards[player]["wasabi"][1].size() > int(variation) and players_played_cards[player]["wasabi"][1][int(variation)] != -1:
 				# get the type of nigiri
 				var nigiri_type = players_played_cards[player]["wasabi"][1][int(variation)]
 				# revert it back to a nigiri without a wasabid
@@ -613,16 +625,19 @@ func _turn_over_card(player, card, zeros):
 				else:
 					players_played_cards[player]["nigiri"] = {nigiri_type: 1}
 				players_played_cards[player]["wasabi"][1][int(variation)] = 0
+			elif players_played_cards[player]["wasabi"][1][int(variation)] == -1:
+				players_played_cards[player]["wasabi"][0] -= 1
+				players_played_cards[player]["wasabi"][1][int(variation)] = 0
 			else:
 				# one less wasabi to play on
 				players_played_cards[player]["wasabi"][0] -= 1
 		else:
 			players_played_cards[player][card_name] -= 1
 			
-		if "turn_over" in players_played_cards[player]:
-			players_played_cards[player]["turn_over"] += 1
+		if "turned_over" in players_played_cards[player]:
+			players_played_cards[player]["turned_over"] += 1
 		else:
-			players_played_cards[player]["turn_over"] = 1
+			players_played_cards[player]["turned_over"] = 1
 		print(has_wasabi)
 	elif not card and zeros:
 		# check if wasabi is in player hand
@@ -653,7 +668,7 @@ func count_nonglobal_p(player, card):
 	count_green_p(player, card)
 	count_fruit_p(player, card)
 	count_onigiri_p(player, card)
-	count_turn_over_p(player, card)
+	count_turned_over_p(player, card)
 	
 func count_global_p(arr, arr_name):
 	if arr_name == "maki":
@@ -769,7 +784,8 @@ func count_wasabi_p(player, card):
 	if card == "wasabi":
 		var p = 0
 		for nigiri in players_played_cards[player]["wasabi"][1]:
-			p += 3 * nigiri
+			if nigiri > 0:
+				p += 3 * nigiri
 		players_points[player] += p
 
 func count_green_p(player, card):	
@@ -967,9 +983,9 @@ func load_icons():
 				card_name_to_icon[card_name] = (load(path))
 	Global.icons = card_name_to_icon
 	
-func count_turn_over_p(player, card):
-	if card == "turn_over":
-		players_points[player] += players_played_cards[player]["turn_over"] * 2
+func count_turned_over_p(player, card):
+	if card == "turned_over":
+		players_points[player] += players_played_cards[player]["turned_over"] * 2
 
 	
 """ Helper Functions Below"""
