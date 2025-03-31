@@ -20,6 +20,7 @@ shader = ExtResource("2_0cnqj")
 shader_parameter/onoff = null
 shader_parameter/line_color = Color(1, 0, 0, 1)
 shader_parameter/line_thickness = 4.0
+shader_parameter/is_grey = false
 
 [node name="wasabi_icon" type="Panel" node_paths=PackedStringArray("sprite")]
 self_modulate = Color(1, 1, 1, 0)
@@ -36,7 +37,6 @@ sprite = NodePath("Sprite2D")
 
 [node name="bg" type="Sprite2D" parent="."]
 position = Vector2(10.6471, 10.9412)
-scale = Vector2(1, 1)
 texture = SubResource("GradientTexture2D_tmyfg")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

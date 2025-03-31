@@ -251,7 +251,7 @@ func store_card_played(player, card, extra_info):
 			
 			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1 - non_neg)
 			# have to count how many wasabi the lpayer has in their hand and rename the lastest wasabi
-			Global.emit_signal("rename_wasabi_icons_tb", player, "wasabi")
+			Global.emit_signal("rename_wasabi_icons_tb", player)
 	elif extra_info and card_name in DEPENDENT_CARDS:
 		# dependent: special order 
 		pass
@@ -606,6 +606,9 @@ func _turn_over_card(player, card, zeros):
 				# getting the nigiri with a wasabi out
 				players_played_cards[player]["wasabi"][1][int(has_wasabi[-1])] = -1
 				players_played_cards[player]["wasabi"][0] += 1
+				
+				# rename it
+				card.name = card_name + '_' + variation
 			else:
 				players_played_cards[player]["nigiri"][int(variation)] -= 1
 		elif card_name ==  "wasabi":

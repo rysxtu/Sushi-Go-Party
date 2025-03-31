@@ -10,12 +10,13 @@ var cards_loaded = {}
 var hand_size = 0
 var online
 var icons = {}
+var markers_mapping = {}
 
 # how many cards there are of each type
 var cards_no = {
 	"nigiri_1": 4, "nigiri_2": 5, "nigiri_3": 3, "maki_1": 4, "maki_2": 5, "maki_3": 3, "temaki": 12, "uramaki_3": 4, "uramaki_4": 5, "uramaki_5": 3,
 	"tempura": 8, "sashimi": 8, "dumplings": 8, "eel": 8, "tofu": 8, "onigiri_1": 2, "onigiri_2": 2, "onigiri_3": 2, "onigiri_4": 2, "edamame": 8, "miso_soup": 8,
-	"chopsticks_1": 1, "chopsticks_2": 1, "chopsticks_3": 1, "soy_sauce": 3, "tea": 3, "menu_7": 1, "menu_8": 1, "menu_9": 1, "spoon_4": 1, "spoon_5": 1, "spoon_6": 1, "special_order": 3, "takeout_box_10": 1, "takeout_box_11": 1, "takeout_box_12": 1, "wasabi": 5, 
+	"chopsticks_1": 1, "chopsticks_2": 1, "chopsticks_3": 1, "soy_sauce": 3, "tea": 3, "menu_7": 1, "menu_8": 1, "menu_9": 1, "spoon_4": 1, "spoon_5": 1, "spoon_6": 1, "special_order": 3, "takeout_box_10": 1, "takeout_box_11": 1, "takeout_box_12": 1, "wasabi": 3, 
 	"pudding": 15, "green_tea_ice_cream": 15, "fruit_ww": 2, "fruit_wp": 3, "fruit_wt": 3, "fruit_tt": 2, "fruit_pp": 2, "fruit_pt": 3
 	}
 
@@ -63,6 +64,10 @@ signal rename_wasabi_icons_tb(player)
 
 # signal to allow players to look at 4 from dexk and choose 1
 signal menu(player)
+
+
+# test
+signal highlight(icon_name, highlight)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

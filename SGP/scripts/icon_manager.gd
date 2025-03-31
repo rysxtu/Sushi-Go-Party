@@ -1,5 +1,6 @@
 # handles icon display
 extends Control
+
 # the root player node
 @export var _self: Node2D
 @export var points_label: Label
@@ -80,7 +81,7 @@ func add_icon(player, card, info):
 		# check if variation card is nigiri and if it was added with wasabi
 		if card_name == "nigiri" and info != "":
 			new_icon.name += "_" + info
-			side_icon = card_name_to_icon["wasabi"].instantiate()
+			side_icon = card_name_to_icon["wasabi"].instantiate()	
 			side_icon.scale.x = 0.5
 			side_icon.scale.y = 0.5
 			new_icon.add_child(side_icon)
@@ -97,7 +98,7 @@ func add_icon(player, card, info):
 				var marker = markers.get_node("Icon" + str(i + 1))
 				marker.add_child(new_icon)
 				break
-		icon_no += 1
+		icon_no += 1	
 
 # get rids of the chopsticks ui when a chopsticks are used
 func chopsticks_played(icon_name):

@@ -51,6 +51,7 @@ func _ready():
 	var markers_temp = icon_manager.get_node("markers").get_children()
 	for marker in markers_temp:
 		markers_mapping[marker.name] = marker
+	Global.markers_mapping = markers_mapping
 	
 # runs when all the cards have been instantiated in board
 # and 8 cards are given to player
@@ -196,18 +197,15 @@ func _turn_over_cards_tb(icon):
 		# if it is a nigiri on top of a wasabi
 		if icon.get_child_count() == 3:
 			icon.get_node("wasabi_icon").get_node("Sprite2D").material.set_shader_parameter("is_grey", true)
-	print(takeout_turned_over_cards)
 
 # confirm button pressed for takeout
 func _confirm_turn_over():
 	var icons = takeout_turned_over_cards.keys()
 	# if both nirgi and its wasabi are turned over at the same time, order matters
 	icons.sort_custom(func(a, b): return a.name > b.name)
-	print(icons)
 	# have to send back the cards that have been turned over
 	for icon in icons:
 		if takeout_turned_over_cards[icon] == 1:
-			print("DEBUG: ", icon)
 			Global.emit_signal("turn_over_card", self, icon, false)
 	
 	# have to get rid of all 0s in the wasabi afterwards
@@ -240,7 +238,6 @@ func _rename_nigiri_wasabi_icons_tb(player, wasabi_number):
 			if marker is Marker2D and marker.get_child_count() > 0:
 				icon = marker.get_child(0)
 				var icon_name = icon.name.split('_')
-				print(icon_name)
 				# must be a nigiri on top of a wasabi
 				if icon_name.size() == 3 and icon_name[2] == "wasabi" + wasabi_number and icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
 					icon.name = icon_name[0] + '_' + icon_name[1]
@@ -275,6 +272,9 @@ func _rename_wasabi_icons_tb(player):
 
 func _menu_played(player):
 	if self == player:
+		# have to displaye 4 cards
+		
+		# get the player to click one card and confirm it
 		pass
 
 """HELPER FUNCTIONS"""
