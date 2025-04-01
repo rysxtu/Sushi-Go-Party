@@ -59,15 +59,16 @@ signal chopsticks_played(player, card_order, played)
 signal takeout_box(player)
 # get rid of the zeros that wasabi may have left sometimes
 signal turn_over_card(player, card, zeros)
+# rename nigiri's with wasabi when the wasabi is tunred over
 signal rename_nigiri_wasabi_icons_tb(player, wasabi_number)
+# rename wasabi when they are played to acount for any turned over ones
 signal rename_wasabi_icons_tb(player)
+# signal to highlight wasabi and nigiri icons together
+signal highlight(icon_name, highlight)
 
 # signal to allow players to look at 4 from dexk and choose 1
-signal menu(player)
+signal menu(player, menu_options)
 
-
-# test
-signal highlight(icon_name, highlight)
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

@@ -293,7 +293,21 @@ func store_card_played(player, card, extra_info):
 					pass
 				elif 6 <= i and i <= 8:
 					# menu was played
-					Global.emit_signal("menu", player_temp)
+					
+					# grab 4 cards here from the deck
+					# package 4 of them into a control node and send it to the player
+					var drawn_card
+					var menu_options = Node2D.new()
+					menu_options.name = "options"
+					for j in 4:
+						drawn_card = deck.get_children().pick_random()
+						deck.remove_child(drawn_card)
+						scale_card(drawn_card, 1)
+						drawn_card.global_position = player_temp.global_position
+						flip_card_to_front(drawn_card)
+						menu_options.add_child(drawn_card)
+					
+					Global.emit_signal("menu", player_temp, menu_options)
 				elif 9 <= i and i <= 11:
 					# takeout box played
 					Global.emit_signal("takeout_box", player_temp)

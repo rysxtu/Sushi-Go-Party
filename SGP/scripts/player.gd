@@ -270,12 +270,14 @@ func _rename_wasabi_icons_tb(player):
 		# get the latest wasabi and rename it
 		wasabis[-1].name = "wasabi_" + str(count)
 
-func _menu_played(player):
+func _menu_played(player, options):
 	if self == player:
-		# have to displaye 4 cards
-		
+		# have to displaye the 4 options (cards)
+		print(options)
+		for child in options.get_children():
+			print(child)
+			
 		# get the player to click one card and confirm it
-		pass
 
 """HELPER FUNCTIONS"""
 
