@@ -24,13 +24,15 @@ func highlight(icon_name, highlight):
 	if icon_name in self.name:
 		if highlight:
 			sprite.material.set_shader_parameter("onoff",1)
-			var tween = get_tree().create_tween()
-			tween.tween_property(self, "scale", Vector2(scale_up * scale_x, scale_up * scale_y), 0.01)
+			if is_inside_tree():
+				var tween = get_tree().create_tween()
+				tween.tween_property(self, "scale", Vector2(scale_up * scale_x, scale_up * scale_y), 0.01)
 			self.z_index = 2
 		else:
 			sprite.material.set_shader_parameter("onoff",0)
-			var tween = get_tree().create_tween()
-			tween.tween_property(self, "scale", Vector2(scale_x, scale_y), 0.01)
+			if is_inside_tree():
+				var tween = get_tree().create_tween()
+				tween.tween_property(self, "scale", Vector2(scale_x, scale_y), 0.01)
 			self.z_index = original_z_idx
 
 func _on_mouse_entered():
