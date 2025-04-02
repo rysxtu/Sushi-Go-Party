@@ -1,66 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://cnuopvr5makhs"]
 
+[ext_resource type="Script" path="res://scripts/icon.gd" id="1_kmui1"]
 [ext_resource type="Texture2D" uid="uid://dg3dwp2lepfxy" path="res://assets/icons/edited/chopsticks.png" id="2_5kl2q"]
 [ext_resource type="Shader" path="res://shaders/icon.gdshader" id="2_d25kr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ewleh"]
-
-[sub_resource type="GDScript" id="GDScript_5uxuh"]
-script/source = "extends Control
-
-@export var sprite: Sprite2D
-@export var scale_up := 1.4
-var original_z_idx
-var scale_x
-var scale_y
-
-var player
-var clickable
-var using = false
-var hovering = false
-
-func _ready():
-	scale = self.get_scale()
-	scale_x = scale[0]
-	scale_y = scale[1]
-	original_z_idx = self.z_index
-	sprite.material = sprite.material.duplicate()
-	
-	if self.get_parent() is Control:
-		# CLEAN aesthetics
-		sprite.material.set_shader_parameter(\"is_grey\", false)
-
-func _on_mouse_entered():
-	hovering = true
-	if !clickable:
-		sprite.material.set_shader_parameter(\"onoff\",1)
-		var tween = get_tree().create_tween()
-		tween.tween_property(self, \"scale\", Vector2(scale_up * scale_x, scale_up * scale_y), 0.01)
-		self.z_index = 2
-
-func _on_mouse_exited():
-	hovering = false
-	if !clickable:
-		sprite.material.set_shader_parameter(\"onoff\",0)
-		var tween = get_tree().create_tween()
-		tween.tween_property(self, \"scale\", Vector2(scale_x, scale_y), 0.01)
-		self.z_index = original_z_idx
-
-func _input(event):
-	if event is InputEventMouseButton:
-		var e:InputEventMouseButton = event
-		if e.button_mask == MOUSE_BUTTON_LEFT:
-			if clickable and hovering:
-				using = !using
-				if using:
-					sprite.material.set_shader_parameter(\"is_grey\", true)
-					# need to edit number
-					Global.emit_signal(\"chopsticks_played\", player, int(self.name.split('_')[1]), true)
-				else:
-					sprite.material.set_shader_parameter(\"is_grey\", false)
-					Global.emit_signal(\"chopsticks_played\", player,  int(self.name.split('_')[1]), false)
-				print(\"Clicked On Object\")
-"
 
 [sub_resource type="Gradient" id="Gradient_tsxh2"]
 offsets = PackedFloat32Array(0.406015, 0.433584)
@@ -91,7 +35,7 @@ scale = Vector2(1.5, 1.286)
 pivot_offset = Vector2(17, 32)
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = SubResource("GDScript_5uxuh")
+script = ExtResource("1_kmui1")
 sprite = NodePath("Sprite2D")
 
 [node name="bg" type="Sprite2D" parent="."]

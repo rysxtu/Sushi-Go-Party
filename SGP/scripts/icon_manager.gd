@@ -25,6 +25,7 @@ func _ready():
 	Global.round_over.connect(reset)
 	_self.chopsticks_played_ic.connect(chopsticks_played)
 	Global.display_special_option.connect(display_special_option)
+	Global.remove_chopsticks_from_special.connect(remove_chopsticks_from_special)
 	
 	# set up the positioning of the icons
 	const path = "res://scenes/game/display_"
@@ -72,9 +73,12 @@ func add_icon(player, card, info):
 				# these only need to have their name info
 				new_icon = card_name_to_icon[card_name].instantiate()
 			new_icon.name = card_name + '_' + variation
-		elif card_name not in SPECIAL_CARDS:
+		else:
 			new_icon = card_name_to_icon[card_name].instantiate()
-			new_icon.name = card_name
+			if card_name == "chopsticks" or card_name == "spoon":
+				new_icon.name = card_name + '_' + info
+			else:
+				new_icon.name = card_name
 		
 		# have to watch out for special cards, e.g chopsticks
 		
@@ -98,20 +102,15 @@ func add_icon(player, card, info):
 				var marker = markers.get_node("Icon" + str(i + 1))
 				marker.add_child(new_icon)
 				break
-		icon_no += 1	
+		icon_no += 1
 
 # get rids of the chopsticks ui when a chopsticks are used
 func chopsticks_played(icon_name):
-	# remove the icon from the special_cards area, so we cant replay it
-	for child in special_cards.get_children():
-		# should be child.name
-		if child.name == icon_name:
-			special_cards.remove_child(child)
-	
+	remove_chopsticks_from_special(icon_name)
 	# remove the chopstick icon from the board, as it has been used
 	for i in range(Global.hand_size):
 		# shoykd be icons[i].name
-		if icons[i] && icons[i].name == icon_name:
+		if icons[i] and icons[i].name == icon_name:
 			icons[i] = null
 			var marker_w_chopstick = markers.get_node("Icon" + str(i + 1))
 			var chopstick = marker_w_chopstick.get_child(0)
@@ -119,11 +118,18 @@ func chopsticks_played(icon_name):
 			chopstick.queue_free()
 			break
 
+func remove_chopsticks_from_special(icon_name):
+	# remove the icon from the special_cards area, so we cant replay it
+	for child in special_cards.get_children():
+		# should be child.name
+		if child.name == icon_name:
+			special_cards.remove_child(child)
+
 # displays the chopstick ui, allowing player to use chopsticks
 func display_special_option(player, card_order, type):
 	if player == _self:
 		if type == "chopsticks":
-			var chopstick = Global.icons["chopsticks"].instantiate()
+			var chopstick = load("res://scenes/icons/chopsticks_special.tscn").instantiate()
 			
 			chopstick.name = "chopsticks_" + str(card_order)
 			

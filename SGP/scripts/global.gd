@@ -54,6 +54,7 @@ signal display_special_option(player, card_order, type)
 
 # signal to record chopsticks being played
 signal chopsticks_played(player, card_order, played)
+signal remove_chopsticks_from_special(icon_name)
 
 # signal to allow player to take takeout box actions
 signal takeout_box(player)

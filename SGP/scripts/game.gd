@@ -226,7 +226,7 @@ func store_card_played(player, card, extra_info):
 					if players_played_cards[player]["wasabi"][1][i] == -1:
 						old_wasabi = i
 						break
-						
+
 				if old_wasabi == null :
 					players_played_cards[player]["wasabi"][1].append(variation)
 					Global.emit_signal("display_card_icon", player, card, "wasabi" + str(players_played_cards[player]["wasabi"][1].size() - 1))
@@ -262,7 +262,7 @@ func store_card_played(player, card, extra_info):
 		# chopstick number
 		variation = int(card.name.split("_")[1])
 		Global.emit_signal("display_special_option", player, variation, "chopsticks")
-		Global.emit_signal("display_card_icon", player, card, "")
+		Global.emit_signal("display_card_icon", player, card, str(variation))
 	elif card_name == "takeout":
 		# takeout number
 		variation = int(card.name.split("_")[1])
@@ -612,6 +612,9 @@ func _turn_over_card(player, card, zeros):
 			else:
 				players_played_cards[player]["maki"][0] -= int(variation)
 				players_played_cards[player]["maki"][1] -= 1
+		elif card_name == "chopsticks" or card_name == "spoon":
+			players_played_cards[player][card_name] -= 1
+			Global.emit_signal("remove_chopsticks_from_special", card.name)
 		elif card_name in VARIATION_CARDS:
 			players_played_cards[player][card_name][variation] -= 1
 		elif card_name == "nigiri":
@@ -656,6 +659,7 @@ func _turn_over_card(player, card, zeros):
 		else:
 			players_played_cards[player]["turned_over"] = 1
 		print(has_wasabi)
+	# not needed
 	elif not card and zeros:
 		# check if wasabi is in player hand
 		if "wasabi" in players_played_cards[player]:
