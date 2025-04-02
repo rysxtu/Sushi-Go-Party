@@ -4,8 +4,10 @@ extends Node2D
 @export var rotation_curve: Curve
 @export var special_cards: Control
 @export var takeout_confirm: Button
+@export var menu_confirm: Button
 @export var see_deck: Button
 @export var takeout_lbl: Label
+@export var menu_lbl: Label
 @export var max_rotation_degrees := 10
 @export var x_sep := 5
 @export var y_min := 50
@@ -18,6 +20,8 @@ const HAND_HEIGHT = 50
 const HAND_ROT = 0.2
 
 @onready var player_hand = get_hand(self)
+
+var menu_selected
 
 var allowed_to_play_card = true
 # store the card we need to add back to the deck
@@ -67,7 +71,7 @@ func _on_player_has_hand(player):
 			card.card_pressed.connect(_card_pressed_from_hand)
 		# span the cards
 		if player_hand.get_child_count() >= 1:
-			_update_cards()
+			_update_cards(player_hand)
 
 # disconnect the curr hand from player
 func disconnect_hand_from_player(player):
@@ -82,9 +86,9 @@ func disconnect_hand_from_player(player):
 
 # have to fix the positioning of update cards
 # positions and spans the cards
-func _update_cards():
-	var cards = player_hand.get_child_count()
-	var Card = player_hand.get_child(0)
+func _update_cards(hand):
+	var cards = hand.get_child_count()
+	var Card = hand.get_child(0)
 	var all_cards_size = Card.get_size().x * cards + x_sep * (cards - 1)
 	var final_x_sep = x_sep
 	
@@ -93,7 +97,7 @@ func _update_cards():
 		all_cards_size = hand_size
 	
 	for i in cards:
-		var card = player_hand.get_child(i)
+		var card = hand.get_child(i)
 		var y_multiplier := height_curve.sample(1.0 / (cards-1) * i)
 		var rot_multiplier := rotation_curve.sample(1.0 / (cards-1) * i)
 		
@@ -118,7 +122,7 @@ func _card_pressed_from_hand(card):
 		
 		player_hand.remove_child(card)
 		if player_hand.get_child_count() > 1:
-			_update_cards()
+			_update_cards(player_hand)
 		allowed_to_play_card = false
 		
 		# CLEAN, adding chopsticks back into hand
@@ -272,12 +276,45 @@ func _rename_wasabi_icons_tb(player):
 
 func _menu_played(player, options):
 	if self == player:
-		# have to displaye the 4 options (cards)
+		self.add_child(options)
+		self.move_child(options, 1)
+		# have to displaye the 4 options (cards) here
 		print(options)
+		# prevent the player from seeing their own hand now
+		menu_confirm.visible = true
+		menu_lbl.visible = true
+		player_hand.visible = false
 		for child in options.get_children():
+			child.position = Vector2(0, 0)
+			# make sure than menu cards cannot be played
+		
+			# connect to detect when the cards are pressedn
+			child.card_pressed_menu.connect(_menu_select)
 			print(child)
-			
-		# get the player to click one card and confirm it
+		_update_cards(options)
+
+func _menu_select(card):
+	# if card selected, then highlight and wait for confirm to be hit
+	menu_selected = card
+	pass
+
+func _menu_confirm():
+	if menu_selected:
+		
+		for child in self.get_child(1).get_children():
+			if child.card_pressed_menu.is_connected(_menu_select):
+				child.card_pressed_menu.disconnect(_menu_select)
+		
+		self.get_child(1).remove_child(menu_selected)
+		# have to send back the other three cards
+		
+		
+		self.remove_child(self.get_child(1))
+		menu_confirm.visible = false
+		menu_lbl.visible = false
+		player_hand.visible = true
+		
+		card_played.emit(self, menu_selected, null)
 
 """HELPER FUNCTIONS"""
 

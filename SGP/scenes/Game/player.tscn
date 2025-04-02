@@ -15,15 +15,17 @@
 [ext_resource type="PackedScene" uid="uid://dl5qka0kpukkr" path="res://scenes/icons/pudding_icon.tscn" id="19_tgdl4"]
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="29_gfy2f"]
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards", "takeout_confirm", "see_deck", "takeout_lbl", "icon_manager")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards", "takeout_confirm", "menu_confirm", "see_deck", "takeout_lbl", "menu_lbl", "icon_manager")]
 position = Vector2(582, 568)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
 special_cards = NodePath("display/special_cards")
 takeout_confirm = NodePath("display/Temp_takeout")
+menu_confirm = NodePath("display/Temp_menu")
 see_deck = NodePath("display/see_deck")
 takeout_lbl = NodePath("display/Temp_takeout_instructions")
+menu_lbl = NodePath("display/Temp_menu_instructions")
 icon_manager = NodePath("display/icon_manager")
 
 [node name="display" type="Control" parent="."]
@@ -277,7 +279,27 @@ offset_right = 145.0
 offset_bottom = 110.0
 text = "Press on cards you want to turn over"
 
+[node name="Temp_menu_instructions" type="Label" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -488.0
+offset_top = -42.0
+offset_right = -204.0
+offset_bottom = -19.0
+text = "Press the card you want to play
+"
+horizontal_alignment = 1
+
 [node name="Temp_takeout" type="Button" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -395.0
+offset_top = 2.0
+offset_right = -324.0
+offset_bottom = 33.0
+text = "Confirm"
+
+[node name="Temp_menu" type="Button" parent="display"]
 visible = false
 layout_mode = 0
 offset_left = -395.0
@@ -290,3 +312,4 @@ text = "Confirm"
 
 [connection signal="pressed" from="display/see_deck" to="display/see_deck" method="_on_pressed"]
 [connection signal="pressed" from="display/Temp_takeout" to="." method="_confirm_turn_over"]
+[connection signal="pressed" from="display/Temp_menu" to="." method="_menu_confirm"]

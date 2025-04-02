@@ -14,6 +14,7 @@ var show_pop_up = 0
 var hovering = 0
 
 signal card_pressed(card)
+signal card_pressed_menu(card)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -54,6 +55,7 @@ func _input(event):
 			# play card with left mouse button
 			print("------Card: ", self, " pressed")
 			card_pressed.emit(self)
+			card_pressed_menu.emit(self)
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			# displat card info with right mouse button
 			print("------Card: card info:",  self)

@@ -86,7 +86,6 @@ func cards_in_play():
 				for card in deck_chosen.get_child(0).get_children():
 					var name = card.texture.get_path().split("/")[-1].split(".")[0]
 					cards[name] += 1
-			
 
 # reset the selection of a menu
 func reset_select(v_box: VBoxContainer):
