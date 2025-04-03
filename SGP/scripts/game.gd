@@ -60,6 +60,7 @@ func _ready():
 	Global.viewport_size = get_viewport().size
 	Global.chopsticks_played.connect(chopsticks)
 	Global.turn_over_card.connect(_turn_over_card)
+	Global.menu_unselected.connect(_return_to_deck)
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
@@ -670,8 +671,14 @@ func _turn_over_card(player, card, zeros):
 					new_arr.append(nigiri)
 					
 			players_played_cards[player]["wasabi"][1] = new_arr
-	
 
+func _return_to_deck(menu_options):
+	# move back all the cards we select from menu back to the deck
+	for child in menu_options.get_children():
+		move_node(child, menu_options, deck)
+	menu_options.queue_free()
+	
+	
 """Point Functions Below"""
 
 # function that adds points for cards that dont require knowledge on all cards

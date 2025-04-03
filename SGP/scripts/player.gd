@@ -287,34 +287,42 @@ func _menu_played(player, options):
 		for child in options.get_children():
 			child.position = Vector2(0, 0)
 			# make sure than menu cards cannot be played
-		
-			# connect to detect when the cards are pressedn
-			child.card_pressed_menu.connect(_menu_select)
-			print(child)
+			if "menu" not in child.name:
+				# connect to detect when the cards are pressedn
+				child.card_pressed_menu.connect(_menu_select)
+			else:
+				child.modulate = Color(1, 1, 1, .7)
 		_update_cards(options)
 
 func _menu_select(card):
+	print("card pressed from menu ", card)
 	# if card selected, then highlight and wait for confirm to be hit
+	if menu_selected:
+		menu_selected.modulate = Color(1, 1, 1)
 	menu_selected = card
-	pass
+	menu_selected.modulate = Color(1, 0, 0)
 
 func _menu_confirm():
 	if menu_selected:
 		
+		#z disconnect signals
 		for child in self.get_child(1).get_children():
 			if child.card_pressed_menu.is_connected(_menu_select):
 				child.card_pressed_menu.disconnect(_menu_select)
 		
+		# get rid of the card  that we selected in the options
 		self.get_child(1).remove_child(menu_selected)
+		
 		# have to send back the other three cards
-		
-		
+		Global.emit_signal("menu_unselected", self.get_child(1))
+		# remove options, so everything is back in order
 		self.remove_child(self.get_child(1))
 		menu_confirm.visible = false
 		menu_lbl.visible = false
 		player_hand.visible = true
 		
 		card_played.emit(self, menu_selected, null)
+		menu_selected = null
 
 """HELPER FUNCTIONS"""
 

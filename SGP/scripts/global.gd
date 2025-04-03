@@ -69,6 +69,8 @@ signal highlight(icon_name, highlight)
 
 # signal to allow players to look at 4 from dexk and choose 1
 signal menu(player, menu_options)
+# get back the cards that weren't selected
+signal menu_unselected(menu_options)
 
 
 """STUFF FOR BOTS"""
