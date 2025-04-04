@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://f7rrk66b7i13"]
+[gd_scene load_steps=14 format=3 uid="uid://f7rrk66b7i13"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_p71t4"]
 [ext_resource type="Curve" uid="uid://cmn2thcen7413" path="res://curves/height.tres" id="2_gvq3l"]
@@ -9,24 +9,26 @@
 [ext_resource type="Script" path="res://scripts/icon_manager.gd" id="5_qmi1v"]
 [ext_resource type="PackedScene" uid="uid://2oa2h7hm8ipf" path="res://scenes/icons/green_icon.tscn" id="6_0gj7x"]
 [ext_resource type="PackedScene" uid="uid://b6wckr1tw82vi" path="res://scenes/icons/tangerine_icon.tscn" id="6_syssd"]
-[ext_resource type="Script" path="res://scenes/UI/see_deck.gd" id="8_jwv54"]
 [ext_resource type="PackedScene" uid="uid://nm04m2xwwx74" path="res://scenes/icons/watermelon_icon.tscn" id="8_okifm"]
 [ext_resource type="PackedScene" uid="uid://61crp3wan0wg" path="res://scenes/icons/maki_icon.tscn" id="15_504q1"]
 [ext_resource type="PackedScene" uid="uid://dl5qka0kpukkr" path="res://scenes/icons/pudding_icon.tscn" id="19_tgdl4"]
 [ext_resource type="PackedScene" uid="uid://yr4rkmg5imk8" path="res://scenes/icons/uramaki_icon.tscn" id="29_gfy2f"]
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards", "takeout_confirm", "menu_confirm", "see_deck", "takeout_lbl", "menu_lbl", "icon_manager")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("special_cards", "takeout_confirm", "special_order_confirm", "menu_confirm", "takeout_lbl", "special_order_lbl", "menu_lbl", "icon_manager", "counter", "name_tag")]
 position = Vector2(582, 568)
 script = ExtResource("1_p71t4")
 height_curve = ExtResource("2_gvq3l")
 rotation_curve = ExtResource("3_fxeev")
 special_cards = NodePath("display/special_cards")
 takeout_confirm = NodePath("display/Temp_takeout")
+special_order_confirm = NodePath("display/Temp_special_order")
 menu_confirm = NodePath("display/Temp_menu")
-see_deck = NodePath("display/see_deck")
 takeout_lbl = NodePath("display/Temp_takeout_instructions")
+special_order_lbl = NodePath("display/Temp_special_order_instructions")
 menu_lbl = NodePath("display/Temp_menu_instructions")
 icon_manager = NodePath("display/icon_manager")
+counter = NodePath("display/Counter")
+name_tag = NodePath("display/Name")
 
 [node name="display" type="Control" parent="."]
 layout_mode = 3
@@ -223,17 +225,12 @@ offset_top = 77.45
 offset_right = -188.0
 offset_bottom = -22.05
 
-[node name="see_deck" type="Button" parent="display" node_paths=PackedStringArray("icon_manager", "counter", "name_tag", "player")]
+[node name="see_deck" type="Button" parent="display"]
 layout_mode = 0
 offset_left = 355.0
 offset_right = 402.0
 offset_bottom = 31.0
 text = "Deck"
-script = ExtResource("8_jwv54")
-icon_manager = NodePath("../icon_manager")
-counter = NodePath("../Counter")
-name_tag = NodePath("../Name")
-player = NodePath("../..")
 
 [node name="points" type="Label" parent="display"]
 visible = false
@@ -279,6 +276,15 @@ offset_right = 145.0
 offset_bottom = 110.0
 text = "Press on cards you want to turn over"
 
+[node name="Temp_special_order_instructions" type="Label" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -139.0
+offset_top = 87.0
+offset_right = 145.0
+offset_bottom = 110.0
+text = "Press on the icon you want to copy"
+
 [node name="Temp_menu_instructions" type="Label" parent="display"]
 visible = false
 layout_mode = 0
@@ -299,6 +305,15 @@ offset_right = -324.0
 offset_bottom = 33.0
 text = "Confirm"
 
+[node name="Temp_special_order" type="Button" parent="display"]
+visible = false
+layout_mode = 0
+offset_left = -395.0
+offset_top = 2.0
+offset_right = -324.0
+offset_bottom = 33.0
+text = "Confirm"
+
 [node name="Temp_menu" type="Button" parent="display"]
 visible = false
 layout_mode = 0
@@ -310,6 +325,7 @@ text = "Confirm"
 
 [node name="player_hand" type="Node2D" parent="."]
 
-[connection signal="pressed" from="display/see_deck" to="display/see_deck" method="_on_pressed"]
+[connection signal="pressed" from="display/see_deck" to="." method="see_deck"]
 [connection signal="pressed" from="display/Temp_takeout" to="." method="_confirm_turn_over"]
+[connection signal="pressed" from="display/Temp_special_order" to="." method="_special_order_confirm"]
 [connection signal="pressed" from="display/Temp_menu" to="." method="_menu_confirm"]

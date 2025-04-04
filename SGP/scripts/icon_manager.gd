@@ -23,10 +23,16 @@ func _ready():
 	Global.player_points_sig.connect(display_points)
 	Global.display_card_icon.connect(add_icon)
 	Global.round_over.connect(reset)
-	_self.chopsticks_played_ic.connect(chopsticks_played)
-	Global.display_special_option.connect(display_special_option)
-	Global.remove_chopsticks_from_special.connect(remove_chopsticks_from_special)
 	
+	if Global.cards["chopsticks"] or Global.cards["spoon"]:
+		Global.display_special_option.connect(display_special_option)
+		
+		if Global.cards["chopsticks"]:
+			Global.display_special_option.connect(display_special_option)
+			Global.remove_chopsticks_from_special.connect(remove_chopsticks_from_special)
+		if Global.cards["spoon"]:
+			pass
+
 	# set up the positioning of the icons
 	const path = "res://scenes/game/display_"
 	var markers_local = load(path + str(Global.hand_size) + ".tscn").instantiate()

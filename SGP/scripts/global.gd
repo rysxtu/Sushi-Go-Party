@@ -72,6 +72,9 @@ signal menu(player, menu_options)
 # get back the cards that weren't selected
 signal menu_unselected(menu_options)
 
+# signal that player allowing them to copy something
+signal special_order(player)
+
 
 """STUFF FOR BOTS"""
 # played_cards for search trees for bot algorithms

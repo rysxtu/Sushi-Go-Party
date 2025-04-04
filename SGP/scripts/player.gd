@@ -4,9 +4,10 @@ extends Node2D
 @export var rotation_curve: Curve
 @export var special_cards: Control
 @export var takeout_confirm: Button
+@export var special_order_confirm: Button
 @export var menu_confirm: Button
-@export var see_deck: Button
 @export var takeout_lbl: Label
+@export var special_order_lbl: Label
 @export var menu_lbl: Label
 @export var max_rotation_degrees := 10
 @export var x_sep := 5
@@ -14,14 +15,18 @@ extends Node2D
 @export var y_max := -50
 @export var hand_size := 600
 @export var icon_manager: Control
+@export var counter: Control
+@export var name_tag: Label
 
 const HAND_WIDTH = 200
 const HAND_HEIGHT = 50
 const HAND_ROT = 0.2
 
 @onready var player_hand = get_hand(self)
+var deck_seeable = false
 
 var menu_selected
+var special_order_selected
 
 var allowed_to_play_card = true
 # store the card we need to add back to the deck
@@ -44,13 +49,19 @@ func _ready():
 	Global.disconnect_hand_from_player.connect(disconnect_hand_from_player)
 	Global.allowed_to_play.connect(_all_players_allowed_to_play)
 	
-	Global.player_allowed_to_play.connect(_player_allowed_to_play)
+	if Global.cards["chopsticks"]:
+		Global.player_allowed_to_play.connect(_player_allowed_to_play)
 	
-	Global.takeout_box.connect(_takeout_box)
-	Global.rename_nigiri_wasabi_icons_tb.connect(_rename_nigiri_wasabi_icons_tb)
-	Global.rename_wasabi_icons_tb.connect(_rename_wasabi_icons_tb)
+	if Global.cards["takeout_box"]:
+		Global.takeout_box.connect(_takeout_box)
+		Global.rename_nigiri_wasabi_icons_tb.connect(_rename_nigiri_wasabi_icons_tb)
+		Global.rename_wasabi_icons_tb.connect(_rename_wasabi_icons_tb)
 	
-	Global.menu.connect(_menu_played)
+	if Global.cards["menu"]:
+		Global.menu.connect(_menu_played)
+	
+	if Global.cards["special_order"]:
+		Global.special_order.connect(_select_special_order_copy)
 	
 	var markers_temp = icon_manager.get_node("markers").get_children()
 	for marker in markers_temp:
@@ -179,7 +190,8 @@ func _takeout_box(player):
 				if icon.get_node("Sprite2D").material.get_shader_parameter("is_grey") == false:
 					icon.icon_pressed.connect(_turn_over_cards_tb)
 		
-		see_deck.emit_signal("pressed")
+		deck_seeable = false
+		see_deck()
 		takeout_confirm.visible = true
 		takeout_lbl.visible = true
 
@@ -213,7 +225,7 @@ func _confirm_turn_over():
 			Global.emit_signal("turn_over_card", self, icon, false)
 	
 	# have to get rid of all 0s in the wasabi afterwards
-	#Global.emit_signal("turn_over_card", self, null, true)
+	# Global.emit_signal("turn_over_card", self, null, true)
 	
 	# disconnect icon pressed signal, so no confusion later
 	var markers = icon_manager.get_node("markers")
@@ -226,8 +238,9 @@ func _confirm_turn_over():
 			if icon.icon_pressed.is_connected(_turn_over_cards_tb):
 				icon.icon_pressed.disconnect(_turn_over_cards_tb)
 	# hide the board and everything related to takeout
-	see_deck.emit_signal("pressed")
-	takeout_confirm.visible = false
+	
+	deck_seeable = true
+	see_deck()
 	takeout_lbl.visible = false
 	takeout_turned_over_cards = {}
 	card_played.emit(self, null, null)
@@ -297,6 +310,7 @@ func _menu_played(player, options):
 func _menu_select(card):
 	print("card pressed from menu ", card)
 	# if card selected, then highlight and wait for confirm to be hit
+	# we want an outline eventually
 	if menu_selected:
 		menu_selected.modulate = Color(1, 1, 1)
 	menu_selected = card
@@ -305,24 +319,123 @@ func _menu_select(card):
 func _menu_confirm():
 	if menu_selected:
 		
-		#z disconnect signals
+		# disconnect signals
 		for child in self.get_child(1).get_children():
 			if child.card_pressed_menu.is_connected(_menu_select):
 				child.card_pressed_menu.disconnect(_menu_select)
 		
-		# get rid of the card  that we selected in the options
+		# get rid of the card that we selected in the options
 		self.get_child(1).remove_child(menu_selected)
 		
 		# have to send back the other three cards
 		Global.emit_signal("menu_unselected", self.get_child(1))
+		
 		# remove options, so everything is back in order
 		self.remove_child(self.get_child(1))
+
+		deck_seeable = true
+		see_deck()
 		menu_confirm.visible = false
 		menu_lbl.visible = false
-		player_hand.visible = true
 		
 		card_played.emit(self, menu_selected, null)
 		menu_selected = null
+
+func _select_special_order_copy(player):
+	if self == player:
+		# connect to icon_pressed in icons, allow icon to be selected
+		var markers = icon_manager.get_node("markers")
+		var icon
+		# look through each marker
+		for marker in markers.get_children():
+			# ensure that there is an icon
+			if marker is Marker2D and marker.get_child_count() > 0:
+				icon = marker.get_child(0)
+				icon.icon_pressed.connect(_special_order_select_card)
+		
+		deck_seeable = false
+		see_deck()
+		special_order_lbl.visible = true
+		special_order_confirm.visible = true
+
+# the card to copy for special order
+func _special_order_select_card(icon):
+	# we want an outline
+	if special_order_selected:
+		special_order_selected.modulate = Color(1, 1, 1)
+		
+	special_order_selected = icon
+	special_order_selected.modulate = Color(1, 0, 0)
+
+func _special_order_confirm():
+	var markers = icon_manager.get_node("markers")
+	var icon
+	if special_order_selected:
+		# process the name of the icon
+		var icon_name = special_order_selected.name.split("_")
+		var copy_name
+		if icon_name.size() >= 2:
+			copy_name = icon_name[0] + '_' + icon_name[1]
+		else:
+			copy_name = icon_name[0]
+		var copy = Global.cards_loaded[copy_name].instantiate()
+		copy.name = copy_name
+		
+		# disconnect signals
+		for marker in markers.get_children():
+		# ensure that there is an icon
+			if marker is Marker2D and marker.get_child_count() > 0:
+				icon = marker.get_child(0)
+				if icon.icon_pressed.is_connected(_turn_over_cards_tb):
+					icon.icon_pressed.disconnect(_turn_over_cards_tb)
+		
+		# emit that the card has been played
+		card_played.emit(self, copy, null)
+		# handle the case if turned over
+		if special_order_selected.get_node("Sprite2D").material.get_shader_parameter("is_grey") == true:
+			# get the last icon and make it grey, as it is the one we have just played
+			for i in range(Global.hand_size, 0, -1):
+				if markers_mapping["Icon" + str(i)].get_child_count() > 0:
+					var temp_icon = markers_mapping["Icon" + str(i)].get_child(0)
+					temp_icon.get_node("Sprite2D").material.set_shader_parameter("is_grey", true)
+					break
+			# revert the playeed card dicts in main
+			Global.emit_signal("turn_over_card", self, copy, false)
+			
+		# hide the things to do with special order
+		deck_seeable = true
+		see_deck()
+		special_order_lbl.visible = false
+		special_order_confirm.visible = false
+		
+		special_order_selected.modulate = Color(1, 1, 1)
+		special_order_selected = null
+	else:
+		var counter = 0
+		# check if there are no icons
+		for marker in markers.get_children():
+			if marker is Marker2D and marker.get_child_count() > 0:
+				counter += 1
+		# exit
+		if counter == 0:
+			deck_seeable = true
+			see_deck()
+			special_order_lbl.visible = false
+			special_order_confirm.visible = false
+			card_played.emit(self, null, null)
+
+func see_deck():
+	if deck_seeable == false:
+		counter.visible = true
+		icon_manager.visible = true
+		get_hand(self).visible = false
+		name_tag.visible = true
+	else:
+		counter.visible = false
+		icon_manager.visible = false
+		get_hand(self).visible = true
+		name_tag.visible = false
+	deck_seeable = !deck_seeable
 
 """HELPER FUNCTIONS"""
 

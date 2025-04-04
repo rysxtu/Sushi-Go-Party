@@ -64,6 +64,7 @@ func _ready():
 	# loads the cards from the deck selected
 	# cards that will be in play
 	var cards = Global.cards
+	print(cards)
 	# make hand size known globally for icon managers
 	Global.hand_size = hand_size
 	var cards_loaded = {}
@@ -253,10 +254,10 @@ func store_card_played(player, card, extra_info):
 			Global.emit_signal("display_card_icon", player, card, players_played_cards[player]["wasabi"][1].size() + players_played_cards[player]["wasabi"][0] - 1 - non_neg)
 			# have to count how many wasabi the lpayer has in their hand and rename the lastest wasabi
 			Global.emit_signal("rename_wasabi_icons_tb", player)
-	elif extra_info and card_name in DEPENDENT_CARDS:
+	elif card_name == "special":
 		# dependent: special order 
-		pass
-		Global.emit_signal("display_card_icon", player, card, "")
+		# send a signal to allow the playet copy something
+		Global.emit_signal("special_order", player)
 	elif card_name == "chopsticks":
 		# store in played cards dictionary
 		update_player_dict(players_played_cards, player, card_name)
@@ -394,7 +395,7 @@ func calc_points(calc_type, played_dr_cards):
 					soy_sauce_played = 1
 			
 			# if not temaki played, means 0 played for this player
-			if "temaki" not in played_cards:
+			if Global.cards["temaki"] and "temaki" not in played_cards:
 				temakis_played.append([0, player])
 		
 		if makis_played:
@@ -693,8 +694,6 @@ func count_nonglobal_p(player, card):
 	count_tea_p(player, card)
 	count_nigiri_p(player, card)
 	count_wasabi_p(player, card)
-	count_green_p(player, card)
-	count_fruit_p(player, card)
 	count_onigiri_p(player, card)
 	count_turned_over_p(player, card)
 	
@@ -720,7 +719,7 @@ func count_onigiri_p(player, card):
 		
 		# keep track of how many are in a group
 		var group_count = 0
-		var onigiri_played = players_played_cards[player]["onigiri"]
+		var onigiri_played = players_played_cards[player]["onigiri"].duplicate()
 		
 		# ensure no key errors
 		for i in range(1, 5):
@@ -737,20 +736,23 @@ func count_onigiri_p(player, card):
 			i += 1
 			
 			# reset group counting
-			if i > 4:
+			if i > 4 and group_count > 0:
 				players_points[player] += Global.onigiri_points[group_count - 1]
+				print(Global.onigiri_points[group_count - 1])
 				i = 1
 				group_count = 0
 		
 		# check if last group was counted
 		if group_count > 0:
+			print("ONgiri: ", Global.onigiri_points[group_count - 1])
 			players_points[player] += Global.onigiri_points[group_count - 1]
 
 func count_dumplings_p(player, card):
 	if card == "dumplings":
 		var p = (players_played_cards[player]["dumplings"] * (players_played_cards[player]["dumplings"] + 1)) / 2
-		if players_played_cards[player]["dumplings"] > 5:
+		if players_played_cards[player]["dumplings"] >= 5:
 			p = 15
+		print("dumplings: ", p)
 		players_points[player] += p
 
 func count_eel_p(player, card):
@@ -870,7 +872,7 @@ func count_pudding_p(puddings_played):
 # function to get call uramaki played during a turn by all players
 func record_uramaki(tuple, not_counted_uramaki):
 	# uramakis are always discarded
-	add_back_to_deck(tuple[1])
+	# add_back_to_deck(tuple[1])
 	# only if we can award points do it
 	if Global.uramaki_curr_points >= 0:
 		var variation = int(tuple[1].name.split("_")[1])
@@ -912,6 +914,7 @@ func count_uramaki_p(not_counted_uramaki):
 			players_points[not_counted_uramaki[i][1]] += Global.uramaki_points[Global.uramaki_curr_points]
 			players_played_cards[not_counted_uramaki[i][1]]["uramaki"][1] = true
 			Global.uramaki_curr_points -= 1
+			i += 1
 	else:
 		players_points[not_counted_uramaki[0][1]] += Global.uramaki_points[Global.uramaki_curr_points]
 		# make sure that the player can no longer add uramaki
@@ -930,20 +933,22 @@ func record_miso(miso_per_turn, miso_player, miso_card):
 
 # assume that if everyone has the least and the most, then just add
 func count_temaki_p(temaki_played):
-	# give points to players with largest and del from smallest
-	temaki_played.sort()
-	var n = temaki_played.size()
-	
-	# max number of temaki played and min number played
-	var max_count = temaki_played[n - 1][0]
-	var min_count = temaki_played[0][0]
+	if temaki_played:
+		# give points to players with largest and del from smallest
+		temaki_played.sort()
+		var n = temaki_played.size()
+		
+		# max number of temaki played and min number played
+		var max_count = temaki_played[n - 1][0]
+		var min_count = temaki_played[0][0]
 
-	for i in n:
-		# minus from players who played the least, not in two player game, and not if max == min
-		if temaki_played[i][0] == min_count and (players_number + bots_number) > 2 and min_count != max_count:
-			players_points[temaki_played[i][1]] -= 4
-		if temaki_played[i][0] == max_count:
-			players_points[temaki_played[i][1]] += 4
+		for i in n:
+			# minus from players who played the least, not in two player game, and not if max == min
+			if temaki_played[i][0] == min_count and (players_number + bots_number) > 2 and min_count != max_count:
+				players_points[temaki_played[i][1]] -= 4
+			if temaki_played[i][0] == max_count:
+				players_points[temaki_played[i][1]] += 4
+		print("hmmm")
 
 func count_edamame_p(edamame_played):
 	# check for each player, how many edamame they played
@@ -959,6 +964,7 @@ func count_edamame_p(edamame_played):
 			players_points[player] += 4 * played
 		else:
 			players_points[player] += tot_other_edamame * played
+		print(tot_other_edamame, ' ', played)
 
 func count_soy_sauce_p():
 	# have to have max no backgrounds, and check for soy
